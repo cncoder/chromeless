@@ -1,0 +1,8 @@
+node_modules/
+.env
+src/client/public/js/
+!src/client/public/bundle.js
+!src/client/public/bundle.js.map
+!src/client/public/creative.js
+!src/client/public/bootstrap.js
+!src/client/public/bundle.min.js

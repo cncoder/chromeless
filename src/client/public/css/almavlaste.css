@@ -1,0 +1,330 @@
+#react-app {
+  height: 100%;
+}
+
+.Layout {
+  height: 100%;
+}
+
+.non-clickable {
+  cursor: default;
+}
+
+.row {
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .navbar-alma {
+    z-index: 1030;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    width: auto;
+    font-size: 18px;
+    padding: 0;
+    background: rgb(56, 136, 233);
+    background: -moz-linear-gradient(top, rgba(56, 136, 233, 1) 0%, rgba(34, 87, 213, 1) 13%, rgba(38, 99, 224, 1) 88%, rgba(25, 65, 165, 1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(56, 136, 233, 1)), color-stop(13%, rgba(34, 87, 213, 1)), color-stop(88%, rgba(38, 99, 224, 1)), color-stop(100%, rgba(25, 65, 165, 1)));
+    background: -webkit-linear-gradient(top, rgba(56, 136, 233, 1) 0%, rgba(34, 87, 213, 1) 13%, rgba(38, 99, 224, 1) 88%, rgba(56, 136, 233, 1) 100%);
+    background: -o-linear-gradient(top, rgba(56, 136, 233, 1) 0%, rgba(34, 87, 213, 1) 13%, rgba(38, 99, 224, 1) 88%, rgba(25, 65, 165, 1) 100%);
+    background: -ms-linear-gradient(top, rgba(56, 136, 233, 1) 0%, rgba(34, 87, 213, 1) 13%, rgba(38, 99, 224, 1) 88%, rgba(25, 65, 165, 1) 100%);
+    background: linear-gradient(to bottom, rgba(56, 136, 233, 1) 0%, rgba(34, 87, 213, 1) 13%, rgba(38, 99, 224, 1) 88%, rgba(25, 65, 165, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6db3f2', endColorstr='#1e69de', GradientType=0);
+    color: #FFF;
+  }
+}
+
+.navbar-default-alma {
+  background-color: #f8f8f8;
+  border-color: #e7e7e7;
+}
+
+.navbar-default-alma .navbar-brand {
+  color: #777;
+}
+
+.navbar-default-alma .navbar-brand:hover, .navbar-default-alma .navbar-brand:focus {
+  color: #5e5e5e;
+  background-color: transparent;
+}
+
+.navbar-default-alma .navbar-text {
+  color: #777;
+}
+
+.navbar-default-alma .navbar-nav>li>a {
+  color: #777;
+}
+
+.navbar-default-alma .navbar-nav>li>a:hover, .navbar-default-alma .navbar-nav>li>a:focus {
+  color: #333;
+  background-color: transparent;
+}
+
+.navbar-default-alma .navbar-nav>.active>a, .navbar-default-alma .navbar-nav>.active>a:hover, .navbar-default-alma .navbar-nav>.active>a:focus {
+  color: #555;
+  background-color: #e7e7e7;
+}
+
+.navbar-default-alma .navbar-nav>.disabled>a, .navbar-default-alma .navbar-nav>.disabled>a:hover, .navbar-default-alma .navbar-nav>.disabled>a:focus {
+  color: #ccc;
+  background-color: transparent;
+}
+
+.navbar-default-alma .navbar-toggle {
+  border-color: #ddd;
+}
+
+.navbar-default-alma .navbar-toggle:hover, .navbar-default-alma .navbar-toggle:focus {
+  background-color: #ddd;
+}
+
+.navbar-default-alma .navbar-toggle .icon-bar {
+  background-color: #888;
+}
+
+.navbar-default-alma .navbar-collapse, .navbar-default-alma .navbar-form {
+  border-color: #e7e7e7;
+}
+
+.navbar-default-alma .navbar-nav>.open>a, .navbar-default-alma .navbar-nav>.open>a:hover, .navbar-default-alma .navbar-nav>.open>a:focus {
+  color: #555;
+  background-color: #e7e7e7;
+}
+
+@media (max-width: 767px) {
+  .navbar-default-alma .navbar-nav .open .dropdown-menu>li>a {
+    color: #777;
+  }
+  .navbar-default-alma .navbar-nav .open .dropdown-menu>li>a:hover, .navbar-default-alma .navbar-nav .open .dropdown-menu>li>a:focus {
+    color: #333;
+    background-color: transparent;
+  }
+  .navbar-default-alma .navbar-nav .open .dropdown-menu>.active>a, .navbar-default-alma .navbar-nav .open .dropdown-menu>.active>a:hover, .navbar-default-alma .navbar-nav .open .dropdown-menu>.active>a:focus {
+    color: #555;
+    background-color: #e7e7e7;
+  }
+  .navbar-default-alma .navbar-nav .open .dropdown-menu>.disabled>a, .navbar-default-alma .navbar-nav .open .dropdown-menu>.disabled>a:hover, .navbar-default-alma .navbar-nav .open .dropdown-menu>.disabled>a:focus {
+    color: #ccc;
+    background-color: transparent;
+  }
+}
+
+.navbar-default-alma .navbar-link {
+  color: #777;
+}
+
+.navbar-default-alma .navbar-link:hover {
+  color: #333;
+}
+
+.navbar-default-alma .btn-link {
+  color: #777;
+}
+
+.navbar-default-alma .btn-link:hover, .navbar-default-alma .btn-link:focus {
+  color: #333;
+}
+
+.navbar-default-alma .btn-link[disabled]:hover, fieldset[disabled] .navbar-default-alma .btn-link:hover, .navbar-default-alma .btn-link[disabled]:focus, fieldset[disabled] .navbar-default-alma .btn-link:focus {
+  color: #ccc;
+}
+
+.navbar-default-alma {
+  background-color: white;
+  border-color: rgba(34, 34, 34, 0.05);
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-transition: all 0.35s;
+  -moz-transition: all 0.35s;
+  transition: all 0.35s;
+}
+
+.navbar-default-alma .navbar-header .navbar-brand {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .navbar-default-alma .navbar-header .navbar-brand {
+    color: #ffffff;
+  }
+  .navbar-default-alma .navbar-header .navbar-brand:hover, .navbar-default-alma .navbar-header .navbar-brand:focus {
+    color: #ffffaa;
+  }
+  .navbar-default-alma .nav>li>a, .navbar-default-alma .nav>li>a:focus {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 13px;
+    color: #111;
+  }
+  .navbar-default-alma .nav>li>a:hover, .navbar-default-alma .nav>li>a:focus:hover {
+    color: #f05f40;
+  }
+  .navbar-default-alma .nav>li.active>a, .navbar-default-alma .nav>li.active>a:focus {
+    color: #f05f40 !important;
+    background-color: transparent;
+  }
+  .navbar-default-alma .nav>li.active>a:hover, .navbar-default-alma .nav>li.active>a:focus:hover {
+    background-color: transparent;
+  }
+  .navbar-default-alma {
+    background-color: transparent; //border-color: rgba(255, 255, 255, 0.3);
+  }
+  .navbar-default-alma .navbar-header .navbar-brand {
+    //color: rgba(255, 255, 255, 0.7);
+  }
+  .navbar-default-alma .navbar-header .navbar-brand:hover, .navbar-default-alma .navbar-header .navbar-brand:focus {
+    color: #ffffaa;
+  }
+  .navbar-default-alma .nav>li>a, .navbar-default-alma .nav>li>a:focus {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .navbar-default-alma .nav>li>a:hover, .navbar-default-alma .nav>li>a:focus:hover {
+    color: white;
+  }
+  .navbar-default-alma.affix {
+    background-color: white;
+    border-color: rgba(34, 34, 34, 0.05);
+  }
+  .navbar-default-alma.affix .navbar-header .navbar-brand {
+    color: #f05f40;
+    font-size: 14px;
+  }
+  .navbar-default-alma.affix .navbar-header .navbar-brand:hover, .navbar-default-alma.affix .navbar-header .navbar-brand:focus {
+    color: #eb3812;
+  }
+  .navbar-default-alma.affix .nav>li>a, .navbar-default-alma.affix .nav>li>a:focus {
+    color: #111;
+  }
+  .navbar-default-alma.affix .nav>li>a:hover, .navbar-default-alma.affix .nav>li>a:focus:hover {
+    color: #f05f40;
+  }
+}
+
+.header {
+  position: absolute;
+  width: 100%;
+  min-height: auto;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  background-position: center;
+  /*background-image: url('../img/header.jpg');*/
+  /*background-color: #222;*/
+  text-align: center;
+  /*color: white;*/
+  background: #222222 linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent) !important;
+  background-size: 40px 40px !important;
+}
+
+
+@media (min-width: 768px) {
+  .container-alma {
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 767px) {
+  .container-fluid-alma {
+    padding-left: 5px;
+  }
+}
+
+.container-fluid-alma {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow: auto;
+    height: 100%;
+    border-top: 48px solid transparent;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; //background: #222222 linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent) !important;
+    //background-size: 40px 40px !important;
+  }
+  .header .header-content {
+    //position: absolute; //padding: 0 50px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .header .header-content .header-content-inner {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .header .header-content .header-content-inner p {
+    font-size: 18px;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.form-horizontal .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.logo {
+  margin-top: 10px;
+  height: 28px;
+  float: left;
+}
+
+.navbar-brand {
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  padding-left: 2px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.Select.is-open {
+  position: relative;
+  z-index: 1000;
+}
+
+.form-control .Select-control {
+  border: 0;
+  border-radius: 0;
+  height: 32px;
+}
+
+.form-control .Select-control .Select-input {
+  height: 32px;
+}
+
+.Select.form-control {
+  padding: 0;
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  .header-inner-alma {
+    max-width: 700px;
+    padding: 0.1px 15px 15px 15px;
+    margin-bottom: 20px;
+  }
+}
+
+.header-inner-alma {
+  margin-right: auto;
+  margin-left: auto;
+  background-color: white;
+}
