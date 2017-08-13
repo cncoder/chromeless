@@ -13,57 +13,45 @@ var Language = require('./models/languages');
 var User = require('./models/users');
 import {latexParser} from "latex-parser";
 
-const p = (a) => console.log(JSON.stringify(a));
+const p = (a) => console.log(JSON.stringify(a, null, 2));
 
-function SaveLanguage(options) {
-  Language.findOne({
-    '_id': options.bodypart
-  }, function(err, lang) {
-    if (err) {
-      return {err: `the language with this id doesn't exist`};
+const thetwo = [
+  {
+    _id: "bangu",
+    gentufa: true,
+    freq: "freq"
+  }, {
+    _id: "terfanva",
+    gentufa: false,
+    freq: "terfanva_freq"
+  }
+]
+
+function GetOptimizedTerbri(arrterbri) {
+  let terbri = [];
+  for (let i in arrterbri) {
+    const o = arrterbri[i];
+    const parsed = latexParser.parse(o.sluji || '');
+    //{"status":false,"index":{"offset":9,"line":1,"column":10},"expected":["'$'","'%'","'\\'","'\\begin'","'^'","'_'","'{'","text character"]}
+    if (!parsed.status) {
+      return {err: "bad TeX", parsed: parsed};
     }
-    if (options.gentufa && lang.krasi_cmene === 'lojban.') {
-      const tcini = Lojban[options.gentufa](options.valsi)["tcini"];
-      if (tcini === 'fliba') {
-        return {err: 'not a lojban text'};
-      }
+    if (o.idx === 0) {
+      terbri.push({
+        idx: parseInt(o.idx),
+        sluji: o.sluji
+      });
+    } else if (o.klesi && (o.klesi !== '')) {
+      terbri.push({
+        idx: parseInt(o.idx),
+        klesi: o.klesi,
+        nirna: o.nirna,
+        sluji: o.sluji
+      });
     }
-    if (!lang[options.freq] || !Number.isInteger(parseInt(lang[options.freq]))) {
-      lang[options.freq] = 1;
-    } else {
-      lang[options.freq] = parseInt(lang[options.freq]) + 1;
-    }
-    lang.save(function(err) {
-      if (err) {
-        return {err: err.toString()};
-      }
-    });
-  });
+  }
+  return terbri;
 }
-
-function SaveKlesi(oklesi) {
-  Klesi.findOne({
-    'klesi': oklesi
-  }, function(err, klesi) {
-    if (err) {
-      return {err: `the klesi find/create error`};
-    }
-    if (!klesi) {
-      klesi = new Klesi({freq: 1, klesi: oklesi});
-    }
-    if (!klesi["freq"] || !Number.isInteger(parseInt(klesi["freq"]))) {
-      klesi["freq"] = 1;
-    } else {
-      klesi["freq"] = parseInt(klesi["freq"]) + 1;
-    }
-    klesi.save(function(err) {
-      if (err) {
-        return {err: err.toString()};
-      }
-    });
-  });
-}
-
 var routes = function(app, passport) {
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -85,31 +73,185 @@ var routes = function(app, passport) {
  */
 
   app.route('/api/finti').post(isLoggedIn, function(req, res) {
-    if (_.hasIn(req, 'body.valsi') && _.hasIn(req, 'body.terbri') && _.hasIn(req, 'body.bangu')) {
-      var newDef = new Valsi();
-      const arrterbri = JSON.parse(req.body.terbri);
-      var terbri = [];
-      for (let i in arrterbri) {
-        const o = arrterbri[i];
-        const parsed = latexParser.parse(o.sluji || '');
-        //{"status":false,"index":{"offset":9,"line":1,"column":10},"expected":["'$'","'%'","'\\'","'\\begin'","'^'","'_'","'{'","text character"]}
-        if (!parsed.status) {
-          return res.send({err: "bad TeX", parsed: parsed});
+    const forced = req.body.forcedoverwrite=='true' || false;
+    // 0. simply bad request
+    if (!_.hasIn(req, 'body.valsi') || !_.hasIn(req, 'body.terbri') || !_.hasIn(req, 'body.bangu')) {
+      return res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'});
+    }
+    // 1. check latex, prepare for 4.
+    const terbri = GetOptimizedTerbri(JSON.parse(req.body.terbri));
+    if (terbri.err)
+      return res.send(terbri);
+    const flatklesi = terbri.map(o => o.klesi).reduce(function(sum, value) {
+      return sum.concat(value);
+    }, []).filter(Boolean);
+
+    // 2. check cmaxes, check language=>promise
+    const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
+      '_id': req.body[kk._id]
+    }).exec())).then(function(items) {
+      let sum = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        let candidate = {
+          item: item,
+          info: 'ok'
+        };
+        if (thetwo[i].gentufa && item.krasi_cmene === 'lojban.') {
+          const tcini = Lojban["romoi_lahi_cmaxes"](req.body["valsi"])["tcini"];
+          if (tcini === 'fliba') {
+            candidate = {
+              item: item,
+              err: 'not a lojban text'
+            };
+          }
         }
-        if (o.idx === 0) {
-          terbri.push({
-            idx: parseInt(o.idx),
-            sluji: o.sluji
+        candidate.type = 'lang';
+        sum.push(candidate);
+      }
+      return sum;
+    });
+    // 3. promise.all check all klesi. if no klesi return error
+    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then(function(items) {
+      if (!items)
+        return {item: null, err: 'no klesi'};
+      let sum = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        let candidate = {
+          item: {
+            klesi: flatklesi[i]
+          },
+          kunti: true
+        };
+        if (item) {
+          candidate = {
+            item: item,
+            info: 'ok'
+          };
+        }
+        candidate.type = 'klesi';
+        sum.push(candidate);
+      }
+      return sum;
+    });
+    const fed = thetwo.map(kk => req.body[kk._id]).concat(flatklesi);
+
+    // -2-3- resolve promises
+    Promise.all([langpromises, klesipromises]).then(function(items) {
+      items = items.reduce(function(sum, value) {
+        return sum.concat(value)
+      }, []);
+      let prs = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const promisified_item = new Promise((resolve, reject) => {
+          resolve(item)
+        });
+        if (item.err)
+          return Promise.all([promisified_item]);
+        prs.push(promisified_item);
+      }
+      return Promise.all(prs);
+    }).then(function(items) {
+      //todo: !items case
+      if (items[0] && items[0].err) {
+        const promisified_err_item = new Promise((resolve, reject) => {
+          resolve(items[0])
+        });
+        return Promise.all([promisified_err_item]);
+      }
+      //ok, seems like no errors. now check for kunti
+      if (!forced) {
+        const kunti_items = items.filter(i => i.kunti);
+        if (kunti_items.length > 0) {
+          const promisified_kunti = new Promise((resolve, reject) => {
+            resolve({
+              kunti: true,
+              klemei: kunti_items.map(i => i.item.klesi)
+            })
           });
-        } else if (o.klesi && (o.klesi !== '')) {
-          terbri.push({
-            idx: parseInt(o.idx),
-            klesi: o.klesi,
-            nirna: o.nirna,
-            sluji: o.sluji
-          });
+          return Promise.all([promisified_kunti]);
         }
       }
+      //SAVE OR UPDATE
+      let prs = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        let candidate;
+        if (item.err) {
+          if (item.type === 'klesi' && item.item.klesi) {
+            //now update
+            const klesi = new Klesi({freq: 1, klesi: item.item.klesi});
+            candidate = new Promise((resolve, reject) => {
+              klesi.save((err, it, numberAffected) => {
+                if (err) {
+                  item.err = err.toString();
+                } else {
+                  item.saved = true;
+                  item.saver = it;
+                  item.numberAffected = numberAffected;
+                }
+                resolve(item);
+              })
+            });
+          } else {
+            item.err = 'not a correct lang or klesi';
+            candidate = new Promise((resolve, reject) => {
+              resolve(item)
+            });
+          }
+        } else {
+          if (item.type === 'klesi' && item.item.klesi) {
+            //no errors so update freqs
+            candidate = new Promise((resolve, reject) => {
+              Klesi.findOneAndUpdate({
+                _id: item.item._id
+              }, {
+                $set: {
+                  freq: parseInt(item.item.freq) + 1
+                }
+              }, {
+                new: true
+              }, function(err, doc) {
+                if (err) {
+                  item.err = err.toString();
+                } else {
+                  item.updated = true;
+                }
+                resolve(item);
+              });
+            });
+          } else if (item.type === 'lang') {
+            candidate = new Promise((resolve, reject) => {
+              Language.findOneAndUpdate({
+                _id: item.item._id
+              }, {
+                $set: {
+                  freq: parseInt(item.item.freq) + 1
+                }
+              }, {
+                new: true
+              }, function(err, doc) {
+                if (err) {
+                  item.err = err.toString();
+                } else {
+                  item.updated = true;
+                }
+                resolve(item);
+              });
+            });
+          } else {
+            item.err = 'not a correct lang or klesi'
+            candidate = new Promise((resolve, reject) => {
+              resolve(item)
+            });
+          }
+        }
+        prs.push(candidate);
+      }
+      //save smuvelcki
+      const newDef = new Valsi();
       newDef.valsi = req.body.valsi;
       newDef.selgerna_filovalsi = req.body.bangu["value"];
       newDef.terbri = terbri;
@@ -118,31 +260,36 @@ var routes = function(app, passport) {
       newDef.tcita = newDef.tcita.map(i => {
         return {"finti": newDef.finti, "tcita": i.tcita};
       });
-      newDef.save(function(err) {
-        if (err)
-          return console.error(3, err);
-        const a = SaveLanguage({"bodypart": req.body["bangu"], "gentufa": "ilmentufa_off", "freq": "freq", "valsi": req.body["valsi"]});
-        const b = SaveLanguage({"bodypart": req.body["terfanva"], "gentufa": false, "freq": "terfanva_freq", "valsi": req.body["valsi"]});
-        if (a && a.err)
-          return res.send(a);
-        if (b && b.err)
-          return res.send(b);
-        terbri.map(o => {
-          const c = SaveKlesi(o.klesi);
-          if (c && с.err)
-            return res.send(с);
+
+      const valsipromise = new Promise((resolve, reject) => {
+        newDef.save((err, it, numberAffected) => {
+          const valsi = {
+            type: 'valsi',
+            item: newDef
+          };
+          if (err) {
+            valsi.err = err.toString();
+          } else {
+            valsi.saved = true;
+            valsi.numberAffected = numberAffected;
           }
-        );
-        req.user.save(function(err) {
-          if (err)
-            return console.error(33, err);
-          return res.send({Valsi: newDef});
+          resolve(valsi);
         });
       });
-    } else {
-      //invalid body
-      res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'});
-    }
+      prs.push(valsipromise);
+      return Promise.all(prs);
+    }).then(function(items) {
+      p(items);
+      if (items[0].err||items[0].kunti) {
+        return res.send(items[0]);
+      }
+      const valsi_item = items.filter(i => i.type === 'valsi');
+      if (valsi_item.length > 0) {
+        return res.send({Valsi: valsi_item[0].item});
+      }
+    }).catch(function(err) {
+      return res.send({err: err.toString()});
+    });
   });
 
   app.route('/api/jmina_lebangu').post(isLoggedIn, function(req, res) {

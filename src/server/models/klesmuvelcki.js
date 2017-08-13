@@ -3,8 +3,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Valsi = new Schema({
-  valsi: String,
+var Klesmuvelcki = new Schema({
+  klesi: {
+    type: Schema.ObjectId,
+    ref: 'Klesi'
+  },
   finti: {
     type: Schema.ObjectId,
     ref: 'User'
@@ -103,4 +106,4 @@ var Valsi = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Valsi', Valsi, 'Valsi');
+module.exports = mongoose.model('Klesmuvelcki', Klesmuvelcki, 'Klesmuvelcki');

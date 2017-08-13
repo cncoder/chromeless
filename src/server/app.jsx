@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var compression = require('compression');
 var throttle = require('./throttler');
 var favicon = require('serve-favicon');
+mongoose.Promise = global.Promise
 
 //configure passport strategy and serializations
 passportSetup(passport);

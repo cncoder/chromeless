@@ -9,7 +9,7 @@ Soon:
 - no such nickname if email already registered
 - no such nickname if email already registered - better information!
 - check if email already registered
-* finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
+x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - page to restore password: enter cmene and email
 - send password https://www.w3schools.com/nodejs/nodejs_email.asp
 - change password
@@ -24,6 +24,7 @@ Soon:
 - add server-side ilmentufa to word check, flash if incorrect
 - tags must get saved
 - fill klesi table on each save
+- gh is saved as lojban word
 * save tags when jbangu, when finti
 * fill tcita table on each save
 - on save to server save each new type to klesi model. if exists +1 for frequency. if no frequency =1
@@ -32,16 +33,27 @@ Soon:
 - author of language marks it as predicate.
 - LaTex parser
 - latex renderer https://www.npmjs.com/package/react-tex
+- /finti - change to promises http://erikaybar.name/using-es6-promises-with-mongoosejs-queries/ https://stackoverflow.com/questions/39004185/how-to-promise-all-multiple-arrays-of-mongoose-document-inserts https://stackoverflow.com/questions/38955512/how-to-use-promise-all-with-mongoose-queries-as-arguments
+-- save only if all promises returned no-error
+-- on first save show popup that klesi will be added
+** !items case
 * if predicate language then show terbri first, old terbri last. otherwise vice versa
-* don't show stats in selected Klesi
+* 1. check latex, cmaxes, 2. check language 3. promise.all check all klesi.
+** ok now fi all hecks are clean (no err) then we need to return something else
+*** if force===true then promise.all(langs,klesi) update frequencies of langs and klesi. then: return results. either ok or error. then: now once again for each error return promise with with save new klesi within each promise 4. save word and return it. ||| So we have 4 embedded layers pf functions.
 * confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
 * text before x1 => "text before" whatever. same for other hints
 * mobile /finti is not scrollable
 - /valsi - all definitions of this word
+* tcita into separate model
 * /valsi show tcita. my tcita are separate
 * add your defs on profile page
 * tcita page
 * link to tcita on tcita itself
+* save logged in state in localstorage
+- /finti save state in localstorage
+* move localstorage higher into layout
+* delete finti localstorage after success
 * can't add tag that's already mine and has the same value
 * add old terbri
 * add page to view users with their rights
@@ -49,11 +61,15 @@ Soon:
 * read only rights that "undone=undefined or false"
 - add language of terbri
 * write date of creation
+* /recent.html last 7 days
+* list of my last definitions
 * show my latest words (sort by date of creation)
+* klesi_smuvelcki - klesi should have definitions, just text by user
+* use https://github.com/DmsChrisPena/reddit-clone-api/blob/master/package.json
 * add button to link to one of my words
 * add input to link to another def. support any links, confirm if found an id
 ** on enter of the link show confirmation window.
-* add cmaxes
+- add cmaxes
 * UI localization table. Get strings from it, English by default, if logged user language by default
 * page listing all localization strings
 * /proga/:id
@@ -88,6 +104,7 @@ Soon:
 * for downvote reverse method
 * html in react-select languages - freq to the right
 * check api. whenever send user dont send password!!!
+* check api. move all checks into it from client
 * react-select noResultsText - localize, searchPromptText
 * react-select-plus group support - my languages, other languages
 * saving user must be done on server side, dont send user from client `isLoggedIn`
@@ -96,6 +113,11 @@ Soon:
 * on page reload reatin authenticated state via JWT https://stackoverflow.com/questions/39097440/on-react-router-how-to-stay-logged-in-state-even-refresh-the-page (/profile always redirects to  /login)
 * isPredicateLanguage in my settings
 * TeX result of parsing. err: ..., parsed: ...
+* don't show stats in selected Klesi
+* integrate https://github.com/Hashnode/mern-starter
+* flashcards https://github.com/atlassian/react-beautiful-dnd
+
+//{_id: {$in: [req.body.data]}
 
 ----
 pages
