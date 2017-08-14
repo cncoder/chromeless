@@ -5,20 +5,15 @@ import UserDefs from '../userdefs.jsx';
 import {getUserById, getDefsFromUserId} from '../../utils/utils';
 import _ from 'lodash';
 
-var Profile = React.createClass({
-  getInitialState: function() {
-    return ({pilno: null, userDefs: null});
-  },
-  // _flipView: function() {
-  //   var showTable = this.state.showTable;
-  //   this.setState({
-  //     showTable: !showTable
-  //   });
-  // },
+class Profile extends React.Component {
+  constructor() {
+    super();
+    this.state = {pilno: null, userDefs: null};
+  }
   componentWillMount() {
     this.getUser();
-  },
-  getUser: function(flag) {
+  }
+  getUser(flag) {
     var self = this;
     if (_.hasIn(this.props, 'params.id')) {
       getUserById(self.props.params.id, function(err, user) {
@@ -35,17 +30,14 @@ var Profile = React.createClass({
         document.title = `${user.cmene} - la almavlaste`;
       })
     }
-  },
-  render: function() {
-    var content;
-    //var buttonText;
-    var self = this;
+  }
+  render() {
+    let content;
+    const self = this;
     if (this.state.pilno) {
       content = <UserTable user={self.state.pilno}/>;
-      //buttonText = 'less detailed view';
     } else {
       content = <UserDefault/>;
-      //buttonText = 'more detailed view';
     }
     return (
       <div className="header-content no-center">
@@ -59,6 +51,6 @@ var Profile = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Profile;

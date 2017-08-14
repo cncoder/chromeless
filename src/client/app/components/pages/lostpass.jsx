@@ -10,19 +10,24 @@ var iconStyle = {
   margin: 10
 };
 
-var LostPass = React.createClass({
-  getInitialState: function() {
-    return ({userdatum: '', message: `Currently you can't choose a new password. Instead we can only generate a new password for you ourselves. Passwords for your account can be sent not more often than once every 24 hours.`, backtologin: false});
-  },
+class LostPass extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      userdatum: '',
+      message: `Currently you can't choose a new password. Instead we can only generate a new password for you ourselves. Passwords for your account can be sent not more often than once every 24 hours.`,
+      backtologin: false
+    };
+  }
   componentDidMount() {
     document.title = "Restore password";
-  },
-  handleChange: function(e) {
-    if (e.target.id === 'email')
+  }
+  handleChange(e) {
+    if (e.target.id === 'email') {
       this.setState({userdatum: e.target.value});
     }
-  ,
-  handleSubmit: function(e) {
+  }
+  handleSubmit(e) {
     e.preventDefault();
     var self = this;
     request.post('/api/restorepass').send({userdatum: this.state.userdatum}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
@@ -42,21 +47,21 @@ var LostPass = React.createClass({
         console.log('unknown error');
       }
     });
-  },
-  flashMessage: function(msg) {
+  }
+  flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg});
     var self = this;
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
-  },
-  _formValidated: function() {
+  }
+  _formValidated() {
     var userdatum = this.state.userdatum;
     if (userdatum.length < 1)
       return false;
     return true;
-  },
-  render: function() {
+  }
+  render() {
     var buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
@@ -90,6 +95,6 @@ var LostPass = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = LostPass;

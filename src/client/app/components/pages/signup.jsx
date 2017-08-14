@@ -9,11 +9,12 @@ var iconStyle = {
   margin: 10
 };
 
-var Signup = React.createClass({
-  getInitialState: function() {
-    return ({username: '', email: '', password: '', passwordConfirm: '', flashVisible: false, flashMessage: ''});
-  },
-  handleChange: function(e) {
+class Signup extends React.Component {
+  constructor() {
+    super();
+    this.state = {username: '', email: '', password: '', passwordConfirm: '', flashVisible: false, flashMessage: ''};
+  }
+  handleChange(e) {
     switch (e.target.id) {
       case 'username':
         this.setState({
@@ -38,7 +39,7 @@ var Signup = React.createClass({
       default:
         //do nothing
     }
-  },
+  }
   handleSubmit(e) {
     e.preventDefault();
     if (!this._formValidated())
@@ -66,15 +67,15 @@ var Signup = React.createClass({
         console.warn('response from signup post did not include the expected user: ', res.body);
       }
     });
-  },
-  flashMessage: function(msg) {
+  }
+  flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg});
     var self = this;
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
-  },
-  _formValidated: function() {
+  }
+  _formValidated() {
     var username = this.state.username;
     var password = this.state.password;
     var passwordConfirm = this.state.passwordConfirm;
@@ -85,8 +86,8 @@ var Signup = React.createClass({
     if (password !== passwordConfirm)
       return false;
     return true;
-  },
-  render: function() {
+  }
+  render() {
     var buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
@@ -145,6 +146,6 @@ var Signup = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Signup;

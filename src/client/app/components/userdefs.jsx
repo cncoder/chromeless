@@ -2,8 +2,8 @@ var React = require('react');
 import AppStateStore from '../stores/AppStateStore';
 import {Link} from 'react-router';
 
-var UserDefs = React.createClass({
-  render: function() {
+class UserDefs extends React.Component {
+  render() {
     var userDefs = this.props.userDefs || [];
     const defstitle = this.props.text || 'Your Defs:';
     return (
@@ -12,14 +12,16 @@ var UserDefs = React.createClass({
         <h2>{defstitle}</h2>
         <ul className="list-group row">
           {userDefs.map(i => {
-            return <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
-              <Link key={i._id} to={"/valsi/" + i._id}>{i.valsi}</Link>
-            </li>;
+            return (
+              <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
+                <Link key={i._id} to={"/valsi/" + i._id}>{i.valsi}</Link>
+              </li>
+            );
           })}
         </ul>
       </div>
     );
   }
-});
+}
 
 module.exports = UserDefs;

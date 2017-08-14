@@ -1,8 +1,8 @@
 const React = require('react');
 import {Link} from 'react-router';
 
-const Fihi = React.createClass({
-  render: function() {
+class Fihi extends React.Component {
+  render() {
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
@@ -31,6 +31,6 @@ const Fihi = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Fihi;

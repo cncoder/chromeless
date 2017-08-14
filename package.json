@@ -68,6 +68,7 @@
     "webpack-dev-server": "^2.6.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "favicons-webpack-plugin": "0.0.7",
     "html-webpack-plugin": "^2.30.1"
   }

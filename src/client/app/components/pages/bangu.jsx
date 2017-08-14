@@ -2,14 +2,17 @@ var React = require('react');
 import {getBanguById} from '../../utils/utils';
 import _ from 'lodash';
 
-var Bangu = React.createClass({
-  getInitialState: function() {
-    return ({bangu: null});
-  },
+class Bangu extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      bangu: null
+    };
+  }
   componentWillMount() {
     this.getBangu();
-  },
-  getBangu: function(flag) {
+  }
+  getBangu(flag) {
     var self = this;
     if (_.hasIn(this.props, 'params.id')) {
       getBanguById(self.props.params.id, function(err, bangu) {
@@ -20,8 +23,8 @@ var Bangu = React.createClass({
         self.setState({bangu: bangu});
       })
     }
-  },
-  render: function() {
+  }
+  render() {
     var content;
     var self = this;
     if (this.state.bangu) {
@@ -40,6 +43,6 @@ var Bangu = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Bangu;

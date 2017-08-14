@@ -1,15 +1,14 @@
 var React = require('react');
-var createReactClass = require('create-react-class');
-import OptionInput from '../optioninput.jsx';
 import request from 'superagent';
 import _ from 'lodash';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import {browserHistory} from 'react-router';
-import FlashMessage from '../flashmessage.jsx';
-import {getAllBangu, getAllKlesi} from '../../utils/utils';
 import {Link} from 'react-router';
 import Select from 'react-select-plus';
 import {Creatable} from 'react-select-plus';
+import OptionInput from '../optioninput.jsx';
+import FlashMessage from '../flashmessage.jsx';
+import {getAuthenticated} from '../../stores/AppStateStore';
+import {browserHistory} from 'react-router';
+import {getAllBangu, getAllKlesi} from '../../utils/utils';
 import 'react-select-plus/dist/react-select-plus.css';
 const localStorage = require('web-storage')().localStorage;
 const p = (a) => console.log(JSON.stringify(a));
@@ -60,8 +59,20 @@ function findKey(obj, value) {
   return Object.keys(obj).filter(i => obj[i].idx === value)[0];
 }
 
-var Create = React.createClass({
-  getInitialState: function() {
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class Create extends BaseComponent {
+  constructor() {
+    super();
+    this._bind('handleSubmit', 'handleChange','addOption','removeOption');
+    // this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
+    // this.addOption = this.addOption.bind(this);
+    // this.removeOption = this.removeOption.bind(this);
     const lget = localStorage.get('finti');
     const stored_state = JSON.parse(lget || '{}');
     stored_state.flashVisible = undefined;
@@ -70,14 +81,14 @@ var Create = React.createClass({
     stored_state.addButton = init_state.addButton;
     const deepExtend = require('deep-extend');
     const resut = deepExtend(init_state, stored_state);
-    return (resut)
-  },
+    this.state = resut;
+  }
   componentDidMount() {
     document.title = `Add definition`;
-  },
-  componentDidUpdate: function(prevProps, prevState) {
+  }
+  componentDidUpdate(prevProps, prevState) {
     localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
-  },
+  }
   componentWillMount() {
     const self = this;
     getAllBangu(function(err, banmei) {
@@ -119,8 +130,8 @@ var Create = React.createClass({
           })))]
       });
     });
-  },
-  addOption: function(e) {
+  }
+  addOption(e) {
     e.preventDefault();
     const terbri = this.state.terbri;
     //last one is always post
@@ -130,9 +141,9 @@ var Create = React.createClass({
     const places = this.state.places;
     places.push(`x${next}`); //todo add according to what other symbols are chosen, what about lujvo?
     this.setState({terbri: terbri, places: places});
-  },
+  }
 
-  removeOption: function(e) {
+  removeOption(e) {
     e.preventDefault();
     if (this.state.terbri.length <= 1)
       return; //make disabled
@@ -141,11 +152,11 @@ var Create = React.createClass({
     var places = this.state.places;
     places.pop();
     this.setState({terbri: terbri, places: places});
-  },
-  handleChangeOfTags: function(value) {
+  }
+  handleChangeOfTags(value) {
     this.setState({multiValue: value});
-  },
-  flashMessage: function(msg, persistent) {
+  }
+  flashMessage(msg, persistent) {
     this.setState({flashVisible: true, flashMessage: msg});
     var self = this;
     if (persistent)
@@ -153,12 +164,12 @@ var Create = React.createClass({
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
-  },
-  handleClear: function() {
+  }
+  handleClear() {
     this.setState(init_state);
     p(this.state.valsi);
-  },
-  handleChange: function(n_idx, e) {
+  }
+  handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false});
     if (!e.target && (e && e.length > 0 && !e[0].value))
       return;
@@ -193,18 +204,18 @@ var Create = React.createClass({
       });
     }
     this.setState({terbri: terbri});
-  },
-  banguChange: function(e) {
+  }
+  banguChange(e) {
     this.setState({
       bangu: e.value || ''
     });
-  },
-  terfanvaChange: function(e) {
+  }
+  terfanvaChange(e) {
     this.setState({
       terfanva: e.value || ''
     });
-  },
-  handleSubmit: function(e) {
+  }
+  handleSubmit(e) {
     e.preventDefault();
 
     if (!getAuthenticated()) {
@@ -242,8 +253,8 @@ var Create = React.createClass({
       console.log('smuvelcki added to the backend db', JSON.stringify(res.body));
       browserHistory.push('/valsi/' + res.body.Valsi._id);
     });
-  },
-  _validateForm: function() {
+  }
+  _validateForm() {
     var validated = true;
     if (this.state.valsi.length < 1)
       validated = false;
@@ -254,14 +265,14 @@ var Create = React.createClass({
     //   }
     // });
     return validated;
-  },
-  arrowRenderer: function(a) {
+  }
+  arrowRenderer(a) {
     //→←
     return (
       <span>{a}</span>
     );
-  },
-  render: function() {
+  }
+  render() {
     var removeButtonClass = 'enabled';
     if (this.state.terbri.length < 1) {
       removeButtonClass = 'disabled';
@@ -336,6 +347,6 @@ var Create = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Create;

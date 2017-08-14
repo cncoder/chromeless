@@ -10,17 +10,24 @@ function findKey(obj, value) {
   return Object.keys(obj).filter(i => obj[i].idx === value)[0];
 }
 
-var JBangu = React.createClass({
-  getInitialState: function() {
-    return ({tcita: [], krasi_cmene: '', bridi: false, info: null, Bangu: null})
-  },
+class JBangu extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      tcita: [],
+      krasi_cmene: '',
+      bridi: false,
+      info: null,
+      Bangu: null
+    };
+  }
   componentDidMount() {
     document.title = `Add language`;
-  },
-  handleChangeOfTags: function(k) {
+  }
+  handleChangeOfTags(k) {
     this.setState({tcita: k});
-  },
-  handleChange: function(e) {
+  }
+  handleChange(e) {
     if (!e.target)
       return;
     if (e.target.id === 'bangu') {
@@ -28,8 +35,8 @@ var JBangu = React.createClass({
     } else if (e.target.id === 'bridi') {
       this.setState({bridi: e.target.checked});
     }
-  },
-  handleSubmit: function(e) {
+  }
+  handleSubmit(e) {
     e.preventDefault();
     let self = this;
     if (!getAuthenticated()) {
@@ -53,14 +60,14 @@ var JBangu = React.createClass({
       }
       browserHistory.push('/bangu/' + self.state.Bangu._id);
     });
-  },
-  _validateForm: function() {
+  }
+  _validateForm() {
     var validated = true;
     if (this.state.krasi_cmene.length < 1)
       validated = false;
     return validated;
-  },
-  render: function() {
+  }
+  render() {
     var self = this;
     return (
       <div className="header-content no-center">
@@ -115,6 +122,6 @@ var JBangu = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = JBangu;

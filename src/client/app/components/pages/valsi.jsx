@@ -3,15 +3,14 @@ import _ from 'lodash';
 import request from 'superagent';
 import {getRandomDef, getDefById, getUserById} from '../../utils/utils';
 import {Link} from 'react-router';
-import Chart from '../chart.jsx';
-import AddOptionButton from '../add_option_button.jsx';
 import {getAuthenticated} from '../../stores/AppStateStore';
 import AppStateStore from '../../stores/AppStateStore';
 import {InlineTex} from 'react-tex';
 
-var Valsi = React.createClass({
-  getInitialState: function() {
-    return ({
+class Valsi extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       valsi: null,
       voted: false,
       addButtonActive: false,
@@ -23,12 +22,12 @@ var Valsi = React.createClass({
           "vote": "minus"
         }
       ]
-    });
-  },
+    };
+  }
   componentWillMount() {
     this.getNewDef();
-  },
-  getFinti: function() {
+  }
+  getFinti() {
     const self = this;
     if (_.hasIn(self.state, 'valsi.finti')) {
       getUserById(self.state.valsi.finti, function(err, pilno) {
@@ -39,9 +38,9 @@ var Valsi = React.createClass({
         self.setState({finti: pilno});
       })
     }
-  },
-  getNewDef: function(flag) {
-    var self = this;
+  }
+  getNewDef(flag) {
+    const self = this;
     this.setState({loading: true});
     getDefById(self.props.params.id, function(err, valsi) {
       if (err) {
@@ -50,28 +49,8 @@ var Valsi = React.createClass({
       }
       self.setState({valsi: valsi, voted: false, addButtonActive: false, loading: false});
     });
-  },
-  // handleClick: function(e){
-  //     var user = AppStateStore.getUser();
-  //     var option_id = e.target.id;
-  //     var self = this;
-  //     this.setState({loading: true});
-  //     //console.log(this.state.valsi._id,{option_id:option_id,user:_.get(user,'_id')});
-  //     request
-  //         .post('/api/valsi/'+this.state.valsi._id)
-  //         .send({option_id:option_id,user:_.get(user,'_id')})
-  //         .set('Accept', 'application/json')
-  //         .set('Content-Type', 'application/x-www-form-urlencoded')
-  //         .end(function(err, res){
-  //             if (err) return console.error('could not post vote to server:', err);
-  //             self.setState({
-  //                 valsi: res.body,
-  //                 voted: true,
-  //                 loading: false
-  //             });
-  //         });
-  // },
-  handleClick: function(e) {
+  }
+  handleClick(e) {
     var option_id = e.target.id;
     var disabled = e.target.disabled;
     if (disabled)
@@ -92,7 +71,7 @@ var Valsi = React.createClass({
       console.error('could not post vote to server:', err);
       self.setState({valsi: res.body, voted: true, loading: false});
     });
-  },
+  }
   handleAddNewOption(text) {
     if (!getAuthenticated()) {
       document.getElementById('openLoginPrompt').click();
@@ -112,42 +91,23 @@ var Valsi = React.createClass({
       console.error('could not post vote to server:', err);
       self.setState({valsi: res.body, voted: true, loading: false});
     });
-  },
-  handleAddOptionActivate: function() {
+  }
+  handleAddOptionActivate() {
     this.setState({addButtonActive: true});
-  },
-  render: function() {
-    var spinner;
-    var valsi;
-    var addOptionButtonMarkup;
-    var chart;
+  }
+  render() {
+    let spinner;
+    let valsi;
     var noCenterClass = "";
     if (_.hasIn(this.state, 'valsi')) {
       valsi = this.state.valsi;
-      //console.log(JSON.stringify(valsi));
     }
-    // if(_.hasIn(this.state,'valsi.adza')){
-    //     adza = this.state.valsi.adza;
-    //     if(options.length < 9) {
-    //         addOptionButtonMarkup = <AddOptionButton handleAddNewOption={this.handleAddNewOption}
-    //                                                  active = {this.state.addButtonActive}
-    //                                                  clickHandle = {this.handleAddOptionActivate}
-    //                                                      buttonStyle={buttonStyle}/>
-    //     }
-    // }
     if (this.state.voted) {
-      chart = <Chart valsi={this.state.valsi}/>;
-      //adza = [];
-      addOptionButtonMarkup = null;
       noCenterClass = 'no-center';
     }
     if (this.state.loading) {
-      chart = null;
       spinner = <img src="/img/spinner.gif"></img>;
-      //adza = [];
       valsi = {};
-      addOptionButtonMarkup = null;
-      //console.log(this.state.twobuttons);
       this.state.twobuttons[0] = {
         "vote": "---",
         disabled: true
@@ -158,8 +118,8 @@ var Valsi = React.createClass({
         disabled: false
       };
     }
-    var self = this;
-    var user = AppStateStore.getUser();
+    const self = this;
+    const user = AppStateStore.getUser();
     const user_id = _.get(user, '_id');
     if (this.state.valsi && this.state.valsi.upvotes && this.state.valsi.upvotes.filter(i => i.user === user_id).length > 0) { //array
       console.log('already voted ' + user_id, this.state.valsi.upvotes);
@@ -199,20 +159,18 @@ var Valsi = React.createClass({
               </p>}
             {!valsi.terbri
               ? null
-              : <div className="formal-group">
+              : (<div className="formal-group">
                 <p key={`terbri`}>
-                  <InlineTex texContent=
-                  {valsi.terbri.map(function(o) {
-                    if (o.idx === 0 && o.sluji)
-                      return `\$\$${(o.sluji||'').replace(/ /g,'\~')}\$\$ `;
-                    if (!o.nirna)
-                      return;
-                    return `${o.nirna} (${o.klesi}) \$\$${(o.sluji||'').replace(/ /g,'\~')}\$\$ `;
-                    // <Tex texContent={'pi'}/>
-                  }).join(" ").trim()}
-                  />
+                  <InlineTex texContent= {
+                    valsi.terbri.map(
+                      function(o) {
+                        if (o.idx === 0 && o.sluji) return `\$\$${(o.sluji||'').replace(/ /g,'\~')}\$\$ `;
+                        if (!o.nirna) return;
+                        return `${o.nirna} (${o.klesi}) \$\$${(o.sluji||'').replace(/ /g,'\~')}\$\$ `;
+                      })}
+                      />
                 </p>
-              </div>}
+              </div>)}
             {self.state.twobuttons.map(function(item) {
               return <a href='#' id={item.vote} disabled={item.disabled} onClick={self.handleClick} className="btn btn-primary btn-xl page-scroll" key={item.vote}>{item.vote}</a>
             })}
@@ -223,5 +181,6 @@ var Valsi = React.createClass({
       </div>
     );
   }
-});
+}
+
 module.exports = Valsi;

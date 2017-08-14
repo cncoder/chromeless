@@ -10,14 +10,27 @@ var iconStyle = {
   margin: 10
 };
 
-var Login = React.createClass({
-  getInitialState: function() {
-    return ({username: '', password: '', flashVisible: false, flashMessage: ''});
-  },
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class Login extends BaseComponent {
+  constructor() {
+    super();
+    this._bind('handleSubmit', 'handleChange');
+    this.state = {
+      username: '',
+      password: '',
+      flashVisible: false,
+      flashMessage: ''
+    };
+  }
   componentDidMount() {
     document.title = "Login";
-  },
-  handleChange: function(e) {
+  }
+  handleChange(e) {
     switch (e.target.id) {
       case 'username':
         this.setState({username: e.target.value});
@@ -25,11 +38,9 @@ var Login = React.createClass({
       case 'password':
         this.setState({password: e.target.value});
         break;
-      default:
-        //do nothing
     }
-  },
-  handleSubmit: function(e) {
+  }
+  handleSubmit(e) {
     e.preventDefault();
     console.log('handleSubmit()');
     var self = this;
@@ -50,15 +61,15 @@ var Login = React.createClass({
         console.log('response from login post did not include the expected user: ', res.body);
       }
     });
-  },
-  flashMessage: function(msg) {
+  }
+  flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg});
     var self = this;
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
-  },
-  _formValidated: function() {
+  }
+  _formValidated() {
     var username = this.state.username;
     var password = this.state.password;
     if (username.length < 1)
@@ -66,8 +77,8 @@ var Login = React.createClass({
     if (password.length < 1)
       return false;
     return true;
-  },
-  render: function() {
+  }
+  render() {
     var buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
@@ -122,6 +133,6 @@ var Login = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Login;

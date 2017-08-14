@@ -4,24 +4,34 @@ import UserDefault from '../userdefault.jsx';
 import UserDefs from '../userdefs.jsx';
 import AppStateStore from '../../stores/AppStateStore';
 
-var Profile = React.createClass({
-  getInitialState: function() {
-    return ({showTable: false});
-  },
-  _flipView: function() {
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class Profile extends BaseComponent {
+  constructor() {
+    super();
+    this._bind('_flipView');
+    this.state = {
+      showTable: false
+    };
+  }
+  _flipView() {
     var showTable = this.state.showTable;
     this.setState({
       showTable: !showTable
     });
-  },
+  }
   componentWillMount() {
     const user = AppStateStore.getUser();
     this.setState({user: user});
-  },
+  }
   componentDidMount() {
     document.title = `${this.state.user.cmene || 'User'} - profile`;
-  },
-  render: function() {
+  }
+  render() {
     var content;
     var buttonText;
     const self = this;
@@ -49,6 +59,6 @@ var Profile = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Profile;

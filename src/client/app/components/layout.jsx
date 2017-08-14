@@ -5,25 +5,32 @@ import LoginPrompt from './modal_loginprompt.jsx';
 import BlankFieldsPrompt from './modal_blankfieldsprompt.jsx';
 import {Link} from 'react-router';
 
-var Application = React.createClass({
-  getInitialState: function() {
-    var state = AppStateStore.getAppState();
-    return (state);
-  },
-  componentWillMount: function() {
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class Application extends BaseComponent {
+  constructor() {
+    super();
+    this._bind('_onAppStateChange');
+    this.state = AppStateStore.getAppState();
+  }
+  componentWillMount() {
     checkAuthenticationAPI();
-  },
-  componentDidMount: function() {
+  }
+  componentDidMount() {
     AppStateStore.addChangeListener(this._onAppStateChange);
-  },
-  componentWillUnmount: function() {
+  }
+  componentWillUnmount() {
     AppStateStore.removeChangeListener(this._onAppStateChange);
-  },
-  _onAppStateChange: function() {
+  }
+  _onAppStateChange() {
     var state = AppStateStore.getAppState();
     this.setState(state);
-  },
-  render: function() {
+  }
+  render() {
     var navbar;
     const logo = <img src="/img/pelnimre1.svg" className="logo"></img>;
     if (this.state.authenticated) {
@@ -77,17 +84,16 @@ var Application = React.createClass({
             </div>
           </div>
         </div>
-
         <div className="header">
           <LoginPrompt/>
           <BlankFieldsPrompt/>
           <div className="header-inner-alma">
-          {this.props.children}
+            {this.props.children}
           </div>
         </div>
       </div>
     );
   }
-});
+}
 
 module.exports = Application;

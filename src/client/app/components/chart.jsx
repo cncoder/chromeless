@@ -1,8 +1,8 @@
 var React = require('react');
 import _ from 'lodash';
 
-var Chart = React.createClass({
-  componentDidMount: function() {
+class Chart extends React.Component {
+  componentDidMount() {
     var ChartJs = require('chart.js'); //including here because it won't run on server due to 'window' references
     var colors = [
       '#96ceb4',
@@ -53,8 +53,8 @@ var Chart = React.createClass({
         }
       }
     });
-  },
-  render: function() {
+  }
+  render() {
     return (
       <div className="chart-container">
         <canvas id="myChart" style={{
@@ -64,6 +64,6 @@ var Chart = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Chart;

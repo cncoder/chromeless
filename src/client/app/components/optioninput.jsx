@@ -3,14 +3,14 @@ import {Creatable} from 'react-select-plus';
 
 class OptionInput extends React.Component {
   render() {
-    var handleChange = this.props.handleChange;
-    var option = this.props.option;
+    const handleChange = this.props.handleChange;
+    const option = this.props.option;
     const klemei = this.props.klemei;
-    var idx = option.idx;
-    var sh = option.sluji_hint;
-    var sluji = option.sluji;
-    var terbri = this.props.terbri.slice(1);
-    var places = this.props.places;
+    const idx = option.idx;
+    const sh = option.sluji_hint;
+    const sluji = option.sluji;
+    const terbri = this.props.terbri.slice(1);
+    const places = this.props.places;
     if (option.idx === 0) {
       return (
         <div className="form-horizontal">
