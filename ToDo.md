@@ -37,6 +37,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 -- save only if all promises returned no-error
 -- on first save show popup that klesi will be added
 ** !items case
+* /finti on load add to klemei from stored_storage
+* /finti clear button
 * if predicate language then show terbri first, old terbri last. otherwise vice versa
 * 1. check latex, cmaxes, 2. check language 3. promise.all check all klesi.
 ** ok now fi all hecks are clean (no err) then we need to return something else

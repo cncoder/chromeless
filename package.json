@@ -39,7 +39,6 @@
     "ip-regex": "^2.1.0",
     "isemail": "^3.0.0",
     "latex-parser": "^0.3.6",
-    "local-storage": "^1.4.2",
     "lodash": "^4.13.1",
     "lodash.defaultsdeep": "^4.6.0",
     "lojban": "0.0.27",

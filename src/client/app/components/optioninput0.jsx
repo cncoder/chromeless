@@ -1,8 +1,8 @@
 var React = require('react');
 import {Creatable} from 'react-select-plus';
 
-class OptionInput extends React.Component {
-  render() {
+var OptionInput = React.createClass({
+  render: function() {
     var handleChange = this.props.handleChange;
     var option = this.props.option;
     const klemei = this.props.klemei;
@@ -47,6 +47,6 @@ class OptionInput extends React.Component {
       </div>
     );
   }
-}
+});
 
 module.exports = OptionInput;
