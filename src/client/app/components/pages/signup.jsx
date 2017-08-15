@@ -9,10 +9,17 @@ var iconStyle = {
   margin: 10
 };
 
-class Signup extends React.Component {
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class Signup extends BaseComponent {
   constructor() {
     super();
     this.state = {username: '', email: '', password: '', passwordConfirm: '', flashVisible: false, flashMessage: ''};
+    this._bind('handleSubmit', 'handleChange');
   }
   handleChange(e) {
     switch (e.target.id) {

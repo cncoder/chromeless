@@ -68,7 +68,7 @@ class BaseComponent extends React.Component {
 class Create extends BaseComponent {
   constructor() {
     super();
-    this._bind('handleSubmit', 'handleChange','addOption','removeOption');
+    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange');
     // this.handleSubmit = this.handleSubmit.bind(this);
     // this.handleChange = this.handleChange.bind(this);
     // this.addOption = this.addOption.bind(this);
@@ -235,7 +235,8 @@ class Create extends BaseComponent {
     const tcita_ = self.state.multiValue.map((o) => {
       return {tcita: o.value};
     });
-    request.post('api/finti/').send({forcedoverwrite: self.state.forcedoverwrite, bangu: self.state.bangu, tcita: JSON.stringify(tcita_), valsi: valsi, terbri: JSON.stringify(terbri_)}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    p(terbri_);
+    request.post('api/finti/').send({forcedoverwrite: self.state.forcedoverwrite, bangu: self.state.bangu, terfanva_: self.state.terfanva, tcita: JSON.stringify(tcita_), valsi: valsi, terbri: JSON.stringify(terbri_)}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault});
       if (res.body.err) {
         self.flashMessage(res.body.err);

@@ -34,7 +34,7 @@ function emitChange() {
   AppStateStore.emit(CHANGE_EVENT);
 }
 
-var AppStateStore = assign({}, EventEmitter.prototype, {
+const AppStateStore = assign({}, EventEmitter.prototype, {
   addChangeListener: function(callback) {
     this.on(CHANGE_EVENT, callback);
   },

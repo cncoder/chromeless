@@ -1,5 +1,4 @@
 var React = require('react');
-var createReactClass = require('create-react-class');
 import request from 'superagent';
 import _ from 'lodash';
 import {getAuthenticated} from '../../stores/AppStateStore';

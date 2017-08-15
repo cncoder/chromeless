@@ -19,7 +19,7 @@ class BaseComponent extends React.Component {
 class Login extends BaseComponent {
   constructor() {
     super();
-    this._bind('handleSubmit', 'handleChange');
+    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated');
     this.state = {
       username: '',
       password: '',

@@ -37,6 +37,7 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 -- save only if all promises returned no-error
 -- on first save show popup that klesi will be added
 ** !items case
+* maybe valsi saved even if returned null.id
 * /finti on load add to klemei from stored_storage
 * /finti clear button
 * if predicate language then show terbri first, old terbri last. otherwise vice versa
@@ -118,7 +119,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * don't show stats in selected Klesi
 * integrate https://github.com/Hashnode/mern-starter
 * flashcards https://github.com/atlassian/react-beautiful-dnd
-
+* upgrade react router to https://ebaytech.berlin/universal-web-apps-with-react-router-4-15002bb30ccb https://stackoverflow.com/questions/42797543/whats-wrong-with-this-reactrouter-match-implementation/42798535#42798535
+* deleting tags, smuvelcki, klesi, user results in "disabled" for this record
 //{_id: {$in: [req.body.data]}
 
 ----

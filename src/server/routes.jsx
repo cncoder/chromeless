@@ -93,6 +93,12 @@ var routes = function(app, passport) {
       let sum = [];
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
+        if(!item){
+          return {
+            item: null,
+            err: `parameter ${thetwo[i]._id} not found`
+          };
+        }
         let candidate = {
           item: item,
           info: 'ok'
@@ -154,6 +160,7 @@ var routes = function(app, passport) {
       }
       return Promise.all(prs);
     }).then(function(items) {
+      p(items);
       //todo: !items case
       if (items[0] && items[0].err) {
         const promisified_err_item = new Promise((resolve, reject) => {
@@ -279,7 +286,6 @@ var routes = function(app, passport) {
       prs.push(valsipromise);
       return Promise.all(prs);
     }).then(function(items) {
-      p(items);
       if (items[0].err||items[0].kunti) {
         return res.send(items[0]);
       }
@@ -358,7 +364,6 @@ var routes = function(app, passport) {
               pass: process.env.email_password
             }
           });
-
           const mailOptions = {
             from: `"Almavlaste ⇒ ${cmene}" <lengua.de.laguna@gmail.com>`,
             to: target_email,
@@ -373,7 +378,6 @@ var routes = function(app, passport) {
               console.log('Email sent: ' + info.response);
             }
           });
-          //res.send(user);
           return res.send({sentemail: 'maybe sent something'});
         });
       });

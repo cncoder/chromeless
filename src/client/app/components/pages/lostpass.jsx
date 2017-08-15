@@ -9,8 +9,13 @@ var iconStyle = {
   fontSize: 52,
   margin: 10
 };
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
 
-class LostPass extends React.Component {
+class LostPass extends BaseComponent {
   constructor() {
     super();
     this.state = {
@@ -18,6 +23,7 @@ class LostPass extends React.Component {
       message: `Currently you can't choose a new password. Instead we can only generate a new password for you ourselves. Passwords for your account can be sent not more often than once every 24 hours.`,
       backtologin: false
     };
+    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated');
   }
   componentDidMount() {
     document.title = "Restore password";
@@ -26,6 +32,15 @@ class LostPass extends React.Component {
     if (e.target.id === 'email') {
       this.setState({userdatum: e.target.value});
     }
+  }
+  flashMessage(msg, persistent) {
+    this.setState({flashVisible: true, flashMessage: msg});
+    var self = this;
+    if (persistent)
+      return;
+    setTimeout(function() {
+      self.setState({flashVisible: false, flashMessage: ''});
+    }, 3000);
   }
   handleSubmit(e) {
     e.preventDefault();
@@ -39,21 +54,11 @@ class LostPass extends React.Component {
           console.error('there was an error submitting form');
         }
       } else if (res.body.sentemail) {
-        self.setState({message: `Once the nickname or email is in the database and more than 24 hours passed since the previous request (if any) you will get a message with a new password in your e-mail inbox.`, backtologin: true});
-        //setUser(res.body.user);
-        //setAuthenticated(true);
-        //browserHistory.push('/profile');
+        self.flashMessage(`Once the nickname or email is in the database and more than 24 hours passed since the previous request (if any) you will get a message with a new password in your e-mail inbox.`,true);
       } else {
         console.log('unknown error');
       }
     });
-  }
-  flashMessage(msg) {
-    this.setState({flashVisible: true, flashMessage: msg});
-    var self = this;
-    setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: ''});
-    }, 3000);
   }
   _formValidated() {
     var userdatum = this.state.userdatum;
@@ -76,7 +81,6 @@ class LostPass extends React.Component {
             <form className="form-horizontal" onChange={this.handleChange} onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <p style={{
-                  marginBottom: 30,
                   textAlign: 'justify'
                 }}>{this.state.message}</p>
                 {!this.state.backtologin
@@ -84,7 +88,7 @@ class LostPass extends React.Component {
                   : <div>
                     <Link to="/login">Back to login</Link>
                   </div>}
-                <div className="col-sm-10">
+                <div className="col-sm-12">
                   <input type="text" className="form-control" id="email" value={this.state.userdatum} placeholder="nickname or email"/>
                 </div>
               </div>
