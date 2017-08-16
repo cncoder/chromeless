@@ -1,7 +1,7 @@
-var React = require('react');
+const React = require('react');
 import {Link} from 'react-router';
 
-var textStyle = {
+const textStyle = {
   color: '#333'
 }
 

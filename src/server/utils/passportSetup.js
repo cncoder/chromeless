@@ -1,10 +1,9 @@
-var FacebookStrategy = require('passport-facebook').Strategy;
-var TwitterStrategy = require('passport-twitter').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/users');
-
-var passportSetup = function(passport) {
+const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('../models/users');
+const passportSetup = function(passport) {
 
   // Configure facebook strategy
   passport.use(new FacebookStrategy({
@@ -12,10 +11,10 @@ var passportSetup = function(passport) {
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: process.env.FACEBOOK_CALLBACK_URL
   }, function(accessToken, refreshToken, profile, done) {
-    var userSearch = {
+    const userSearch = {
       "facebook.id": String(profile.id)
     };
-    var userUpdate = {
+    const userUpdate = {
       "facebook.displayName": String(profile.displayName),
       "cmene": String(profile.displayName),
       "login_type": "Facebook"
@@ -34,10 +33,10 @@ var passportSetup = function(passport) {
     callbackURL: process.env.TWITTER_CALLBACK_URL
   }, function(token, tokenSecret, profile, done) {
     console.log('in twitter callback');
-    var userSearch = {
+    const userSearch = {
       "twitter.id": String(profile.id)
     };
-    var userUpdate = {
+    const userUpdate = {
       "twitter.displayName": String(profile.displayName),
       "cmene": String(profile.displayName),
       "login_type": "Twitter"
@@ -56,10 +55,10 @@ var passportSetup = function(passport) {
     callbackURL: process.env.GOOGLE_CALLBACK_URL
   }, function(token, tokenSecret, profile, done) {
     console.log('in google callback');
-    var userSearch = {
+    const userSearch = {
       "google.id": String(profile.id)
     };
-    var userUpdate = {
+    const userUpdate = {
       "google.displayName": String(profile.displayName),
       "cmene": String(profile.displayName),
       "login_type": "Google"
@@ -104,7 +103,7 @@ var passportSetup = function(passport) {
       if (user) {
         return done(null, false, {message: "nickname or email already registered"}); //username already exists
       } else {
-        var newUser = new User();
+        const newUser = new User();
         // set the user's local credentials
         newUser.local.username = pilno.cmene;
         newUser.local.email = pilno.email;

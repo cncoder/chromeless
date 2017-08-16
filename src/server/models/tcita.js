@@ -1,10 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var findOrCreate = require('mongoose-findorcreate');
-
-var Tcita = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const findOrCreate = require('mongoose-findorcreate');
+const Tcita = new Schema({
   tcita: String,
   freq: Number,
   disabled: Boolean,

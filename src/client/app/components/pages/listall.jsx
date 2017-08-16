@@ -1,5 +1,4 @@
-var React = require('react');
-import _ from 'lodash';
+const React = require('react');
 import request from 'superagent';
 import {getAllDefs, getDefById} from '../../utils/utils';
 import {Link} from 'react-router';
@@ -13,11 +12,10 @@ class ListAll extends React.Component {
     this.state = {vlamei: []};
   }
   componentWillMount() {
-    var self = this;
+    const self = this;
     getAllDefs(function(err, vlamei) {
       self.setState({vlamei: vlamei});
     });
-    //this.getAllDefs();
   }
   componentDidMount() {
     document.title = "All definitions";

@@ -1,11 +1,11 @@
-var React = require('react');
+const React = require('react');
 import {Link} from 'react-router';
 import request from 'superagent';
 import {browserHistory} from 'react-router';
 import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
 import FlashMessage from '../flashmessage.jsx';
 
-var iconStyle = {
+const iconStyle = {
   fontSize: 52,
   margin: 10
 };
@@ -43,7 +43,7 @@ class Login extends BaseComponent {
   handleSubmit(e) {
     e.preventDefault();
     console.log('handleSubmit()');
-    var self = this;
+    const self = this;
     request.post('/api/login').send({username: this.state.username, password: this.state.password}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
@@ -64,14 +64,14 @@ class Login extends BaseComponent {
   }
   flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg});
-    var self = this;
+    const self = this;
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
   }
   _formValidated() {
-    var username = this.state.username;
-    var password = this.state.password;
+    const username = this.state.username;
+    const password = this.state.password;
     if (username.length < 1)
       return false;
     if (password.length < 1)
@@ -79,7 +79,7 @@ class Login extends BaseComponent {
     return true;
   }
   render() {
-    var buttonClass = '';
+    let buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
     }

@@ -1,4 +1,4 @@
-var React = require('react');
+const React = require('react');
 import UserTable from '../usertable.jsx';
 import UserDefault from '../userdefault.jsx';
 import UserDefs from '../userdefs.jsx';
@@ -19,7 +19,7 @@ class Profile extends BaseComponent {
     };
   }
   _flipView() {
-    var showTable = this.state.showTable;
+    const showTable = this.state.showTable;
     this.setState({
       showTable: !showTable
     });
@@ -32,17 +32,16 @@ class Profile extends BaseComponent {
     document.title = `${this.state.user.cmene || 'User'} - profile`;
   }
   render() {
-    var content;
-    var buttonText;
+    let content;
+    let buttonText;
     const self = this;
-    var userDefs = AppStateStore.getUserDefs() || [];
+    const userDefs = AppStateStore.getUserDefs() || [];
     if (this.state.showTable) {
       content = <UserTable user={self.state.user}/>;
       buttonText = 'less detailed view';
     } else {
       content = <UserDefault/>;
       buttonText = 'more detailed view';
-
     }
     return (
       <div className="header-content no-center">

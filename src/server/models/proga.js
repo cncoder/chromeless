@@ -1,10 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var random = require('mongoose-simple-random');
-
-var Proga = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const random = require('mongoose-simple-random');
+const Proga = new Schema({
   uenzi: String, //id of String, same across languages
   xefanva_pinka: String, //text, comment to the string
   vefanva: String,//id of language of the translation

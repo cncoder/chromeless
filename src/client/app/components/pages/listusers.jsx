@@ -1,5 +1,5 @@
-var React = require('react');
-import _ from 'lodash';
+const React = require('react');
+import {path} from 'ramda';
 import request from 'superagent';
 import {getAllUsers} from '../../utils/utils';
 import {Link} from 'react-router';
@@ -15,7 +15,7 @@ class ListUsers extends React.Component {
     };
   }
   componentWillMount() {
-    var self = this;
+    const self = this;
     getAllUsers(function(err, plimei) {
       self.setState({plimei: plimei});
     });
@@ -24,19 +24,19 @@ class ListUsers extends React.Component {
     document.title = `All users - la almavlaste`;
   }
   handleClick(e) {
-    var option_id = e.target.id;
-    var disabled = e.target.disabled;
+    const option_id = e.target.id;
+    const disabled = e.target.disabled;
     if (disabled)
       return;
     if (option_id !== 'plus') {
       return;
     }
-    var self = this;
+    const self = this;
     //this.setState({loading: true});
-    var user = AppStateStore.getUser();
+    const user = AppStateStore.getUser();
     request.post('/api/valsi/' + this.state.valsi._id).send({
       option_id: option_id,
-      user: _.get(user, '_id')
+      user: path(['_id'], user)
     }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err)
         return
@@ -53,9 +53,9 @@ class ListUsers extends React.Component {
       document.getElementById('openBlankFieldsPrompt').click();
       return;
     }
-    var option_id = "new";
-    var option_text = text;
-    var self = this;
+    const option_id = "new";
+    const option_text = text;
+    const self = this;
     request.post('/api/valsi/' + this.state.valsi._id).send({option_id: option_id, option_text: option_text}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err)
         return

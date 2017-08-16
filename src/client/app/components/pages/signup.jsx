@@ -1,10 +1,10 @@
-var React = require('react');
+const React = require('react');
 import request from 'superagent';
 import {browserHistory} from 'react-router';
 import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
 import FlashMessage from '../flashmessage.jsx';
 
-var iconStyle = {
+const iconStyle = {
   fontSize: 52,
   margin: 10
 };
@@ -51,7 +51,7 @@ class Signup extends BaseComponent {
     e.preventDefault();
     if (!this._formValidated())
       return; //if not validated, don't submit form
-    var self = this;
+    const self = this;
     const userdata = JSON.stringify({cmene: this.state.username, email: this.state.email});
     request.post('/api/signup').send({username: userdata, password: this.state.password}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       //console.log(JSON.stringify(res.message));
@@ -77,15 +77,15 @@ class Signup extends BaseComponent {
   }
   flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg});
-    var self = this;
+    const self = this;
     setTimeout(function() {
       self.setState({flashVisible: false, flashMessage: ''});
     }, 3000);
   }
   _formValidated() {
-    var username = this.state.username;
-    var password = this.state.password;
-    var passwordConfirm = this.state.passwordConfirm;
+    const username = this.state.username;
+    const password = this.state.password;
+    const passwordConfirm = this.state.passwordConfirm;
     if (username.length < 1)
       return false;
     if (password.length < 1)
@@ -95,7 +95,7 @@ class Signup extends BaseComponent {
     return true;
   }
   render() {
-    var buttonClass = '';
+    let buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
     }

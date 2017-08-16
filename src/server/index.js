@@ -5,4 +5,4 @@ require('css-modules-require-hook')({
 });
 
 require("babel-register");
-var app = require('./app');
+const app = require('./app');

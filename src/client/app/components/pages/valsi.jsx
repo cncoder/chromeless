@@ -1,5 +1,5 @@
-var React = require('react');
-import _ from 'lodash';
+const React = require('react');
+import {path} from 'ramda';
 import request from 'superagent';
 import {getRandomDef, getDefById, getUserById} from '../../utils/utils';
 import {Link} from 'react-router';
@@ -20,7 +20,9 @@ class Valsi extends React.Component {
   }
   getFinti() {
     const self = this;
-    if (_.hasIn(self.state, 'valsi.finti')) {
+    if (path([
+      'valsi', 'finti'
+    ], self.state)) {
       getUserById(self.state.valsi.finti, function(err, pilno) {
         if (err) {
           console.error('could not get a finti from database:', err);
@@ -59,8 +61,8 @@ class Valsi extends React.Component {
       }).join(" ").trim();
     }
     const user = AppStateStore.getUser();
-    const user_id = _.get(user, '_id');
-    let finti=null;
+    const user_id = path(['_id'], user);
+    let finti = null;
     if (!this.state.finti) {
       this.getFinti();
     } else {

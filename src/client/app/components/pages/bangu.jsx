@@ -1,6 +1,6 @@
-var React = require('react');
+const React = require('react');
 import {getBanguById} from '../../utils/utils';
-import _ from 'lodash';
+import {path} from 'ramda';
 
 class Bangu extends React.Component {
   constructor() {
@@ -13,8 +13,8 @@ class Bangu extends React.Component {
     this.getBangu();
   }
   getBangu(flag) {
-    var self = this;
-    if (_.hasIn(this.props, 'params.id')) {
+    const self = this;
+    if (path(['params','id'],this.props)) {
       getBanguById(self.props.params.id, function(err, bangu) {
         if (err) {
           console.error('could not get a bangu from database:', err);
@@ -25,9 +25,10 @@ class Bangu extends React.Component {
     }
   }
   render() {
-    var content;
-    var self = this;
+    let content;
+    const self = this;
     if (this.state.bangu) {
+      console.log(this.state.bangu);
       content = <p>{self.state.bangu.krasi_cmene}</p>;
     } else {
       content = null;

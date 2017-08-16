@@ -1,6 +1,5 @@
-var React = require('react');
+const React = require('react');
 import request from 'superagent';
-import _ from 'lodash';
 import {getAuthenticated} from '../../stores/AppStateStore';
 import {browserHistory} from 'react-router';
 import {Link} from 'react-router';
@@ -9,7 +8,13 @@ function findKey(obj, value) {
   return Object.keys(obj).filter(i => obj[i].idx === value)[0];
 }
 
-class JBangu extends React.Component {
+class BaseComponent extends React.Component {
+  _bind(...methods) {
+    methods.forEach((method) => this[method] = this[method].bind(this));
+  }
+}
+
+class JBangu extends BaseComponent {
   constructor() {
     super();
     this.state = {
@@ -19,12 +24,10 @@ class JBangu extends React.Component {
       info: null,
       Bangu: null
     };
+    this._bind('handleSubmit', 'handleChange', '_validateForm');
   }
   componentDidMount() {
     document.title = `Add language`;
-  }
-  handleChangeOfTags(k) {
-    this.setState({tcita: k});
   }
   handleChange(e) {
     if (!e.target)
@@ -61,13 +64,13 @@ class JBangu extends React.Component {
     });
   }
   _validateForm() {
-    var validated = true;
+    let validated = true;
     if (this.state.krasi_cmene.length < 1)
       validated = false;
     return validated;
   }
   render() {
-    var self = this;
+    const self = this;
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">

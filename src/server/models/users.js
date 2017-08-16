@@ -1,11 +1,10 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var findOrCreate = require('mongoose-findorcreate');
-var bcrypt = require('bcrypt-nodejs');
-var Schema = mongoose.Schema;
-
-var userSchema = new Schema({
+const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-findorcreate');
+const bcrypt = require('bcrypt-nodejs');
+const Schema = mongoose.Schema;
+const userSchema = new Schema({
   cmene: String,
   login_type: String,
   local: {

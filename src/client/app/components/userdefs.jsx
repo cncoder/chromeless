@@ -1,10 +1,10 @@
-var React = require('react');
+const React = require('react');
 import AppStateStore from '../stores/AppStateStore';
 import {Link} from 'react-router';
 
 class UserDefs extends React.Component {
   render() {
-    var userDefs = this.props.userDefs || [];
+    const userDefs = this.props.userDefs || [];
     const defstitle = this.props.text || 'Your Defs:';
     return (
       <div>

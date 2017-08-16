@@ -1,16 +1,15 @@
-var React = require('react');
+const React = require('react');
 import request from 'superagent';
-import _ from 'lodash';
+const localStorage = require('web-storage')().localStorage;
+import {getAuthenticated} from '../../stores/AppStateStore';
+import {getAllBangu, getAllKlesi} from '../../utils/utils';
+import {browserHistory} from 'react-router';
 import {Link} from 'react-router';
 import Select from 'react-select-plus';
 import {Creatable} from 'react-select-plus';
 import OptionInput from '../optioninput.jsx';
 import FlashMessage from '../flashmessage.jsx';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import {browserHistory} from 'react-router';
-import {getAllBangu, getAllKlesi} from '../../utils/utils';
 import 'react-select-plus/dist/react-select-plus.css';
-const localStorage = require('web-storage')().localStorage;
 const p = (a) => console.log(JSON.stringify(a));
 
 const init_state = {
@@ -147,9 +146,9 @@ class Create extends BaseComponent {
     e.preventDefault();
     if (this.state.terbri.length <= 1)
       return; //make disabled
-    var terbri = this.state.terbri;
+    let terbri = this.state.terbri;
     terbri.pop();
-    var places = this.state.places;
+    let places = this.state.places;
     places.pop();
     this.setState({terbri: terbri, places: places});
   }
@@ -158,7 +157,7 @@ class Create extends BaseComponent {
   }
   flashMessage(msg, persistent) {
     this.setState({flashVisible: true, flashMessage: msg});
-    var self = this;
+    const self = this;
     if (persistent)
       return;
     setTimeout(function() {
@@ -235,8 +234,7 @@ class Create extends BaseComponent {
     const tcita_ = self.state.multiValue.map((o) => {
       return {tcita: o.value};
     });
-    p(terbri_);
-    request.post('api/finti/').send({forcedoverwrite: self.state.forcedoverwrite, bangu: self.state.bangu, terfanva_: self.state.terfanva, tcita: JSON.stringify(tcita_), valsi: valsi, terbri: JSON.stringify(terbri_)}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('api/finti/').send({forcedoverwrite: self.state.forcedoverwrite, bangu: self.state.bangu, terfanva: self.state.terfanva, tcita: JSON.stringify(tcita_), valsi: valsi, terbri: JSON.stringify(terbri_)}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault});
       if (res.body.err) {
         self.flashMessage(res.body.err);
@@ -256,47 +254,32 @@ class Create extends BaseComponent {
     });
   }
   _validateForm() {
-    var validated = true;
+    let validated = true;
     if (this.state.valsi.length < 1)
       validated = false;
-
-    // _.forEach(this.state.terbri, function(option) {
-    //   if (option.value.length < 1) {
-    //     validated = false;
-    //   }
-    // });
     return validated;
   }
   arrowRenderer(a) {
-    //→←
     return (
       <span>{a}</span>
     );
   }
   render() {
-    var removeButtonClass = 'enabled';
+    let removeButtonClass = 'enabled';
     if (this.state.terbri.length < 1) {
       removeButtonClass = 'disabled';
     }
-    var terbri = this.state.terbri;
-    var self = this;
+    const terbri = this.state.terbri;
+    const self = this;
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
           <div className="Create-container">
-
             <button style={{
               display: 'none'
             }} id="openBlankFieldsPrompt" data-toggle="modal" data-target="#blankFieldsPrompt">
               Invisible Blank Fields Prompt
             </button>
-
-            {/*<button style={{
-              display: 'none'
-            }} id="openLoginPrompt" data-toggle="modal" data-target="#loginPrompt">
-              Invisible Launch Login Prompt
-            </button>*/}
-
             <h1>Add a definition</h1>
             <div className="form-horizontal">
               <div className="form-group">

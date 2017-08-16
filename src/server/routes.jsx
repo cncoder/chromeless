@@ -2,15 +2,15 @@ import React from 'react'
 import {renderToString} from 'react-dom/server'
 import {match, RouterContext} from 'react-router'
 import reactRoutes from '../client/app/routes.jsx';
-var path = require('path');
-var _ = require('lodash');
+const path_ = require('path');
+import {path} from 'ramda';
 const Lojban = require('lojban');
-var Comment = require('./models/comments');
-var Valsi = require('./models/valsi');
-var Klesi = require('./models/klesi');
-var Sentence = require('./models/mupli');
-var Language = require('./models/languages');
-var User = require('./models/users');
+const Comment = require('./models/comments');
+const Valsi = require('./models/valsi');
+const Klesi = require('./models/klesi');
+const Sentence = require('./models/mupli');
+const Language = require('./models/languages');
+const User = require('./models/users');
 import {latexParser} from "latex-parser";
 
 const p = (a) => console.log(JSON.stringify(a, null, 2));
@@ -52,12 +52,12 @@ function GetOptimizedTerbri(arrterbri) {
   }
   return terbri;
 }
-var routes = function(app, passport) {
+const routes = function(app, passport) {
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
     } else {
-      var output = {
+      const output = {
         err: 'user is not authenticated'
       };
       res.status(401).send(output);
@@ -73,9 +73,15 @@ var routes = function(app, passport) {
  */
 
   app.route('/api/finti').post(isLoggedIn, function(req, res) {
-    const forced = req.body.forcedoverwrite=='true' || false;
+    const forced = req.body.forcedoverwrite == 'true' || false;
     // 0. simply bad request
-    if (!_.hasIn(req, 'body.valsi') || !_.hasIn(req, 'body.terbri') || !_.hasIn(req, 'body.bangu')) {
+    if (!path([
+      'body', 'valsi'
+    ], req) || !path([
+      'body', 'terbri'
+    ], req) || !path([
+      'body', 'bangu'
+    ], req)) {
       return res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'});
     }
     // 1. check latex, prepare for 4.
@@ -93,11 +99,8 @@ var routes = function(app, passport) {
       let sum = [];
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        if(!item){
-          return {
-            item: null,
-            err: `parameter ${thetwo[i]._id} not found`
-          };
+        if (!item) {
+          return {item: null, err: `parameter ${thetwo[i]._id} not found`};
         }
         let candidate = {
           item: item,
@@ -286,7 +289,7 @@ var routes = function(app, passport) {
       prs.push(valsipromise);
       return Promise.all(prs);
     }).then(function(items) {
-      if (items[0].err||items[0].kunti) {
+      if (items[0].err || items[0].kunti) {
         return res.send(items[0]);
       }
       const valsi_item = items.filter(i => i.type === 'valsi');
@@ -299,7 +302,9 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/jmina_lebangu').post(isLoggedIn, function(req, res) {
-    if (_.hasIn(req, 'body.krasi_cmene')) {
+    if (path([
+      'body', 'krasi_cmene'
+    ], req)) {
       const krasi_cmene = req.body.krasi_cmene;
       const bridi = req.body.bridi;
       Language.findOne({
@@ -328,7 +333,9 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/restorepass').post(function(req, res) {
-    if (_.hasIn(req, 'body.userdatum')) {
+    if (path([
+      'body', 'userdatum'
+    ], req)) {
       const nameoremail = req.body.userdatum;
       //our new password
       const generator = require('generate-password');
@@ -395,7 +402,7 @@ var routes = function(app, passport) {
         return res.status(400).send({err: err.message});
       if (!vlamei)
         return res.send({err: `can't search in defs for a given user ${user_id}}`});
-      var newDef = vlamei.map(i => {
+      const newDef = vlamei.map(i => {
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
       res.send(newDef);
@@ -408,7 +415,7 @@ var routes = function(app, passport) {
         return res.status(400).send({err: err.message});
       if (!vlamei || vlamei.length === 0)
         return res.send({err: "empty Valsi database"});
-      var newDef = vlamei.map(i => {
+      const newDef = vlamei.map(i => {
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
       res.send(newDef);
@@ -455,23 +462,19 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/pilno/:id').get(function(req, res) {
-    var id = req.params.id;
+    const id = req.params.id;
     User.findById(id, function(err, user) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!user)
         return res.status(400).send({err: 'user not found'});
       user.local.password = undefined;
-      // var FoundUser = {
-      //   _id: user._id,
-      //   cmene: user.local.username
-      // };
       res.send(user);
     });
   });
 
   app.route('/api/bangu/:id').get(function(req, res) {
-    var id = req.params.id;
+    const id = req.params.id;
     Language.findById(id, function(err, bangu) {
       if (err)
         return res.status(400).send({err: err.message});
@@ -482,13 +485,13 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/valsibyname/:valsi').get(function(req, res) {
-    var valsi = req.params.valsi;
+    const valsi = req.params.valsi;
     Valsi.find({valsi: valsi}).populate('finti').exec(function(err, valsi) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!valsi || valsi.length === 0)
         return res.status(400).send({err: 'valsi not found'});
-      var newDef = valsi.map(i => {
+      const newDef = valsi.map(i => {
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
       res.send(newDef);
@@ -496,13 +499,13 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/valsi/:id').get(function(req, res) {
-    var id = req.params.id;
+    const id = req.params.id;
     Valsi.findById(id, function(err, valsi) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!valsi)
         return res.status(400).send({err: 'valsi not found'});
-      var newDef = {
+      const newDef = {
         _id: valsi._id,
         valsi: valsi.valsi,
         terbri: valsi.terbri,
@@ -516,13 +519,15 @@ var routes = function(app, passport) {
             * @body.option_id -> 'new', then a new option will be created
             * @body.option_text -> string of text if you are requesting a new option
              */
-    if (!_.hasIn(req, 'body.option_id')) {
+    if (!path([
+      'body', 'option_id'
+    ], req)) {
       res.status(400).send({err: 'invalid body, did not find body.option_id or body._id'});
       return console.error('invalid body in post to /api/Valsi/:id', req);
     }
-    var def_id = req.params.id;
-    var option_id = req.body.option_id;
-    var user_id = req.body.user;
+    const def_id = req.params.id;
+    const option_id = req.body.option_id;
+    const user_id = req.body.user;
     User.findById(user_id, function(err, user) {
       if (err) {
         return console.error('user not found: ' + user_id);
@@ -538,17 +543,18 @@ var routes = function(app, passport) {
           res.status(401).send({err: 'you must be authenticated to add an option!'});
           return console.error('unauthenticated request to add option to Valsi', req);
         }
-        if (!_.hasIn(req, 'body.option_text')) {
+        if (!path([
+          'body', 'option_text'
+        ], req)) {
           res.status(400).send({err: 'new option was requested, but could not find body.option_text'});
           return console.error('invalid body in post to /api/Valsi/:id', req);
         }
-        var option_text = req.body.option_text;
-        var new_option = {
+        const option_text = req.body.option_text;
+        const new_option = {
           adza: option_text,
           votes: 1
         };
         Valsi.options.push(new_option);
-
       } else if (option_id === 'plus') {
         //adding upvote to the array of Valsi's upvotes
         if (Valsi.upvotes.filter(i => i.user === user_id).length > 0) { //array
@@ -567,16 +573,18 @@ var routes = function(app, passport) {
   });
 
   app.route('/api/login').get(isLoggedIn, function(req, res) {
-    var output = {
+    const output = {
       user: req.user.toObject()
     };
-    if (_.hasIn(output, 'user.local')) {
+    if (path([
+      'user', 'local'
+    ], req)) {
       output.user.local.password = '********'; //don't send password to client
     }
     res.send(output);
   }).post(passport.authenticate('local-login'), function(req, res) {
     //successfully signed up, if authentication failed client will get 401 error
-    var output = {
+    const output = {
       user: req.user.toObject()
     };
     output.user.local.password = '********'; //don't send password to client
@@ -590,13 +598,15 @@ var routes = function(app, passport) {
 
   app.route('/api/signup').post((req, res) => passport.authenticate('local-signup', function(err, user, info) {
     //successfully signed up, if authentication failed client will get 404 error
-    var output = {
+    const output = {
       user, //: req.user.toObject(),
       message: info
         ? info.message
         : undefined
     };
-    if (_.hasIn(user, 'local.password'))
+    if (path([
+      'local', 'password'
+    ], req))
       output.user.local.password = '********'; //don't send password to client
     res.send(output);
   })(req, res));
@@ -652,10 +662,10 @@ var routes = function(app, passport) {
       } else if (props) {
         // if we got props then we matched a route and can render
         const ReactMarkup = renderToString(<RouterContext {...props}/>)
-        var authenticated = false;
+        let authenticated = false;
         if (req.user)
           authenticated = true;
-        res.render(path.resolve('src/client/public/index.hbs'), {
+        res.render(path_.resolve('src/client/public/index.hbs'), {
           ReactMarkup: ReactMarkup,
           __AUTHENTICATED__: authenticated
         });
@@ -667,12 +677,11 @@ var routes = function(app, passport) {
   });
   /*
     app.use(function(req, res){
-        var authenticated = false;
+        let authenticated = false;
         if(req.user) authenticated = true;
-        res.render(path.resolve('src/client/public/index.hbs'),{__AUTHENTICATED__:authenticated});
+        res.render(path_.resolve('src/client/public/index.hbs'),{__AUTHENTICATED__:authenticated});
     });
     */
-
 };
 
 module.exports = routes;

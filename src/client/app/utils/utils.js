@@ -2,7 +2,7 @@ import request from 'superagent';
 import {setUser, setAuthenticated} from '../actions/AppStateActionCreators.js';
 import {getAuthenticated} from '../stores/AppStateStore';
 
-var checkAuthenticationAPI = function() {
+const checkAuthenticationAPI = function() {
   request.get('/api/login').end(function(err, res) {
     if (err)
       return console.warn(err);
@@ -16,7 +16,7 @@ var checkAuthenticationAPI = function() {
   });
 };
 
-var checkAuthenticationLocal = function(nextState, replace) {
+const checkAuthenticationLocal = function(nextState, replace) {
   console.log('checking authentication');
   if (!getAuthenticated()) {
     replace({
@@ -28,7 +28,7 @@ var checkAuthenticationLocal = function(nextState, replace) {
   }
 };
 
-var getRandomDef = function(cb) {
+const getRandomDef = function(cb) {
   console.log('getting random word');
   request.get('/api/valsi/random').end(function(err, res) {
     if (err)
@@ -38,7 +38,7 @@ var getRandomDef = function(cb) {
   });
 };
 
-var getAllUsers = function(cb) {
+const getAllUsers = function(cb) {
   console.log('getting all users');
   request.get('/api/listusers').end(function(err, res) {
     if (err)
@@ -49,7 +49,7 @@ var getAllUsers = function(cb) {
   });
 };
 
-var getAllBangu = function(cb) {
+const getAllBangu = function(cb) {
   console.log('getting all bangu');
   request.get('/api/banmei').end(function(err, res) {
     if (err)
@@ -58,7 +58,7 @@ var getAllBangu = function(cb) {
   });
 };
 
-var getAllKlesi = function(cb) {
+const getAllKlesi = function(cb) {
   console.log('getting all klesi');
   request.get('/api/klemei').end(function(err, res) {
     if (err)
@@ -67,7 +67,7 @@ var getAllKlesi = function(cb) {
   });
 };
 
-var getAllDefs = function(cb) {
+const getAllDefs = function(cb) {
   console.log('getting all vlamei');
   request.get('/api/listall').end(function(err, res) {
     if (err)
@@ -78,7 +78,7 @@ var getAllDefs = function(cb) {
   });
 };
 
-var getDefsFromUserId = function(id, cb) {
+const getDefsFromUserId = function(id, cb) {
   console.log('getting all vlamei from id');
   request.get('/api/getalldefs/' + id).end(function(err, res) {
     if (err)
@@ -87,7 +87,7 @@ var getDefsFromUserId = function(id, cb) {
   });
 };
 
-var getDefById = function(id, cb) {
+const getDefById = function(id, cb) {
   console.log('getDefById:', id);
   request.get('/api/valsi/' + id).end(function(err, res) {
     if (err)
@@ -97,7 +97,7 @@ var getDefById = function(id, cb) {
   });
 };
 
-var getDefByName = function(valsi, cb) {
+const getDefByName = function(valsi, cb) {
   console.log('getDefByName:', valsi);
   request.get('/api/valsibyname/' + valsi).end(function(err, res) {
     if (err)
@@ -107,7 +107,7 @@ var getDefByName = function(valsi, cb) {
   });
 };
 
-var getUserById = function(id, cb) {
+const getUserById = function(id, cb) {
   console.log('getUserById:', id);
   request.get('/api/pilno/' + id).end(function(err, res) {
     if (err)
@@ -116,7 +116,7 @@ var getUserById = function(id, cb) {
     return cb(null, res.body);
   });
 }
-var getBanguById = function(id, cb) {
+const getBanguById = function(id, cb) {
   console.log('getBanguById:', id);
   request.get('/api/bangu/' + id).end(function(err, res) {
     if (err)
@@ -126,7 +126,7 @@ var getBanguById = function(id, cb) {
   });
 }
 
-var echo = function(msg) {
+const echo = function(msg) {
   console.log('echo():', msg);
 }
 

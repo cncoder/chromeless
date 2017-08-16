@@ -1,11 +1,11 @@
-var React = require('react');
+const React = require('react');
 import {Link} from 'react-router';
 import request from 'superagent';
 import {browserHistory} from 'react-router';
 import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
 import FlashMessage from '../flashmessage.jsx';
 
-var iconStyle = {
+const iconStyle = {
   fontSize: 52,
   margin: 10
 };
@@ -35,7 +35,7 @@ class LostPass extends BaseComponent {
   }
   flashMessage(msg, persistent) {
     this.setState({flashVisible: true, flashMessage: msg});
-    var self = this;
+    const self = this;
     if (persistent)
       return;
     setTimeout(function() {
@@ -44,7 +44,7 @@ class LostPass extends BaseComponent {
   }
   handleSubmit(e) {
     e.preventDefault();
-    var self = this;
+    const self = this;
     request.post('/api/restorepass').send({userdatum: this.state.userdatum}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
@@ -61,13 +61,13 @@ class LostPass extends BaseComponent {
     });
   }
   _formValidated() {
-    var userdatum = this.state.userdatum;
+    const userdatum = this.state.userdatum;
     if (userdatum.length < 1)
       return false;
     return true;
   }
   render() {
-    var buttonClass = '';
+    let buttonClass = '';
     if (!this._formValidated()) {
       buttonClass = 'disabled';
     }

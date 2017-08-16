@@ -1,5 +1,4 @@
-var React = require('react');
-import _ from 'lodash';
+const React = require('react');
 import request from 'superagent';
 import {getRandomDef, getDefByName, getUserById} from '../../utils/utils';
 import {Link} from 'react-router';
@@ -18,7 +17,7 @@ class SmuvelckiByName extends React.Component {
     this.getNewDef();
   }
   getNewDef(flag) {
-    var self = this;
+    const self = this;
     getDefByName(self.props.params.valsi, function(err, valsi) {
       if (err) {
         console.error('could not get a valsi from database:', err);

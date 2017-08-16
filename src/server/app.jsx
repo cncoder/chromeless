@@ -1,26 +1,26 @@
 
 'use strict';
 require('dotenv').config();
-var express = require('express');
-var passport = require('passport');
-var passportSetup = require('./utils/passportSetup');
-var routes = require('./routes');
-var mongoose = require('mongoose');
-var compression = require('compression');
-var throttle = require('./throttler');
-var favicon = require('serve-favicon');
+const express = require('express');
+const passport = require('passport');
+const passportSetup = require('./utils/passportSetup');
+const routes = require('./routes');
+const mongoose = require('mongoose');
+const compression = require('compression');
+const throttle = require('./throttler');
+const favicon = require('serve-favicon');
 mongoose.Promise = global.Promise
 
 //configure passport strategy and serializations
 passportSetup(passport);
 
 //create new express application
-var app = express();
+const app = express();
 
 //connect to database
 console.log('requesting connection to database...');
 mongoose.connect(process.env.MONGOLAB_URI);
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('[almavlaste] connected to database');
@@ -35,14 +35,14 @@ db.once('open', function() {
     // configure limits:
     //app.use('/api/', throttler);
     app.use(throttle(function(req, res, hits, remaining) {
-        var until = new Date((new Date()).getTime() + remaining);
+        const until = new Date((new Date()).getTime() + remaining);
         res.statusCode = 420;
         res.send('You shall not pass ' + hits + ' until ' + until + '!');
     }));
     //app.use('/api/', throttler({ rateLimit: { ttl: 600, max: 5 } }));
     // Optionally configure a custom limit handler:
     // app.use('/api/', throttle(function(req, res, hits, remaining) {
-    //     var until = new Date((new Date()).getTime() + remaining);
+    //     const until = new Date((new Date()).getTime() + remaining);
     //     res.statusCode = 420;
     //     res.send('You shall not pass ' + hits + ' until ' + until + '!');
     // }));
@@ -61,7 +61,7 @@ db.once('open', function() {
     routes(app, passport);
 
     //start listening for requests
-    var port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3000;
     app.listen(port, function () {
         console.log('listening on port '+port+'...');
     });

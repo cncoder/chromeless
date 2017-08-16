@@ -1,4 +1,4 @@
-var React = require('react');
+const React = require('react');
 import {checkAuthenticationAPI} from '../utils/utils';
 import AppStateStore from '../stores/AppStateStore.js';
 import LoginPrompt from './modal_loginprompt.jsx';
@@ -27,11 +27,11 @@ class Application extends BaseComponent {
     AppStateStore.removeChangeListener(this._onAppStateChange);
   }
   _onAppStateChange() {
-    var state = AppStateStore.getAppState();
+    const state = AppStateStore.getAppState();
     this.setState(state);
   }
   render() {
-    var navbar;
+    let navbar;
     const logo = <img src="/img/pelnimre1.svg" className="logo"></img>;
     if (this.state.authenticated) {
       navbar = <ul className="nav navbar-nav navbar-right">
@@ -53,9 +53,6 @@ class Application extends BaseComponent {
       </ul>
     } else {
       navbar = <ul className="nav navbar-nav navbar-right">
-        <li>
-          <Link to="/create">Add word</Link>
-        </li>
         <li>
           <Link to="/login">Login</Link>
         </li>

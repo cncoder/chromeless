@@ -1,4 +1,4 @@
-var React = require('react');
+const React = require('react');
 
 class NotFound extends React.Component {
   render() {

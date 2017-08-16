@@ -1,10 +1,9 @@
-var React = require('react');
-import _ from 'lodash';
+const React = require('react');
 
 class Chart extends React.Component {
   componentDidMount() {
-    var ChartJs = require('chart.js'); //including here because it won't run on server due to 'window' references
-    var colors = [
+    const ChartJs = require('chart.js'); //including here because it won't run on server due to 'window' references
+    const colors = [
       '#96ceb4',
       '#ffeead',
       '#ff6f69',
@@ -16,15 +15,14 @@ class Chart extends React.Component {
       '#f37735',
       '#ffc425'
     ];
-    var adza = this.props.valsi.adza;
-    var labels = [];
-    var data = [];
-    var i = 0;
-    _.forEach(adza, function(option) {
-      labels.push(option.option);
-      data.push(option.votes);
-    });
-    var data = {
+    const adza = this.props.valsi.adza;
+    let labels = [];
+    let data = [];
+    for (let i of adza){
+      labels.push(i.option);
+      data.push(i.votes);
+    }
+    const data = {
       labels: labels,
       datasets: [
         {
@@ -33,8 +31,8 @@ class Chart extends React.Component {
         }
       ]
     };
-    var ctx = document.getElementById("myChart");
-    var myDoughnutChart = new ChartJs(ctx, {
+    const ctx = document.getElementById("myChart");
+    const myDoughnutChart = new ChartJs(ctx, {
       type: 'horizontalBar',
       data: data,
       options: {

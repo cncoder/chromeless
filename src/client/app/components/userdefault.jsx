@@ -1,24 +1,27 @@
-var React = require('react');
+const React = require('react');
 import AppStateStore from '../stores/AppStateStore';
-import _ from 'lodash';
+import {path, pathEq} from 'ramda';
 
+function pathExists(arr, obj){
+  return path(arr, obj)!==undefined;
+}
 class UserDefault extends React.Component {
   render() {
-    var user = AppStateStore.getUser();
-    var name = _.get(user, 'local.username') || _.get(user, 'facebook.displayName') || _.get(user, 'twitter.displayName') || _.get(user, 'google.displayName');
-    var login;
+    const user = AppStateStore.getUser();
+    const name = path(['local','username'], user) || path(['facebook','displayName'], user) || path(['twitter','displayName'], user) || path(['google','displayName'], user);
+    let login;
     switch (true) {
-      case _.hasIn(user, 'local'):
+      case pathExists(['local'], user):
         //display password changing functions
         login = 'logged in locally';
         break;
-      case _.hasIn(user, 'facebook'):
+      case pathExists(['facebook'], user):
         login = 'logged in with facebook';
         break;
-      case _.hasIn(user, 'twitter'):
+      case pathExists(['twitter'], user):
         login = 'logged in with twitter';
         break;
-      case _.hasIn(user, 'google'):
+      case pathExists(['google'], user):
         login = 'logged in with google';
         break;
       default:

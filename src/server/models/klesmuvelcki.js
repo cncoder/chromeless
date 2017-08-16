@@ -1,9 +1,8 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-
-var Klesmuvelcki = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Klesmuvelcki = new Schema({
   klesi: {
     type: Schema.ObjectId,
     ref: 'Klesi'

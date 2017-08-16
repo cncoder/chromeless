@@ -1,4 +1,4 @@
-var React = require('react');
+const React = require('react');
 import {Creatable} from 'react-select-plus';
 
 class OptionInput extends React.Component {

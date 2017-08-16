@@ -1,10 +1,10 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var findOrCreate = require('mongoose-findorcreate');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const findOrCreate = require('mongoose-findorcreate');
 
-var Language = new Schema({
+const Language = new Schema({
   krasi_cmene: String,
   isPredicateLanguage: Boolean,
   freq: Number,

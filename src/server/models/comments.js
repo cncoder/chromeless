@@ -1,10 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var random = require('mongoose-simple-random');
-
-var Comment = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const random = require('mongoose-simple-random');
+const Comment = new Schema({
   root_type: String,
   root_id: Number,
   title: String,

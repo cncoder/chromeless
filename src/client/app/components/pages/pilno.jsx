@@ -1,9 +1,9 @@
-var React = require('react');
+const React = require('react');
 import UserTable from '../usertable.jsx';
 import UserDefault from '../userdefault.jsx';
 import UserDefs from '../userdefs.jsx';
 import {getUserById, getDefsFromUserId} from '../../utils/utils';
-import _ from 'lodash';
+import {path} from 'ramda';
 
 class Profile extends React.Component {
   constructor() {
@@ -14,8 +14,8 @@ class Profile extends React.Component {
     this.getUser();
   }
   getUser(flag) {
-    var self = this;
-    if (_.hasIn(this.props, 'params.id')) {
+    const self = this;
+    if (path(['params','id'],this.props)) {
       getUserById(self.props.params.id, function(err, user) {
         if (err) {
           console.error('could not get a user from database:', err);

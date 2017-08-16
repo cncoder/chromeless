@@ -1,12 +1,11 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('events').EventEmitter;
+const AppDispatcher = require('../dispatcher/AppDispatcher');
+const EventEmitter = require('events').EventEmitter;
 import request from 'superagent';
-import _ from 'lodash';
-var assign = require('object-assign');
+const assign = require('object-assign');
 
-var CHANGE_EVENT = 'change';
+const CHANGE_EVENT = 'change';
 
-var AppState = {
+let AppState = {
   user: {},
   userDefs: [],
   authenticated: false

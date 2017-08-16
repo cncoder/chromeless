@@ -1,11 +1,11 @@
 'use strict'
 
-var ipRegex = require('ip-regex')
-var mongoose = require('mongoose')
-var defaultsDeep = require('lodash.defaultsdeep')
-var pkg = require('../../package')
-var defaults = require('./defaults')
-var throttleModel = require('./models/throttle')
+const ipRegex = require('ip-regex')
+const mongoose = require('mongoose')
+const defaultsDeep = require('lodash.defaultsdeep')
+const pkg = require('../../package')
+const defaults = require('./defaults')
+const throttleModel = require('./models/throttle')
 
 /**
  * Create and register throttler middleware
@@ -22,17 +22,17 @@ module.exports = function createThrottler(config, limited) {
 
   // createThrottler(fn)
   if (typeof config === 'function') {
-    limited = config
+    limited = config;
     //config = null
   }
 
   // createThrottler(config, false)
   if (typeof limited !== 'function') {
-    limited = null
+    limited = null;
   }
-  defaultsDeep(config, defaults)
-  var Throttle = throttleModel(config)
-  return throttleMiddleware
+  defaultsDeep(config, defaults);
+  const Throttle = throttleModel(config);
+  return throttleMiddleware;
 
   function errHandler(res, next, error) {
     // DO WE WANT TO BREAK THE APP AND CAUSE A ISSUE OR DO WE WANT TO SILENTLY INTO THE NIGHT AND JUST LOG OUR ERRORS
@@ -44,8 +44,8 @@ module.exports = function createThrottler(config, limited) {
   }
 
   function respondWithThrottle(request, response, next, throttle) {
-    var timeUntilReset = (config.rateLimit.ttl * 1000) - (new Date().getTime() - throttle.createdAt.getTime())
-    var remaining = Math.max(0, (config.rateLimit.max - throttle.hits))
+    const timeUntilReset = (config.rateLimit.ttl * 1000) - (new Date().getTime() - throttle.createdAt.getTime())
+    const remaining = Math.max(0, (config.rateLimit.max - throttle.hits))
 
     response.set({'X-Rate-Limit-Limit': config.rateLimit.max, 'X-Rate-Limit-Remaining': remaining, 'X-Rate-Limit-Reset': timeUntilReset})
 
@@ -70,7 +70,7 @@ module.exports = function createThrottler(config, limited) {
    */
 
   function throttleMiddleware(request, response, next) {
-    var ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || request.connection.socket.remoteAddress || ''
+    let ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || request.connection.socket.remoteAddress || ''
 
     ip = ip.split(',')[0]
     if (!ipRegex().test(ip) || ip.substr(0, 7) === '::ffff:' || ip === '::1') {

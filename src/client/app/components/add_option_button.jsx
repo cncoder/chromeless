@@ -1,4 +1,4 @@
-var React = require('react');
+const React = require('react');
 
 class AddOptionButton extends React.Component {
   constructor() {
@@ -8,7 +8,7 @@ class AddOptionButton extends React.Component {
     };
   }
   handleChange(e) {
-    var value = e.target.value;
+    const value = e.target.value;
     this.setState({text: value});
   }
   handleSubmit(e) {
@@ -16,8 +16,8 @@ class AddOptionButton extends React.Component {
     this.props.handleAddNewOption(this.state.text);
   }
   render() {
-    var interiorMarkup;
-    var clickClass = ""
+    let interiorMarkup;
+    let clickClass = ""
     if (this.props.active) {
       interiorMarkup = <div>
         <input style={{

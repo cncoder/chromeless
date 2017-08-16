@@ -1,6 +1,6 @@
-var React = require('react');
+const React = require('react');
 
-var styleError = {
+const styleError = {
   borderRadius: 5,
   border: '1px solid #5C0000',
   backgroundColor: '#FFC1C1',
@@ -11,7 +11,7 @@ var styleError = {
   marginTop: 20,
   marginBottom: 20
 };
-var styleSuccess = {
+const styleSuccess = {
   borderRadius: 5,
   border: '1px solid #007B0A',
   backgroundColor: '#E1F8D3',
@@ -29,8 +29,8 @@ class FlashMessage extends React.Component {
     * props.time -> optional, ms of length of show, defaults to 3000
      */
   render() {
-    var type = this.props.type || 'error';
-    var style;
+    const type = this.props.type || 'error';
+    let style;
     switch (type) {
       case 'error':
         style = styleError;

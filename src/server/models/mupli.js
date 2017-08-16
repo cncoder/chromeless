@@ -1,10 +1,10 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var random = require('mongoose-simple-random');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const random = require('mongoose-simple-random');
 
-var Sentence = new Schema({
+const Sentence = new Schema({
   mupli: String,
   detri: Date,
   finti: String,

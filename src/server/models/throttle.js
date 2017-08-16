@@ -2,8 +2,8 @@
  * A rate-limiting Throttle model, by IP address
  *
  */
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 mongoose.Promise = global.Promise
 /**
  * Register the Throttle model
@@ -13,7 +13,7 @@ mongoose.Promise = global.Promise
  * @return {object} Mongoose Model
  */
 module.exports = function createThrottle (defaults) {
-  var Throttle = new Schema({
+  const Throttle = new Schema({
     createdAt: {
       type: Date,
       required: true,
