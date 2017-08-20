@@ -5,13 +5,15 @@ import reactRoutes from '../client/app/routes.jsx';
 const path_ = require('path');
 import {path} from 'ramda';
 const Lojban = require('lojban');
-const Comment = require('./models/comments');
+const Comment = require('./models/comment');
 const Valsi = require('./models/valsi');
 const Klesi = require('./models/klesi');
-const Sentence = require('./models/mupli');
-const Language = require('./models/languages');
-const User = require('./models/users');
+const Tcita = require('./models/tcita');
+const Mupli = require('./models/mupli');
+const Language = require('./models/language');
+const User = require('./models/user');
 import {latexParser} from "latex-parser";
+import mongoose from 'mongoose';
 
 const p = (a) => console.log(JSON.stringify(a, null, 2));
 
@@ -41,7 +43,7 @@ function GetOptimizedTerbri(arrterbri) {
         idx: parseInt(o.idx),
         sluji: o.sluji
       });
-    } else if (o.klesi && (o.klesi !== '')) {
+    } else if (o.klesi && (o.klesi.length > 0)) {
       terbri.push({
         idx: parseInt(o.idx),
         klesi: o.klesi,
@@ -88,9 +90,6 @@ const routes = function(app, passport) {
     const terbri = GetOptimizedTerbri(JSON.parse(req.body.terbri));
     if (terbri.err)
       return res.send(terbri);
-    const flatklesi = terbri.map(o => o.klesi).reduce(function(sum, value) {
-      return sum.concat(value);
-    }, []).filter(Boolean);
 
     // 2. check cmaxes, check language=>promise
     const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
@@ -121,6 +120,9 @@ const routes = function(app, passport) {
       return sum;
     });
     // 3. promise.all check all klesi. if no klesi return error
+    const flatklesi = terbri.map(o => o.klesi).reduce(function(sum, value) {
+      return sum.concat(value);
+    }, []).filter(Boolean);
     const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then(function(items) {
       if (!items)
         return {item: null, err: 'no klesi'};
@@ -144,10 +146,28 @@ const routes = function(app, passport) {
       }
       return sum;
     });
-    const fed = thetwo.map(kk => req.body[kk._id]).concat(flatklesi);
-
+    //same word from the user already in the db
+    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then(function(items) {
+      if (!items)
+        return null;
+      let sum = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        let candidate = {
+          item: {
+            valsi: req.body["valsi"],
+            id: item._id,
+            finti: item.finti,
+            selgerna_filovalsi: item.selgerna_filovalsi
+          },
+          type: "xahovalsi"
+        };
+        sum.push(candidate);
+      }
+      return sum;
+    });
     // -2-3- resolve promises
-    Promise.all([langpromises, klesipromises]).then(function(items) {
+    Promise.all([langpromises, klesipromises, xahopromises]).then(function(items) {
       items = items.reduce(function(sum, value) {
         return sum.concat(value)
       }, []);
@@ -163,7 +183,6 @@ const routes = function(app, passport) {
       }
       return Promise.all(prs);
     }).then(function(items) {
-      p(items);
       //todo: !items case
       if (items[0] && items[0].err) {
         const promisified_err_item = new Promise((resolve, reject) => {
@@ -183,7 +202,17 @@ const routes = function(app, passport) {
           });
           return Promise.all([promisified_kunti]);
         }
+        //now check if this word from the same user is already in the db.
+        const xaho_items = items.filter(i => i["type"] === 'xahovalsi');
+        p(xaho_items);
+        if (xaho_items.length > 0) {
+          const promisified_xaho = new Promise((resolve, reject) => {
+            resolve({xaho: true, vlamei: xaho_items})
+          });
+          return Promise.all([promisified_xaho]);
+        }
       }
+
       //SAVE OR UPDATE
       let prs = [];
       for (let i = 0; i < items.length; i++) {
@@ -192,7 +221,10 @@ const routes = function(app, passport) {
         if (item.err) {
           if (item.type === 'klesi' && item.item.klesi) {
             //now update
-            const klesi = new Klesi({freq: 1, klesi: item.item.klesi});
+            const klesi = new Klesi({
+              freq: 1,
+              klesi: JSON.parse(item.item.klesi)
+            });
             candidate = new Promise((resolve, reject) => {
               klesi.save((err, it, numberAffected) => {
                 if (err) {
@@ -260,11 +292,53 @@ const routes = function(app, passport) {
         }
         prs.push(candidate);
       }
+      //save tcita
+      JSON.parse(req.body.tcita).map(o => {
+        const tcita = o.tcita;
+        const candidate = new Promise((resolve, reject) => {
+          Tcita.findOne({tcita}).lean().exec().then(function(item) {
+            if (!item)
+              item = {};
+            const freq = (!item || !item.freq)
+              ? 1
+              : parseInt(item.freq + 1);
+            const new_tcita = new Tcita({freq: freq, tcita, type: 'tcita'});
+            new_tcita.save((err, it, numberAffected) => {
+              if (err) {
+                item.err = err.toString();
+              } else {
+                item.saved = true;
+                item.saver = it;
+                item.numberAffected = numberAffected;
+              }
+              resolve(item);
+            });
+          }, function(err) {
+            resolve({type: 'tcita', tcita: o.tcita, err: err.toString()});
+          });
+        });
+        prs.push(candidate);
+      });
+
       //save smuvelcki
       const newDef = new Valsi();
       newDef.valsi = req.body.valsi;
       newDef.selgerna_filovalsi = req.body.bangu["value"];
-      newDef.terbri = terbri;
+
+      const klesi_id_map = {};
+      items.map(o => {
+        if (o.type === 'klesi') {
+          const k = {};
+          klesi_id_map[o.item.klesi] = o.item._id;
+        }
+      });
+      newDef.terbri = terbri.map(o => {
+        if (o.klesi) {
+          o.klesi = o.klesi.map(i => klesi_id_map[i]);
+        }
+        return o;
+      });
+
       newDef.finti = req.user._id;
       newDef.tcita = JSON.parse(req.body.tcita) || [];
       newDef.tcita = newDef.tcita.map(i => {
@@ -289,7 +363,7 @@ const routes = function(app, passport) {
       prs.push(valsipromise);
       return Promise.all(prs);
     }).then(function(items) {
-      if (items[0].err || items[0].kunti) {
+      if (items[0].err || items[0].kunti || items[0].xaho) {
         return res.send(items[0]);
       }
       const valsi_item = items.filter(i => i.type === 'valsi');
@@ -298,6 +372,32 @@ const routes = function(app, passport) {
       }
     }).catch(function(err) {
       return res.send({err: err.toString()});
+    });
+  });
+
+  app.route('/api/sisku_satci').post(function(req, res) {
+    //todo: validator
+    let opt = req.body;
+    const model = require(`./models/${req.body.morna}`);
+    delete opt.morna;
+    Object.keys(opt).map(k => {
+      if (!opt[k]) {
+        opt[k] = undefined;
+      } else if (model.schema.obj[k] && model.schema.obj[k].ref) {
+        opt[k] = mongoose.Types.ObjectId(opt[k]);
+      }
+    });
+    model.find(opt, function(err, vlamei) {
+      if (err)
+        return res.status(400).send({err: err.message});
+      if (!vlamei)
+        return res.send([]);
+      vlamei = vlamei.map(i => {
+        if (i.local && i.local.password)
+          i.local.password = undefined;
+        return i;
+      })
+      res.send(vlamei);
     });
   });
 
@@ -433,7 +533,7 @@ const routes = function(app, passport) {
   });
 
   app.route('/api/klemei').get(function(req, res) {
-    Klesi.find({}).sort({freq: -1}).exec(function(err, klemei) {
+    Klesi.find({}).sort({freq: -1}).lean().exec(function(err, klemei) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!klemei || klemei.length === 0)
@@ -444,6 +544,21 @@ const routes = function(app, passport) {
         return i;
       }).filter(Boolean);
       res.send(klemei);
+    });
+  });
+
+  app.route('/api/tcitymei').get(function(req, res) {
+    Tcita.find({}).sort({freq: -1}).lean().exec(function(err, tcitymei) {
+      if (err)
+        return res.status(400).send({err: err.message});
+      if (!tcitymei || tcitymei.length === 0)
+        return res.send([]);
+      tcitymei = tcitymei.map(i => {
+        if (!i.tcita)
+          return;
+        return i;
+      }).filter(Boolean);
+      res.send(tcitymei);
     });
   });
 
@@ -500,7 +615,7 @@ const routes = function(app, passport) {
 
   app.route('/api/valsi/:id').get(function(req, res) {
     const id = req.params.id;
-    Valsi.findById(id, function(err, valsi) {
+    Valsi.findById(id).populate({path: 'terbri.klesi'}).lean().exec(function(err, valsi) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!valsi)
@@ -508,7 +623,18 @@ const routes = function(app, passport) {
       const newDef = {
         _id: valsi._id,
         valsi: valsi.valsi,
-        terbri: valsi.terbri,
+        terbri: valsi.terbri.map(place => {
+          if (place.klesi) {
+            place.klesi = place.klesi.map(i => {
+              if (i.klesi) {
+                return i.klesi;
+              }
+              return;
+            });
+            return place;
+          }
+          return;
+        }),
         finti: valsi.finti
       };
       res.send(newDef);

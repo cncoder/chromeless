@@ -7,23 +7,50 @@ const random = require('mongoose-simple-random');
 const Sentence = new Schema({
   mupli: String,
   detri: Date,
-  finti: String,
-  bangu: Number,
+  finti: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
+  bangu: {
+    type: Schema.ObjectId,
+    ref: 'Language'
+  },
   pinka: String,
   disabled: Boolean,
   historyless: Boolean,
-  disabling: [{disabled: Boolean, zukte: String, detri: Date}],
+  disabling: [
+    {
+      disabled: Boolean,
+      zukte: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      detri: Date
+    }
+  ],
   jorne: [
     {
-      finti: String,
-      felovelski: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      felovelski: {
+        type: Schema.ObjectId,
+        ref: 'Valsi'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date,
-      felomupli: Number,
+      felomupli: {
+        type: Schema.ObjectId,
+        ref: 'Sentence'
+      },
       upvotes: [
         {
-          finti: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
@@ -31,7 +58,10 @@ const Sentence = new Schema({
       ],
       downvotes: [
         {
-          finti: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
@@ -40,8 +70,14 @@ const Sentence = new Schema({
       sumvotes: Number,
       tcita: [
         {
-          finti: String,
-          tcita: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
+          tcita: {
+            type: Schema.ObjectId,
+            ref: 'Tcita'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
@@ -51,7 +87,10 @@ const Sentence = new Schema({
   ],
   upvotes: [
     {
-      finti: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date
@@ -59,7 +98,10 @@ const Sentence = new Schema({
   ],
   downvotes: [
     {
-      finti: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date
@@ -68,8 +110,14 @@ const Sentence = new Schema({
   sumvotes: Number,
   tcita: [
     {
-      finti: String,
-      tcita: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      tcita: {
+        type: Schema.ObjectId,
+        ref: 'Tcita'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date

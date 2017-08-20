@@ -25,8 +25,16 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - tags must get saved
 - fill klesi table on each save
 - gh is saved as lojban word
+* /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show  defs of valsi from finti
+* warning that this word in this lang already was added by you
+- save only if truly logged in and credentials coincide! - looks like isAuthenticated does the trick
+* shows other defs of this word after submit
+- tcita into separate model
 * save tags when jbangu, when finti
+* save state after server reload
 * fill tcita table on each save
+* klesi has language, "your klesi"/"order all by frequency"
+* klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
 - on save to server save each new type to klesi model. if exists +1 for frequency. if no frequency =1
 - take klesi from Klesi table
 - type input should be extendable
@@ -38,17 +46,16 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 -- on first save show popup that klesi will be added
 ** !items case
 * maybe valsi saved even if returned null.id
-* /finti on load add to klemei from stored_storage
+- /finti on load add to klemei from stored_storage
 * /finti clear button
 * if predicate language then show terbri first, old terbri last. otherwise vice versa
-* 1. check latex, cmaxes, 2. check language 3. promise.all check all klesi.
-** ok now fi all hecks are clean (no err) then we need to return something else
-*** if force===true then promise.all(langs,klesi) update frequencies of langs and klesi. then: return results. either ok or error. then: now once again for each error return promise with with save new klesi within each promise 4. save word and return it. ||| So we have 4 embedded layers pf functions.
+- 1. check latex, cmaxes, 2. check language 3. promise.all check all klesi.
+-- ok now fi all hecks are clean (no err) then we need to return something else
+--- if force===true then promise.all(langs,klesi) update frequencies of langs and klesi. then: return results. either ok or error. then: now once again for each error return promise with with save new klesi within each promise 4. save word and return it. ||| So we have 4 embedded layers pf functions.
 * confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
 * text before x1 => "text before" whatever. same for other hints
 * mobile /finti is not scrollable
 - /valsi - all definitions of this word
-* tcita into separate model
 * /valsi show tcita. my tcita are separate
 * add your defs on profile page
 * tcita page

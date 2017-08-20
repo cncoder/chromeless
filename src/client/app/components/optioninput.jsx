@@ -1,5 +1,6 @@
 const React = require('react');
 import {Creatable} from 'react-select-plus';
+const p = (a) => console.log(JSON.stringify(a));
 
 class OptionInput extends React.Component {
   render() {

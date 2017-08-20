@@ -11,7 +11,10 @@ const Klesi = new Schema({
   disabling: [
     {
       disabled: Boolean,
-      zukte: String,
+      zukte: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date
     }
   ]

@@ -70,6 +70,7 @@
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-uglify": "^1.0.2",
     "favicons-webpack-plugin": "0.0.7",
     "html-webpack-plugin": "^2.30.1"
   }

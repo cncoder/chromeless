@@ -1,4 +1,5 @@
 const React = require('react');
+import {Link} from 'react-router';
 
 const styleError = {
   borderRadius: 5,
@@ -39,10 +40,19 @@ class FlashMessage extends React.Component {
         style = styleSuccess;
         break;
       default:
-        console.asser(false, 'invalid type given to FlashMessage component. type:', type);
+        console.assert(false, 'invalid type given to FlashMessage component. type:', type);
     }
 
     if (this.props.visible) {
+      if (this.props.flashLink) {
+        return (
+          <div>
+            <div style={style}>{this.props.message}<br/>
+              <Link to={this.props.flashLink} target="_blank">Your defs</Link>
+            </div>
+          </div>
+        );
+      }
       return (
         <p style={style}>{this.props.message}</p>
       );

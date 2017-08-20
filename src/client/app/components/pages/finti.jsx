@@ -2,7 +2,7 @@ const React = require('react');
 import request from 'superagent';
 const localStorage = require('web-storage')().localStorage;
 import {getAuthenticated} from '../../stores/AppStateStore';
-import {getAllBangu, getAllKlesi} from '../../utils/utils';
+import {getAllBangu, getAllKlesi, getAllTcita} from '../../utils/utils';
 import {browserHistory} from 'react-router';
 import {Link} from 'react-router';
 import Select from 'react-select-plus';
@@ -14,11 +14,12 @@ const p = (a) => console.log(JSON.stringify(a));
 
 const init_state = {
   flashVisible: false,
+  flashLink: '',
   flashMessage: '',
   addButtonDefault: 'Add',
   addButton: 'Add',
   tcita: [],
-  multiValue: [],
+  tcitymei: [],
   banmei: [],
   klemei: [],
   terfanvymei: [],
@@ -67,7 +68,7 @@ class BaseComponent extends React.Component {
 class Create extends BaseComponent {
   constructor() {
     super();
-    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange');
+    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags');
     // this.handleSubmit = this.handleSubmit.bind(this);
     // this.handleChange = this.handleChange.bind(this);
     // this.addOption = this.addOption.bind(this);
@@ -129,6 +130,20 @@ class Create extends BaseComponent {
           })))]
       });
     });
+    getAllTcita(function(err, tcitymei) {
+      if (err) {
+        console.log("tcitymei", err);
+        return;
+      }
+      self.setState({
+        tcitymei: [...new Set(self.state.tcitymei.concat(tcitymei.map(i => {
+            const freq = i.freq
+              ? `[${i.freq}] `
+              : '';
+            return {label: `${i.tcita}`, value: i.tcita};
+          })))]
+      });
+    });
   }
   addOption(e) {
     e.preventDefault();
@@ -152,21 +167,24 @@ class Create extends BaseComponent {
     places.pop();
     this.setState({terbri: terbri, places: places});
   }
-  handleChangeOfTags(value) {
-    this.setState({multiValue: value});
-  }
-  flashMessage(msg, persistent) {
-    this.setState({flashVisible: true, flashMessage: msg});
+  flashMessage(msg, persistent, flashLink) {
+    this.setState({flashVisible: true, flashMessage: msg, flashLink});
     const self = this;
     if (persistent)
       return;
     setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: ''});
+      self.setState({flashVisible: false, flashMessage: '', flashLink});
     }, 3000);
   }
   handleClear() {
     this.setState(init_state);
     p(this.state.valsi);
+  }
+  handleChangeOfTags(value) {
+    this.setState({tcita: value});
+    this.setState({
+      'tcitymei': [...new Set(this.state.tcitymei.concat(value))]
+    });
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false});
@@ -231,10 +249,17 @@ class Create extends BaseComponent {
     const terbri_ = self.state.terbri.map((o) => {
       return {idx: o.idx, klesi: o.klesi, nirna: o.nirna, sluji: o.sluji};
     });
-    const tcita_ = self.state.multiValue.map((o) => {
+    const tcita_ = self.state.tcita.map((o) => {
       return {tcita: o.value};
     });
-    request.post('api/finti/').send({forcedoverwrite: self.state.forcedoverwrite, bangu: self.state.bangu, terfanva: self.state.terfanva, tcita: JSON.stringify(tcita_), valsi: valsi, terbri: JSON.stringify(terbri_)}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('api/finti/').send({
+      forcedoverwrite: self.state.forcedoverwrite,
+      bangu: self.state.bangu,
+      terfanva: self.state.terfanva,
+      tcita: JSON.stringify(tcita_),
+      valsi: valsi,
+      terbri: JSON.stringify(terbri_)
+    }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault});
       if (res.body.err) {
         self.flashMessage(res.body.err);
@@ -242,6 +267,12 @@ class Create extends BaseComponent {
       }
       if (res.body.kunti) {
         self.flashMessage(`next time you press 'Add' the following klesi will be created: ${res.body.klemei.join(", ")}`, true);
+        self.setState({forcedoverwrite: true, addButton: 'Add with klesi'});
+        return;
+      }
+      if (res.body.xaho) {
+        const f = res.body.vlamei[0].item;
+        self.flashMessage(`Warning. This word already has some definitions from you. Press 'Add' again to ignore this warning.`, true, `sisku?morna=valsi&finti=${f.finti||''}&valsi=${f.valsi||''}&selgerna_filovalsi=${f.selgerna_filovalsi||''}`);
         self.setState({forcedoverwrite: true, addButton: 'Add with klesi'});
         return;
       }
@@ -313,7 +344,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label">Tags</label>
                 <div className="col-sm-10">
-                  <Creatable name="form-control" multi value={self.state.multiValue} options={self.state.tcita} onChange={self.handleChangeOfTags}/>
+                  <Creatable name="form-control" multi value={self.state.tcita} options={self.state.tcitymei} onChange={self.handleChangeOfTags}/>
                 </div>
               </div>
             </div>
@@ -325,7 +356,7 @@ class Create extends BaseComponent {
             </button>
             <button className="btn btn-default" onClick={self.handleClear}>Clear</button>
             <button type="submit" onClick={self.handleSubmit} className="btn btn-primary">{self.state.addButton}</button>
-            <FlashMessage visible={self.state.flashVisible} message={self.state.flashMessage} type="error"/>
+            <FlashMessage visible={self.state.flashVisible} message={self.state.flashMessage} flashLink ={self.state.flashLink} type="error"/>
           </div>
         </div>
       </div>

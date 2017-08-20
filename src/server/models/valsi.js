@@ -2,14 +2,20 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Valsi = new Schema({
+const valsi = new Schema({
   valsi: String,
   finti: {
     type: Schema.ObjectId,
     ref: 'User'
   },
-  selgerna_filovalsi: String,
-  selgerna_filovelski: String,
+  selgerna_filovalsi: {
+    type: Schema.ObjectId,
+    ref: 'Language'
+  },
+  selgerna_filovelski: {
+    type: Schema.ObjectId,
+    ref: 'Language'
+  },
   detri: Date,
   frozen: Boolean,
   detri_lenudunja: Date,
@@ -18,7 +24,10 @@ const Valsi = new Schema({
   disabling: [
     {
       disabled: Boolean,
-      zukte: String,
+      zukte: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date
     }
   ],
@@ -26,8 +35,13 @@ const Valsi = new Schema({
     { //smuvelcki
       //0:pre 1:x1 2:(e) 3:x2 end
       idx: Number,
-      klesi: [String],
-      nirna: String, //entity / property of x1 / event / text ...
+      klesi: [
+        {
+          type: Schema.ObjectId,
+          ref: 'Klesi'
+        }
+      ], //entity / property of x1 / event / text ...
+      nirna: String, //x1
       sluji: String, //" is a cat of species "
     }
   ],
@@ -36,12 +50,18 @@ const Valsi = new Schema({
   pinka: String,
   krasi: [
     {
-      bangu: String
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      }
     }
   ],
   upvotes: [
     {
-      finti: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date
@@ -49,7 +69,10 @@ const Valsi = new Schema({
   ],
   downvotes: [
     {
-      finti: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date
@@ -58,8 +81,14 @@ const Valsi = new Schema({
   sumvotes: Number,
   tcita: [
     {
-      finti: String,
-      tcita: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      tcita: {
+        type: Schema.ObjectId,
+        ref: 'Tcita'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date
@@ -67,14 +96,23 @@ const Valsi = new Schema({
   ],
   jorne: [
     {
-      finti: String,
-      felovelski: String,
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'User'
+      },
+      felovelski: {
+        type: Schema.ObjectId,
+        ref: 'Valsi'
+      },
       detri: Date,
       undone: Boolean,
       undonedetri: Date,
       upvotes: [
         {
-          finti: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
@@ -82,17 +120,26 @@ const Valsi = new Schema({
       ],
       downvotes: [
         {
-          finti: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
         }
       ],
       sumvotes: Number,
-      tags: [
+      tcita: [
         {
-          finti: String,
-          tcita: String,
+          finti: {
+            type: Schema.ObjectId,
+            ref: 'User'
+          },
+          tcita: {
+            type: Schema.ObjectId,
+            ref: 'Tcita'
+          },
           detri: Date,
           undone: Boolean,
           undonedetri: Date
@@ -102,4 +149,4 @@ const Valsi = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Valsi', Valsi, 'Valsi');
+module.exports = mongoose.model('valsi', valsi, 'valsi');

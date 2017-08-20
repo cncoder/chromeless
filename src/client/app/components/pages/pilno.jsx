@@ -8,21 +8,23 @@ import {path} from 'ramda';
 class Profile extends React.Component {
   constructor() {
     super();
-    this.state = {pilno: null, userDefs: null};
+    this.state = {
+      pilno: null,
+      userDefs: null
+    };
   }
   componentWillMount() {
-    this.getUser();
-  }
-  getUser(flag) {
     const self = this;
-    if (path(['params','id'],this.props)) {
+    if (path([
+      'params', 'id'
+    ], this.props)) {
       getUserById(self.props.params.id, function(err, user) {
         if (err) {
           console.error('could not get a user from database:', err);
           return;
         }
         self.setState({pilno: user});
-        getDefsFromUserId(user._id,function(err,defs){
+        getDefsFromUserId(user._id, function(err, defs) {
           if (err)
             return console.error(err);
           self.setState({userDefs: defs});

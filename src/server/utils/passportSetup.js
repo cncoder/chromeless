@@ -2,7 +2,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/users');
+const User = require('../models/user');
 const passportSetup = function(passport) {
 
   // Configure facebook strategy

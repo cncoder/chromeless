@@ -9,6 +9,7 @@ import JBangu from './components/pages/jbangu.jsx';
 import Valsi from './components/pages/valsi.jsx';
 import SmuvelckiByName from './components/pages/SmuvelckiByName.jsx';
 import ListAll from './components/pages/listall.jsx';
+import Sisku from './components/pages/sisku.jsx';
 import ListUsers from './components/pages/listusers.jsx';
 import Profile from './components/pages/profile.jsx';
 import Pilno from './components/pages/pilno.jsx';
@@ -22,6 +23,7 @@ module.exports = (
     <Route path="/" component={Layout} >
         <IndexRoute component={Fihi} />
         <Route path="/valsi" component={ListAll} />
+        <Route path="/sisku" component={Sisku} />
         <Route path="/lostpass" component={LostPass} />
         <Route path="/listall" component={ListAll} />
         <Route path="/pilno" component={ListUsers} />

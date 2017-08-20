@@ -1,6 +1,7 @@
 import request from 'superagent';
 import {setUser, setAuthenticated} from '../actions/AppStateActionCreators.js';
 import {getAuthenticated} from '../stores/AppStateStore';
+const p = (a) => console.log(JSON.stringify(a));
 
 const checkAuthenticationAPI = function() {
   request.get('/api/login').end(function(err, res) {
@@ -67,6 +68,15 @@ const getAllKlesi = function(cb) {
   });
 };
 
+const getAllTcita = function(cb) {
+  console.log('getting all tcita');
+  request.get('/api/tcitymei').end(function(err, res) {
+    if (err)
+      return cb(err);
+    return cb(null, res.body);
+  });
+};
+
 const getAllDefs = function(cb) {
   console.log('getting all vlamei');
   request.get('/api/listall').end(function(err, res) {
@@ -81,6 +91,15 @@ const getAllDefs = function(cb) {
 const getDefsFromUserId = function(id, cb) {
   console.log('getting all vlamei from id');
   request.get('/api/getalldefs/' + id).end(function(err, res) {
+    if (err)
+      return cb(err);
+    return cb(null, res.body);
+  });
+};
+
+const sisku_satci = function(options, cb) {
+  console.log('getting all vlamei from id');
+  request.post('/api/sisku_satci/').send(options).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
     if (err)
       return cb(err);
     return cb(null, res.body);
@@ -133,10 +152,12 @@ const echo = function(msg) {
 module.exports = {
   checkAuthenticationAPI,
   checkAuthenticationLocal,
+  sisku_satci,
   getRandomDef,
   getAllDefs,
   getAllBangu,
   getAllKlesi,
+  getAllTcita,
   getAllUsers,
   getDefById,
   getDefsFromUserId,

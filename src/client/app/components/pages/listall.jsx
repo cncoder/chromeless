@@ -9,13 +9,17 @@ import AppStateStore from '../../stores/AppStateStore';
 class ListAll extends React.Component {
   constructor() {
     super();
-    this.state = {vlamei: []};
+    this.state = {
+      vlamei: []
+    };
   }
   componentWillMount() {
     const self = this;
     getAllDefs(function(err, vlamei) {
-      self.setState({vlamei: vlamei});
-    });
+      if (!err)
+        self.setState({vlamei: vlamei});
+      }
+    );
   }
   componentDidMount() {
     document.title = "All definitions";
@@ -32,7 +36,9 @@ class ListAll extends React.Component {
             <hr/>
             <ul className="list-group-horizontal row">
               {allvlamei.map(i => {
-                return <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}><Link to={`/valsi/${i._id}`}>{i.valsi}</Link></li>;
+                return <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
+                  <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
+                </li>;
               })}
             </ul>
           </div>

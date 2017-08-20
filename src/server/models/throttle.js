@@ -13,7 +13,7 @@ mongoose.Promise = global.Promise
  * @return {object} Mongoose Model
  */
 module.exports = function createThrottle (defaults) {
-  const Throttle = new Schema({
+  const throttle = new Schema({
     createdAt: {
       type: Date,
       required: true,
@@ -35,10 +35,10 @@ module.exports = function createThrottle (defaults) {
     }
   })
 
-  Throttle.index(
+  throttle.index(
     { createdAt: 1 },
     { expireAfterSeconds: defaults.rateLimit.ttl }
   )
 
-  return mongoose.model('Throttle', Throttle, 'Throttle')
+  return mongoose.model('throttle', throttle, 'throttle')
 }
