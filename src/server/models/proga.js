@@ -8,11 +8,11 @@ const Proga = new Schema({
   xefanva_pinka: String, //text, comment to the string
   vefanva: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   }, //id of language of the translation
   finti: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'user'
   }, //who created translation
   stats: Number, //last 100 users using this translation in the same language
   detri: Date,
@@ -24,7 +24,7 @@ const Proga = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -33,7 +33,7 @@ const Proga = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -44,7 +44,7 @@ const Proga = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -56,11 +56,11 @@ const Proga = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },,
       detri: Date,
       undone: Boolean,
@@ -69,4 +69,4 @@ const Proga = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Proga', Proga, 'Proga');
+module.exports = mongoose.model('proga', Proga, 'proga');

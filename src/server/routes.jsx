@@ -378,26 +378,52 @@ const routes = function(app, passport) {
   app.route('/api/sisku_satci').post(function(req, res) {
     //todo: validator
     let opt = req.body;
+    const model_name = req.body.morna;
     const model = require(`./models/${req.body.morna}`);
     delete opt.morna;
     Object.keys(opt).map(k => {
       if (!opt[k]) {
         opt[k] = undefined;
       } else if (model.schema.obj[k] && model.schema.obj[k].ref) {
+        p(opt[k]);
+        p(k);
         opt[k] = mongoose.Types.ObjectId(opt[k]);
       }
     });
-    model.find(opt, function(err, vlamei) {
-      if (err)
-        return res.status(400).send({err: err.message});
+    //model.find(opt, function(err, vlamei) {
+    model.find(opt).populate('finti')
+    // .populate({path: 'finti'})
+    // .populate('selgerna_filovalsi')
+    // .populate('selgerna_filovelski')
+    // .populate({path: 'terbri.klesi'})
+    // .populate({path: 'krasi.finti'})
+    // .populate({path: 'tcita.finti'})
+    // .populate({path: 'tcita.tcita'})
+    // .populate({path: 'jorne.finti'})
+    // .populate({path: 'jorne.felovelski'})
+    // .populate({path: 'jorne.tcita.finti'})
+    // .populate({path: 'jorne.tcita.tcita'})
+      .lean().exec(function(err, vlamei) {
       if (!vlamei)
         return res.send([]);
-      vlamei = vlamei.map(i => {
-        if (i.local && i.local.password)
-          i.local.password = undefined;
-        return i;
-      })
-      res.send(vlamei);
+      if (err)
+        return res.status(400).send({err: err.message});
+      let v = vlamei;
+      switch (model_name) {
+        case "valsi":
+          v = vlamei.map(i => {
+            // if (i.local && i.local.password)
+            //   i.local.password = undefined;
+            //return i;
+            return {valsi: i.valsi, finti: i.finti, _id: i._id};
+          });
+          break;
+        case "language":
+          v = vlamei;
+          break;
+      }
+      //p(v);
+      res.send(v);
     });
   });
 
@@ -601,7 +627,7 @@ const routes = function(app, passport) {
 
   app.route('/api/valsibyname/:valsi').get(function(req, res) {
     const valsi = req.params.valsi;
-    Valsi.find({valsi: valsi}).populate('finti').exec(function(err, valsi) {
+    Valsi.find({valsi: valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec(function(err, valsi) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!valsi || valsi.length === 0)
@@ -609,13 +635,19 @@ const routes = function(app, passport) {
       const newDef = valsi.map(i => {
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
+      if (path([
+        'finti', 'local'
+      ], newDef)) {
+        newDef["finti"]["local"]["password"] = undefined;
+        newDef["finti"]["local"]["passwordLastRestored"] = undefined;
+      }
       res.send(newDef);
     });
   });
 
   app.route('/api/valsi/:id').get(function(req, res) {
     const id = req.params.id;
-    Valsi.findById(id).populate({path: 'terbri.klesi'}).lean().exec(function(err, valsi) {
+    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec(function(err, valsi) {
       if (err)
         return res.status(400).send({err: err.message});
       if (!valsi)
@@ -637,6 +669,12 @@ const routes = function(app, passport) {
         }),
         finti: valsi.finti
       };
+      if (path([
+        'finti', 'local'
+      ], newDef)) {
+        newDef["finti"]["local"]["password"] = undefined;
+        newDef["finti"]["local"]["passwordLastRestored"] = undefined;
+      }
       res.send(newDef);
     });
   }).post(function(req, res) {

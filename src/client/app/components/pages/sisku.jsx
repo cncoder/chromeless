@@ -16,7 +16,7 @@ class Sisku extends React.Component {
   }
   componentWillMount() {
     const self = this;
-    sisku_satci(this.props.location.query, function(err, vlamei) {
+    sisku_satci(self.props.location.query, function(err, vlamei) {
       if (vlamei) {
         self.setState({vlamei: vlamei});
       }
@@ -37,9 +37,12 @@ class Sisku extends React.Component {
             <hr/>
             <ul className="list-group-horizontal row">
               {allvlamei.map(i => {
-                return <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
-                  <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
-                </li>;
+                return (
+                  <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
+                    <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
+                    <div>{Object.keys(i).map(a=><div key={a}>{a} - {JSON.stringify(i[a])}</div>)}</div>
+                  </li>
+                );
               })}
             </ul>
           </div>

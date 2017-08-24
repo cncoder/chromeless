@@ -6,15 +6,15 @@ const Klecihe = new Schema({
   klesi: String,
   finti: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'user'
   },
   selgerna_filotcita: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   selgerna_filovelski: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   detri: Date,
   frozen: Boolean,
@@ -26,7 +26,7 @@ const Klecihe = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -37,7 +37,7 @@ const Klecihe = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       }
     }
   ],
@@ -45,7 +45,7 @@ const Klecihe = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -56,7 +56,7 @@ const Klecihe = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -68,11 +68,11 @@ const Klecihe = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },,
       detri: Date,
       undone: Boolean,
@@ -81,4 +81,4 @@ const Klecihe = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Klecihe', Klecihe, 'Klecihe');
+module.exports = mongoose.model('klecihe', Klecihe, 'klecihe');

@@ -25,8 +25,12 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - tags must get saved
 - fill klesi table on each save
 - gh is saved as lojban word
-* /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show  defs of valsi from finti
+* no longer can populate fields
+- /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show defs of valsi from finti
+* /sisku client must determine via switch how to present the component for a given model.
 * warning that this word in this lang already was added by you
+* save lojban words with spaces
+* Comedy node.js for main functions. Test!
 - save only if truly logged in and credentials coincide! - looks like isAuthenticated does the trick
 * shows other defs of this word after submit
 - tcita into separate model

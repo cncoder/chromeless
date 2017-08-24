@@ -6,6 +6,7 @@ import {Link} from 'react-router';
 import {getAuthenticated} from '../../stores/AppStateStore';
 import AppStateStore from '../../stores/AppStateStore';
 import {InlineTex} from 'react-tex';
+const p = (a) => console.log(JSON.stringify(a, null, 2));
 
 class Valsi extends React.Component {
   constructor() {
@@ -46,6 +47,7 @@ class Valsi extends React.Component {
     const self = this;
 
     let valsi_obj = self.state.valsi || null;
+    p(self.state.valsi);
     let valsi = valsi_obj
       ? valsi_obj.valsi
       : null;

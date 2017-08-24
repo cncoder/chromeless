@@ -11,7 +11,7 @@ const Comment = new Schema({
   referrer: Number,
   finti: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'user'
   },
   detri: Date,
   disabled: Boolean,
@@ -20,7 +20,7 @@ const Comment = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -29,7 +29,7 @@ const Comment = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -40,7 +40,7 @@ const Comment = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -52,11 +52,11 @@ const Comment = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },
       detri: Date,
       undone: Boolean,
@@ -65,4 +65,4 @@ const Comment = new Schema({
   ]
 });
 
-module.exports = mongoose.model('Comment', Comment, 'Comment');
+module.exports = mongoose.model('comment', Comment, 'comment');

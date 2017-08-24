@@ -10,7 +10,7 @@ const Tcita = new Schema({
   disabled: Boolean,
   bangu: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   kampu: Boolean,
   disabling: [
@@ -18,7 +18,7 @@ const Tcita = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -26,4 +26,4 @@ const Tcita = new Schema({
 });
 Tcita.plugin(findOrCreate);
 
-module.exports = mongoose.model('Tcita', Tcita, 'Tcita');
+module.exports = mongoose.model('tcita', Tcita, 'tcita');

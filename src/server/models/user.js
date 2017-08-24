@@ -34,7 +34,7 @@ const userSchema = new Schema({
       id: Number,
       finti: {
         type: Schema.ObjectId,
-        ref: 'Language'
+        ref: 'language'
       }
     }
   ],
@@ -42,7 +42,7 @@ const userSchema = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -53,7 +53,7 @@ const userSchema = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -66,7 +66,7 @@ const userSchema = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -76,11 +76,11 @@ const userSchema = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },
       detri: Date,
       undone: Boolean,
@@ -91,7 +91,7 @@ const userSchema = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       krali: {
         type: Schema.ObjectId,
@@ -119,4 +119,4 @@ userSchema.methods.validPassword = function(password) {
 userSchema.plugin(findOrCreate);
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema, 'User');
+module.exports = mongoose.model('user', userSchema, 'user');

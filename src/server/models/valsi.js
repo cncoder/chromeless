@@ -6,15 +6,15 @@ const valsi = new Schema({
   valsi: String,
   finti: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'user'
   },
   selgerna_filovalsi: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   selgerna_filovelski: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   detri: Date,
   frozen: Boolean,
@@ -26,7 +26,7 @@ const valsi = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -38,7 +38,7 @@ const valsi = new Schema({
       klesi: [
         {
           type: Schema.ObjectId,
-          ref: 'Klesi'
+          ref: 'klesi'
         }
       ], //entity / property of x1 / event / text ...
       nirna: String, //x1
@@ -52,7 +52,7 @@ const valsi = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       }
     }
   ],
@@ -60,7 +60,7 @@ const valsi = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -71,7 +71,7 @@ const valsi = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -83,11 +83,11 @@ const valsi = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },
       detri: Date,
       undone: Boolean,
@@ -98,11 +98,11 @@ const valsi = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       felovelski: {
         type: Schema.ObjectId,
-        ref: 'Valsi'
+        ref: 'valsi'
       },
       detri: Date,
       undone: Boolean,
@@ -111,7 +111,7 @@ const valsi = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           detri: Date,
           undone: Boolean,
@@ -122,7 +122,7 @@ const valsi = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           detri: Date,
           undone: Boolean,
@@ -134,11 +134,11 @@ const valsi = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           tcita: {
             type: Schema.ObjectId,
-            ref: 'Tcita'
+            ref: 'tcita'
           },
           detri: Date,
           undone: Boolean,

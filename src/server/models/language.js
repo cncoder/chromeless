@@ -15,7 +15,7 @@ const Language = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -24,7 +24,7 @@ const Language = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -35,7 +35,7 @@ const Language = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -47,11 +47,11 @@ const Language = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },
       detri: Date,
       undone: Boolean,
@@ -61,4 +61,4 @@ const Language = new Schema({
 });
 Language.plugin(findOrCreate);
 
-module.exports = mongoose.model('Language', Language, 'Language');
+module.exports = mongoose.model('language', Language, 'language');

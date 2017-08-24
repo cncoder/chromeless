@@ -13,7 +13,7 @@ const Klesi = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -21,4 +21,4 @@ const Klesi = new Schema({
 });
 Klesi.plugin(findOrCreate);
 
-module.exports = mongoose.model('Klesi', Klesi, 'Klesi');
+module.exports = mongoose.model('klesi', Klesi, 'klesi');

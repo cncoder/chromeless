@@ -12,11 +12,11 @@ const Krali = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
   ]
 });
 
-module.exports = mongoose.model('Krali', Krali, 'Krali');
+module.exports = mongoose.model('krali', Krali, 'krali');

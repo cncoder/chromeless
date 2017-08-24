@@ -9,11 +9,11 @@ const Sentence = new Schema({
   detri: Date,
   finti: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'user'
   },
   bangu: {
     type: Schema.ObjectId,
-    ref: 'Language'
+    ref: 'language'
   },
   pinka: String,
   disabled: Boolean,
@@ -23,7 +23,7 @@ const Sentence = new Schema({
       disabled: Boolean,
       zukte: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date
     }
@@ -32,11 +32,11 @@ const Sentence = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       felovelski: {
         type: Schema.ObjectId,
-        ref: 'Valsi'
+        ref: 'valsi'
       },
       detri: Date,
       undone: Boolean,
@@ -49,7 +49,7 @@ const Sentence = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           detri: Date,
           undone: Boolean,
@@ -60,7 +60,7 @@ const Sentence = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           detri: Date,
           undone: Boolean,
@@ -72,11 +72,11 @@ const Sentence = new Schema({
         {
           finti: {
             type: Schema.ObjectId,
-            ref: 'User'
+            ref: 'user'
           },
           tcita: {
             type: Schema.ObjectId,
-            ref: 'Tcita'
+            ref: 'tcita'
           },
           detri: Date,
           undone: Boolean,
@@ -89,7 +89,7 @@ const Sentence = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -100,7 +100,7 @@ const Sentence = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       detri: Date,
       undone: Boolean,
@@ -112,11 +112,11 @@ const Sentence = new Schema({
     {
       finti: {
         type: Schema.ObjectId,
-        ref: 'User'
+        ref: 'user'
       },
       tcita: {
         type: Schema.ObjectId,
-        ref: 'Tcita'
+        ref: 'tcita'
       },
       detri: Date,
       undone: Boolean,
@@ -126,4 +126,4 @@ const Sentence = new Schema({
 });
 Sentence.plugin(random);
 
-module.exports = mongoose.model('Sentence', Sentence, 'Sentence');
+module.exports = mongoose.model('sentence', Sentence, 'sentence');
