@@ -385,25 +385,11 @@ const routes = function(app, passport) {
       if (!opt[k]) {
         opt[k] = undefined;
       } else if (model.schema.obj[k] && model.schema.obj[k].ref) {
-        p(opt[k]);
-        p(k);
         opt[k] = mongoose.Types.ObjectId(opt[k]);
       }
     });
     //model.find(opt, function(err, vlamei) {
-    model.find(opt).populate('finti')
-    // .populate({path: 'finti'})
-    // .populate('selgerna_filovalsi')
-    // .populate('selgerna_filovelski')
-    // .populate({path: 'terbri.klesi'})
-    // .populate({path: 'krasi.finti'})
-    // .populate({path: 'tcita.finti'})
-    // .populate({path: 'tcita.tcita'})
-    // .populate({path: 'jorne.finti'})
-    // .populate({path: 'jorne.felovelski'})
-    // .populate({path: 'jorne.tcita.finti'})
-    // .populate({path: 'jorne.tcita.tcita'})
-      .lean().exec(function(err, vlamei) {
+    model.find(opt).populate('finti').populate('selgerna_filovalsi').populate('selgerna_filovelski').populate({path: 'terbri.klesi'}).populate({path: 'krasi.finti'}).populate({path: 'tcita.finti'}).populate({path: 'tcita.tcita'}).populate({path: 'jorne.finti'}).populate({path: 'jorne.felovelski'}).populate({path: 'jorne.tcita.finti'}).populate({path: 'jorne.tcita.tcita'}).lean().exec(function(err, vlamei) {
       if (!vlamei)
         return res.send([]);
       if (err)

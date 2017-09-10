@@ -25,7 +25,7 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - tags must get saved
 - fill klesi table on each save
 - gh is saved as lojban word
-* no longer can populate fields
+- no longer can populate fields
 - /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show defs of valsi from finti
 * /sisku client must determine via switch how to present the component for a given model.
 * warning that this word in this lang already was added by you
@@ -133,7 +133,9 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * upgrade react router to https://ebaytech.berlin/universal-web-apps-with-react-router-4-15002bb30ccb https://stackoverflow.com/questions/42797543/whats-wrong-with-this-reactrouter-match-implementation/42798535#42798535
 * deleting tags, smuvelcki, klesi, user results in "disabled" for this record
 //{_id: {$in: [req.body.data]}
-
+* export dictionary as html
+* use https://github.com/verekia/js-stack-from-scratch
+* localstorage should instead be stored via https://www.npmjs.com/package/redux-persist
 ----
 pages
 * /def/:id - simply a readable def
