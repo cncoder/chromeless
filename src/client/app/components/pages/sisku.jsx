@@ -23,7 +23,7 @@ class Sisku extends React.Component {
     });
   }
   componentDidMount() {
-    document.title = "All definitions";
+    document.title = "Search ...";
   }
   render() {
     const self = this;
@@ -33,7 +33,7 @@ class Sisku extends React.Component {
       <div className="header-content">
         <div className="header-content-inner">
           <div>
-            <h1>All words</h1>
+            <h1>Search ...</h1>
             <hr/>
             <ul className="list-group-horizontal row">
               {allvlamei.map(i => {

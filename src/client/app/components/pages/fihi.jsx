@@ -17,13 +17,16 @@ class Fihi extends React.Component {
                 <Link to={`/pilno`}>All users</Link>
               </li>
               <li className="list-group-item col-xs-4" key={`/finti`}>
-                <Link to={`/finti`}>Add a new word</Link>
+                <Link to={`/finti`}>Add a new definition</Link>
               </li>
               <li className="list-group-item col-xs-4" key={`/jbangu`}>
                 <Link to={`/jbangu`}>Add a language</Link>
               </li>
               <li className="list-group-item col-xs-4" key={`/login`}>
                 <Link to={`/login`}>Login</Link>
+              </li>
+              <li className="list-group-item col-xs-4" key={`/sisku`}>
+                <Link to={`/sisku`}>Search</Link>
               </li>
             </ul>
           </div>

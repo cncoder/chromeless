@@ -527,10 +527,10 @@ const routes = function(app, passport) {
         return res.status(400).send({err: err.message});
       if (!vlamei || vlamei.length === 0)
         return res.send({err: "empty Valsi database"});
-      const newDef = vlamei.map(i => {
-        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
-      });
-      res.send(newDef);
+      // vlamei.map(i => {
+      //   return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      // });
+      res.send(vlamei);
     });
   });
 

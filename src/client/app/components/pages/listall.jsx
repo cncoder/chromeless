@@ -32,13 +32,15 @@ class ListAll extends React.Component {
       <div className="header-content">
         <div className="header-content-inner">
           <div>
-            <h1>All words</h1>
+            <h1>All definitions</h1>
             <hr/>
             <ul className="list-group-horizontal row">
               {allvlamei.map(i => {
-                return <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
-                  <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
-                </li>;
+                return (
+                  <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
+                    <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
+                  </li>
+                );
               })}
             </ul>
           </div>

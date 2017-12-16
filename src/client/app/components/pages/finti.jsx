@@ -69,25 +69,27 @@ class Create extends BaseComponent {
   constructor() {
     super();
     this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags');
-    // this.handleSubmit = this.handleSubmit.bind(this);
-    // this.handleChange = this.handleChange.bind(this);
-    // this.addOption = this.addOption.bind(this);
-    // this.removeOption = this.removeOption.bind(this);
     const lget = localStorage.get('finti');
     const stored_state = JSON.parse(lget || '{}');
     stored_state.flashVisible = undefined;
     stored_state.forcedoverwrite = false;
     stored_state.addButtonDefault = init_state.addButtonDefault;
     stored_state.addButton = init_state.addButton;
+    stored_state.klemei = [...new Set(stored_state.klemei.map(i => {
+        const freq = i.freq
+          ? `[${i.freq}] `
+          : '';
+        return JSON.stringify({label: `${i.label}`, value: i.value});
+      }))].map(i => JSON.parse(i));
     const deepExtend = require('deep-extend');
-    const resut = deepExtend(init_state, stored_state);
-    this.state = resut;
+    this.state = deepExtend(init_state, stored_state);
   }
   componentDidMount() {
     document.title = `Add definition`;
   }
   componentDidUpdate(prevProps, prevState) {
     localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
+    p(this.state.klemei.length);
   }
   componentWillMount() {
     const self = this;
@@ -116,33 +118,11 @@ class Create extends BaseComponent {
         })
       });
     });
-    getAllKlesi(function(err, klemei) {
-      if (err) {
-        console.log("klemei", err);
-        return;
-      }
-      self.setState({
-        klemei: [...new Set(self.state.klemei.concat(klemei.map(i => {
-            const freq = i.freq
-              ? `[${i.freq}] `
-              : '';
-            return {label: `${i.klesi}`, value: i.klesi};
-          })))]
-      });
-    });
     getAllTcita(function(err, tcitymei) {
       if (err) {
         console.log("tcitymei", err);
         return;
       }
-      self.setState({
-        tcitymei: [...new Set(self.state.tcitymei.concat(tcitymei.map(i => {
-            const freq = i.freq
-              ? `[${i.freq}] `
-              : '';
-            return {label: `${i.tcita}`, value: i.tcita};
-          })))]
-      });
     });
   }
   addOption(e) {
@@ -272,7 +252,7 @@ class Create extends BaseComponent {
       }
       if (res.body.xaho) {
         const f = res.body.vlamei[0].item;
-        self.flashMessage(`Warning. This word already has some definitions from you. Press 'Add' again to ignore this warning.`, true, `sisku?morna=valsi&finti=${f.finti||''}&valsi=${f.valsi||''}&selgerna_filovalsi=${f.selgerna_filovalsi||''}`);
+        self.flashMessage(`Warning. This word already has some definitions from you. Press 'Add' again to ignore this warning.`, true, `sisku?morna=valsi&finti=${f.finti || ''}&valsi=${f.valsi || ''}&selgerna_filovalsi=${f.selgerna_filovalsi || ''}`);
         self.setState({forcedoverwrite: true, addButton: 'Add with klesi'});
         return;
       }
