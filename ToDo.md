@@ -30,8 +30,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * /sisku client must determine via switch how to present the component for a given model.
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
-* new klesi are not being added
-* no more errors tht  i already have defs for this word
+- new klesi are not being added
+- no more errors that i already have defs for this word
 * /dict/:valsi_by_name
 * dont allow saving identical read-only def. if another read-only already is
 * Comedy node.js for main functions. Test!

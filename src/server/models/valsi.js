@@ -48,14 +48,6 @@ const valsi = new Schema({
   old_terbri: String, //"x1 is a cat of species x2"
   velski: String, //dog (from 17th century)
   pinka: String,
-  krasi: [
-    {
-      finti: {
-        type: Schema.ObjectId,
-        ref: 'user'
-      }
-    }
-  ],
   upvotes: [
     {
       finti: {
@@ -65,6 +57,17 @@ const valsi = new Schema({
       detri: Date,
       undone: Boolean,
       undonedetri: Date
+    }
+  ],
+  krasi: [
+    {
+      finti: {
+        type: Schema.ObjectId,
+        ref: 'user'
+      },
+      detri: Date,
+      lefinti_puhivimcu: Boolean,
+      lefinti_puhivimcu_detri: Date
     }
   ],
   downvotes: [

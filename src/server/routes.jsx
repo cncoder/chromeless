@@ -29,6 +29,21 @@ const thetwo = [
   }
 ]
 
+const FlushPasswordInJson = (i) => {
+  return {_id: i.finti._id, cmene: i.finti.cmene}
+}
+
+function FlushPassword(i) {
+  i.finti = FlushPasswordInJson(i)
+  if (path(['krasi','finti'], i))
+    i.krasi.finti = i.krasi.finti.map(FlushPasswordInJson)
+  if (path(['tcita','finti'], i))
+    i.tcita.finti = i.tcita.finti.map(FlushPasswordInJson)
+  if (path(['jorne','tcita','finti'], i))
+    i.jorne.tcita.finti = i.jorne.tcita.finti.map(FlushPasswordInJson)
+  return i
+}
+
 function GetOptimizedTerbri(arrterbri) {
   let terbri = [];
   for (let i in arrterbri) {
@@ -227,10 +242,7 @@ const routes = function(app, passport) {
           p(item.item.klesi)
           if (item.kunti && item.type === 'klesi' && item.item.klesi) {
             //now update
-            const klesi = new Klesi({
-              freq: 1,
-              klesi: item.item.klesi
-            });
+            const klesi = new Klesi({freq: 1, klesi: item.item.klesi});
             candidate = new Promise((resolve, reject) => {
               klesi.save((err, it, numberAffected) => {
                 if (err) {
@@ -387,20 +399,20 @@ const routes = function(app, passport) {
         opt[k] = mongoose.Types.ObjectId(opt[k]);
       }
     });
+    p(opt)
     //model.find(opt, function(err, vlamei) {
     model.find(opt).populate('finti').populate('selgerna_filovalsi').populate('selgerna_filovelski').populate({path: 'terbri.klesi'}).populate({path: 'krasi.finti'}).populate({path: 'tcita.finti'}).populate({path: 'tcita.tcita'}).populate({path: 'jorne.finti'}).populate({path: 'jorne.felovelski'}).populate({path: 'jorne.tcita.finti'}).populate({path: 'jorne.tcita.tcita'}).lean().exec(function(err, vlamei) {
       if (!vlamei)
         return res.send([]);
       if (err)
         return res.status(400).send({err: err.message});
-      let v = vlamei;
+      let v = vlamei
       switch (model_name) {
         case "valsi":
           v = vlamei.map(i => {
-            // if (i.local && i.local.password)
-            //   i.local.password = undefined;
-            //return i;
-            return {valsi: i.valsi, finti: i.finti, _id: i._id};
+            i = FlushPassword(i)
+            return i
+            //{valsi: i.valsi, finti: i.finti, _id: i._id};
           });
           break;
         case "language":
