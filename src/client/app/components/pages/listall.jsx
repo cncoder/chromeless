@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import AddOptionButton from '../add_option_button.jsx';
 import {getAuthenticated} from '../../stores/AppStateStore';
 import AppStateStore from '../../stores/AppStateStore';
+const p = (a) => console.log(JSON.stringify(a, null, 2));
 
 class ListAll extends React.Component {
   constructor() {
@@ -26,8 +27,7 @@ class ListAll extends React.Component {
   }
   render() {
     const self = this;
-    const allvlamei = this.state.vlamei;
-
+    const allvlamei = this.state.vlamei.err?[]:this.state.vlamei;
     return (
       <div className="header-content">
         <div className="header-content-inner">

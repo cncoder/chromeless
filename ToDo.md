@@ -30,6 +30,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * /sisku client must determine via switch how to present the component for a given model.
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
+* /dict/:valsi_by_name
+* dont allow saving identical read-only def. if another read-only already is
 * Comedy node.js for main functions. Test!
 - save only if truly logged in and credentials coincide! - looks like isAuthenticated does the trick
 * shows other defs of this word after submit

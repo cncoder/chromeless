@@ -527,10 +527,11 @@ const routes = function(app, passport) {
         return res.status(400).send({err: err.message});
       if (!vlamei || vlamei.length === 0)
         return res.send({err: "empty Valsi database"});
-      // vlamei.map(i => {
-      //   return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
-      // });
-      res.send(vlamei);
+      const newDef = vlamei
+      .map(i => {
+        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      });
+      res.send(newDef);
     });
   });
 
@@ -619,14 +620,14 @@ const routes = function(app, passport) {
       if (!valsi || valsi.length === 0)
         return res.status(400).send({err: 'valsi not found'});
       const newDef = valsi.map(i => {
+        if (path([
+          'finti', 'local'
+        ], i)) {
+          i["finti"]["local"]["password"] = undefined;
+          i["finti"]["local"]["passwordLastRestored"] = undefined;
+        }
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
-      if (path([
-        'finti', 'local'
-      ], newDef)) {
-        newDef["finti"]["local"]["password"] = undefined;
-        newDef["finti"]["local"]["passwordLastRestored"] = undefined;
-      }
       res.send(newDef);
     });
   });

@@ -4,6 +4,7 @@ import {getRandomDef, getDefByName, getUserById} from '../../utils/utils';
 import {Link} from 'react-router';
 import {getAuthenticated} from '../../stores/AppStateStore';
 import AppStateStore from '../../stores/AppStateStore';
+const p = (a) => console.log(JSON.stringify(a, null, 2));
 
 //show all definitions of a given word in ALL !!! languages
 class SmuvelckiByName extends React.Component {
@@ -43,11 +44,12 @@ class SmuvelckiByName extends React.Component {
                       <div className="formal-group">
                         <div key={`terbri_${i._id}`}>
                           {i.terbri.map(function(o) {
+                            p(o);
                             if (o.idx === 0 && o.sluji)
                               return `${o.sluji} `;
                             if (!o.nirna)
                               return;
-                            return `${o.nirna} (${o.klesi}) ${o.sluji} `;
+                            return `${o.nirna} (${o.klesi.map(j=>j.klesi).join(" ")}) ${o.sluji} `;
                           }).join(" ").trim()}
                         </div>
                         <div>{i.finti
