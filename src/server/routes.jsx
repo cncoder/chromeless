@@ -212,18 +212,24 @@ const routes = function(app, passport) {
           return Promise.all([promisified_xaho]);
         }
       }
-
       //SAVE OR UPDATE
       let prs = [];
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
         let candidate;
         if (item.err) {
-          if (item.type === 'klesi' && item.item.klesi) {
+          item.err = 'not a correct lang or klesi';
+          candidate = new Promise((resolve, reject) => {
+            resolve(item)
+          });
+        } else {
+          p(item)
+          p(item.item.klesi)
+          if (item.kunti && item.type === 'klesi' && item.item.klesi) {
             //now update
             const klesi = new Klesi({
               freq: 1,
-              klesi: JSON.parse(item.item.klesi)
+              klesi: item.item.klesi
             });
             candidate = new Promise((resolve, reject) => {
               klesi.save((err, it, numberAffected) => {
@@ -237,15 +243,8 @@ const routes = function(app, passport) {
                 resolve(item);
               })
             });
-          } else {
-            item.err = 'not a correct lang or klesi';
-            candidate = new Promise((resolve, reject) => {
-              resolve(item)
-            });
-          }
-        } else {
-          if (item.type === 'klesi' && item.item.klesi) {
-            //no errors so update freqs
+          } else if (item.type === 'klesi' && item.item.klesi) {
+            //not kunti so update freqs
             candidate = new Promise((resolve, reject) => {
               Klesi.findOneAndUpdate({
                 _id: item.item._id
@@ -290,6 +289,7 @@ const routes = function(app, passport) {
             });
           }
         }
+        p(i)
         prs.push(candidate);
       }
       //save tcita
@@ -319,7 +319,6 @@ const routes = function(app, passport) {
         });
         prs.push(candidate);
       });
-
       //save smuvelcki
       const newDef = new Valsi();
       newDef.valsi = req.body.valsi;
@@ -527,8 +526,7 @@ const routes = function(app, passport) {
         return res.status(400).send({err: err.message});
       if (!vlamei || vlamei.length === 0)
         return res.send({err: "empty Valsi database"});
-      const newDef = vlamei
-      .map(i => {
+      const newDef = vlamei.map(i => {
         return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
       });
       res.send(newDef);

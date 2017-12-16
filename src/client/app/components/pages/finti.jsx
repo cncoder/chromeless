@@ -75,7 +75,7 @@ class Create extends BaseComponent {
     stored_state.forcedoverwrite = false;
     stored_state.addButtonDefault = init_state.addButtonDefault;
     stored_state.addButton = init_state.addButton;
-    stored_state.klemei = [...new Set(stored_state.klemei.map(i => {
+    stored_state.klemei = [...new Set((stored_state.klemei||[]).map(i => {
         const freq = i.freq
           ? `[${i.freq}] `
           : '';

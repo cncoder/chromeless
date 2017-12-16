@@ -49,7 +49,7 @@ class SmuvelckiByName extends React.Component {
                               return `${o.sluji} `;
                             if (!o.nirna)
                               return;
-                            return `${o.nirna} (${o.klesi.map(j=>j.klesi).join(" ")}) ${o.sluji} `;
+                            return `${o.nirna} (${o.klesi.map(j=>j.klesi).join(", ")}) ${o.sluji} `;
                           }).join(" ").trim()}
                         </div>
                         <div>{i.finti
