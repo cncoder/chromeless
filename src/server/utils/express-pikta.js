@@ -1,5 +1,6 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const session = require('express-session');
+let mongoose = require('mongoose');
 // const redis = require("redis");
 
 const MongoStore = {
@@ -125,7 +126,7 @@ const RedisStore = {
 }
 
 const SessionStore = function(options, cb) {
-  const options = {
+  options = {
     storage: options.storage || 'mongodb',
     host: options.host || 'localhost',
     port: options.port || (options.storage == 'redis'
@@ -137,7 +138,7 @@ const SessionStore = function(options, cb) {
     expire: options.expire || 86400
   };
 
-  express.session.Store.call(this, options);
+  session.Store.call(this, options);
 
   switch (options.storage) {
     case 'mongodb':
@@ -194,6 +195,6 @@ const SessionStore = function(options, cb) {
     cb.call(null);
   }
 
-SessionStore.prototype = new express.session.Store();
+SessionStore.prototype = new session.Store();
 
 module.exports = SessionStore;

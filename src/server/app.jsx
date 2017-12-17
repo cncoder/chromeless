@@ -65,7 +65,7 @@ db.once('open', function() {
         // host: 'localhost',
         // port: 27017,
         // db: 'test',
-        collection: 'pikta'
+        collection: 'pikta',
         expire: ditcu_lenupikta // optional
     })
     // ,
