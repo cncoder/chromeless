@@ -50,7 +50,32 @@ db.once('open', function() {
   //     res.send('You shall not pass ' + hits + ' until ' + until + '!');
   // }));
   app.use(require('body-parser').urlencoded({extended: true}));
-  app.use(require('express-session')({secret: 'vote for me', resave: false, saveUninitialized: false}));
+  //save cookie sessions to the db
+  const ditcu_lenupikta = 60 * 60 * 24 * 7
+  app.use(require('express-session')({
+    secret: '.i do la almavlaste ba pinfu',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * ditcu_lenupikta // 1 week
+    },
+    store: new (require('./utils/express-pikta.js'))({
+        storage: 'mongodb',
+        instance: mongoose,
+        // host: 'localhost',
+        // port: 27017,
+        // db: 'test',
+        collection: 'pikta'
+        expire: ditcu_lenupikta // optional
+    })
+    // ,
+    // Boilerplate options, see:
+    // * https://www.npmjs.com/package/express-session#resave
+    // * https://www.npmjs.com/package/express-session#saveuninitialized
+    // resave: true,
+    // saveUninitialized: true
+  }));
+
   app.use(express.static(__dirname + '/../client/public'));
   app.use(favicon(__dirname + '/../client/public/img/favicon.png'));
 

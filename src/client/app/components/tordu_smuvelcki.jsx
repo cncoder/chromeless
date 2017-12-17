@@ -1,10 +1,10 @@
 const React = require('react');
 import {path} from 'ramda';
 import request from 'superagent';
-import {getRandomDef, getDefById, getUserById} from '../../utils/utils';
+import {getRandomDef, getDefById, getUserById} from '../utils/utils';
 import {Link} from 'react-router';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import AppStateStore from '../../stores/AppStateStore';
+import {getAuthenticated} from '../stores/AppStateStore';
+import AppStateStore from '../stores/AppStateStore';
 import {InlineTex} from 'react-tex';
 
 class Valsi extends React.Component {

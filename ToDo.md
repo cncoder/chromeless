@@ -28,6 +28,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - no longer can populate fields
 - /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show defs of valsi from finti
 * /sisku client must determine via switch how to present the component for a given model.
+- dont log out after restarting server
+- integrate express-sessions into the app and dont change name of pikta
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
 - new klesi are not being added
@@ -140,6 +142,7 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * export dictionary as html
 * use https://github.com/verekia/js-stack-from-scratch
 * localstorage should instead be stored via https://www.npmjs.com/package/redux-persist
+* http://kotobanki.thatpage.org/ - implement sharing learnt lists
 ----
 pages
 * /def/:id - simply a readable def
