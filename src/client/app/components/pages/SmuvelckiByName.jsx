@@ -44,7 +44,6 @@ class SmuvelckiByName extends React.Component {
                       <div className="formal-group">
                         <div key={`terbri_${i._id}`}>
                           {i.terbri.map(function(o) {
-                            p(o);
                             if (o.idx === 0 && o.sluji)
                               return `${o.sluji} `;
                             if (!o.nirna)

@@ -1,16 +1,16 @@
-const React = require('react');
-import request from 'superagent';
-const localStorage = require('web-storage')().localStorage;
-import {getAuthenticated} from '../../stores/AppStateStore';
-import {getAllBangu, getAllKlesi, getAllTcita} from '../../utils/utils';
-import {browserHistory} from 'react-router';
-import {Link} from 'react-router';
-import Select from 'react-select-plus';
-import {Creatable} from 'react-select-plus';
-import OptionInput from '../optioninput.jsx';
-import FlashMessage from '../flashmessage.jsx';
-import 'react-select-plus/dist/react-select-plus.css';
-const p = (a) => console.log(JSON.stringify(a));
+const React = require('react')
+import request from 'superagent'
+const localStorage = require('web-storage')().localStorage
+import {getAuthenticated} from '../../stores/AppStateStore'
+import {getAllBangu, getAllKlesi, getAllTcita} from '../../utils/utils'
+import {browserHistory} from 'react-router'
+import {Link} from 'react-router'
+import Select from 'react-select-plus'
+import {Creatable} from 'react-select-plus'
+import OptionInput from '../optioninput.jsx'
+import FlashMessage from '../flashmessage.jsx'
+import 'react-select-plus/dist/react-select-plus.css'
+const p = (a) => console.log(JSON.stringify(a))
 
 const init_state = {
   flashVisible: false,
@@ -53,185 +53,184 @@ const init_state = {
       sluji_hint: 'text after x3'
     }
   ]
-};
+}
 
 function findKey(obj, value) {
-  return Object.keys(obj).filter(i => obj[i].idx === value)[0];
+  return Object.keys(obj).filter(i => obj[i].idx === value)[0]
 }
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class Create extends BaseComponent {
   constructor() {
-    super();
-    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags');
-    const lget = localStorage.get('finti');
-    const stored_state = JSON.parse(lget || '{}');
-    stored_state.flashVisible = undefined;
-    stored_state.forcedoverwrite = false;
-    stored_state.addButtonDefault = init_state.addButtonDefault;
-    stored_state.addButton = init_state.addButton;
+    super()
+    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
+    const lget = localStorage.get('finti')
+    const stored_state = JSON.parse(lget || '{}')
+    stored_state.flashVisible = undefined
+    stored_state.forcedoverwrite = false
+    stored_state.addButtonDefault = init_state.addButtonDefault
+    stored_state.addButton = init_state.addButton
     stored_state.klemei = [...new Set((stored_state.klemei||[]).map(i => {
         const freq = i.freq
           ? `[${i.freq}] `
-          : '';
-        return JSON.stringify({label: `${i.label}`, value: i.value});
-      }))].map(i => JSON.parse(i));
-    const deepExtend = require('deep-extend');
-    this.state = deepExtend(init_state, stored_state);
+          : ''
+        return JSON.stringify({label: `${i.label}`, value: i.value})
+      }))].map(i => JSON.parse(i))
+    const deepExtend = require('deep-extend')
+    this.state = deepExtend(init_state, stored_state)
   }
   componentDidMount() {
-    document.title = `Add definition`;
+    document.title = `Add definition`
   }
   componentDidUpdate(prevProps, prevState) {
     localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
-    p(this.state.klemei.length);
   }
   componentWillMount() {
-    const self = this;
+    const self = this
     getAllBangu(function(err, banmei) {
       if (err) {
-        console.log("banmei", err);
-        return;
+        console.log("banmei", err)
+        return
       }
       self.setState({
         banmei: banmei.map(i => {
           const freq = i.freq
             ? `[${i.freq}] `
-            : '';
-          return {label: `${freq}${i.krasi_cmene}`, value: i._id};
+            : ''
+          return {label: `${freq}${i.krasi_cmene}`, value: i._id}
         })
-      });
+      })
       banmei.sort(function(a, b) {
-        return parseInt(b.terfanva_freq || 0) - parseInt(a.terfanva_freq || 0);
-      });
+        return parseInt(b.terfanva_freq || 0) - parseInt(a.terfanva_freq || 0)
+      })
       self.setState({
         terfanvymei: banmei.map(i => {
           const freq = i.terfanva_freq
             ? `[${i.terfanva_freq}] `
-            : '';
-          return {label: `${freq}${i.krasi_cmene}`, value: i._id};
+            : ''
+          return {label: `${freq}${i.krasi_cmene}`, value: i._id}
         })
-      });
-    });
+      })
+    })
     getAllTcita(function(err, tcitymei) {
       if (err) {
-        console.log("tcitymei", err);
-        return;
+        console.log("tcitymei", err)
+        return
       }
-    });
+    })
   }
   addOption(e) {
-    e.preventDefault();
-    const terbri = this.state.terbri;
+    e.preventDefault()
+    const terbri = this.state.terbri
     //last one is always post
-    const last = terbri.length - 1;
-    const next = terbri[last].idx + 1;
-    terbri.push({idx: next, nirna: `x${next}`, klesi_hint: 'types', sluji_hint: `text after x${next}`});
-    const places = this.state.places;
+    const last = terbri.length - 1
+    const next = terbri[last].idx + 1
+    terbri.push({idx: next, nirna: `x${next}`, klesi_hint: 'types', sluji_hint: `text after x${next}`})
+    const places = this.state.places
     places.push(`x${next}`); //todo add according to what other symbols are chosen, what about lujvo?
-    this.setState({terbri: terbri, places: places});
+    this.setState({terbri: terbri, places: places})
   }
 
   removeOption(e) {
-    e.preventDefault();
+    e.preventDefault()
     if (this.state.terbri.length <= 1)
       return; //make disabled
-    let terbri = this.state.terbri;
-    terbri.pop();
-    let places = this.state.places;
-    places.pop();
-    this.setState({terbri: terbri, places: places});
+    let terbri = this.state.terbri
+    terbri.pop()
+    let places = this.state.places
+    places.pop()
+    this.setState({terbri: terbri, places: places})
   }
   flashMessage(msg, persistent, flashLink) {
-    this.setState({flashVisible: true, flashMessage: msg, flashLink});
-    const self = this;
+    this.setState({flashVisible: true, flashMessage: msg, flashLink})
+    const self = this
     if (persistent)
-      return;
+      return
     setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: '', flashLink});
-    }, 3000);
+      self.setState({flashVisible: false, flashMessage: '', flashLink})
+    }, 3000)
   }
   handleClear() {
-    this.setState(init_state);
-    p(this.state.valsi);
+    this.setState(init_state)
   }
   handleChangeOfTags(value) {
-    this.setState({tcita: value});
+    p(this.state)
+    this.setState({tcita: value})
     this.setState({
       'tcitymei': [...new Set(this.state.tcitymei.concat(value))]
-    });
+    })
   }
   handleChange(n_idx, e) {
-    this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false});
+    this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
     if (!e.target && (e && e.length > 0 && !e[0].value))
-      return;
+      return
     const value = e.target
       ? e.target.value
-      : e.map(i => i.value);
+      : e.map(i => i.value)
     if (n_idx < 0) {
-      this.setState({valsi: value});
-      return;
+      this.setState({valsi: value})
+      return
     }
     if (n_idx.indexOf("_") === -1)
-      return;
-    const arr_n = n_idx.split("_");
-    const type = arr_n[0];
-    const idx = arr_n[1];
+      return
+    const arr_n = n_idx.split("_")
+    const type = arr_n[0]
+    const idx = arr_n[1]
     let terbri = this.state.terbri.map(i => {
       if (i["idx"].toString() === idx) {
-        i[type] = value;
+        i[type] = value
       }
-      return i;
-    });
+      return i
+    })
     //check if two elements have the same "klesi" value
     if (type === 'klesi') {
       this.setState({
         'klemei': [...new Set(this.state.klemei.concat(value))]
-      });
+      })
       terbri = terbri.map(i => {
         if (i.nirna === terbri[idx].nirna) {
-          i.klesi = terbri[idx].klesi;
+          i.klesi = terbri[idx].klesi
         }
-        return i;
-      });
+        return i
+      })
     }
-    this.setState({terbri: terbri});
+    this.setState({terbri: terbri})
   }
   banguChange(e) {
     this.setState({
       bangu: e.value || ''
-    });
+    })
   }
   terfanvaChange(e) {
     this.setState({
       terfanva: e.value || ''
-    });
+    })
   }
   handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!getAuthenticated()) {
-      browserHistory.push('/login/');
-      //document.getElementById('openLoginPrompt').click();
-      return;
+      browserHistory.push('/login/')
+      //document.getElementById('openLoginPrompt').click()
+      return
     }
     if (!this._validateForm()) {
-      document.getElementById('openBlankFieldsPrompt').click();
-      return;
+      document.getElementById('openBlankFieldsPrompt').click()
+      return
     }
-    const self = this;
-    const valsi = self.state.valsi;
+    const self = this
+    const valsi = self.state.valsi
     const terbri_ = self.state.terbri.map((o) => {
-      return {idx: o.idx, klesi: o.klesi, nirna: o.nirna, sluji: o.sluji};
-    });
+      return {idx: o.idx, klesi: o.klesi, nirna: o.nirna, sluji: o.sluji}
+    })
     const tcita_ = self.state.tcita.map((o) => {
-      return {tcita: o.value};
-    });
+      return {tcita: o.value}
+    })
     request.post('api/finti/').send({
       forcedoverwrite: self.state.forcedoverwrite,
       bangu: self.state.bangu,
@@ -240,48 +239,48 @@ class Create extends BaseComponent {
       valsi: valsi,
       terbri: JSON.stringify(terbri_)
     }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
-      self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault});
+      self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault})
       if (res.body.err) {
-        self.flashMessage(res.body.err);
-        return;
+        self.flashMessage(res.body.err)
+        return
       }
       if (res.body.kunti) {
-        self.flashMessage(`next time you press 'Add' the following klesi will be created: ${res.body.klemei.join(", ")}`, true);
-        self.setState({forcedoverwrite: true, addButton: 'Add with klesi'});
-        return;
+        self.flashMessage(`next time you press 'Add' the following klesi will be created: ${res.body.klemei.join(", ")}`, true)
+        self.setState({forcedoverwrite: true, addButton: 'Add with klesi'})
+        return
       }
       if (res.body.xaho) {
-        const f = res.body.vlamei[0].item;
-        self.flashMessage(`Warning. This word already has some definitions from you. Press 'Add' again to ignore this warning.`, true, `sisku?morna=valsi&finti=${f.finti || ''}&valsi=${f.valsi || ''}&selgerna_filovalsi=${f.selgerna_filovalsi || ''}`);
-        self.setState({forcedoverwrite: true, addButton: 'Add with klesi'});
-        return;
+        const f = res.body.vlamei[0].item
+        self.flashMessage(`Warning. This word already has some definitions from you. Press 'Add' again to ignore this warning.`, true, `sisku?morna=valsi&finti=${f.finti || ''}&valsi=${f.valsi || ''}&selgerna_filovalsi=${f.selgerna_filovalsi || ''}`)
+        self.setState({forcedoverwrite: true, addButton: 'Add with klesi'})
+        return
       }
       if (err || !res.ok || !res.body.Valsi) {
-        console.error('there was an error submitting form');
-        return;
+        console.error('there was an error submitting form')
+        return
       }
-      console.log('smuvelcki added to the backend db', JSON.stringify(res.body));
-      browserHistory.push('/valsi/' + res.body.Valsi._id);
-    });
+      console.log('smuvelcki added to the backend db', JSON.stringify(res.body))
+      browserHistory.push('/valsi/' + res.body.Valsi._id)
+    })
   }
   _validateForm() {
-    let validated = true;
+    let validated = true
     if (this.state.valsi.length < 1)
-      validated = false;
-    return validated;
+      validated = false
+    return validated
   }
   arrowRenderer(a) {
     return (
       <span>{a}</span>
-    );
+    )
   }
   render() {
-    let removeButtonClass = 'enabled';
+    let removeButtonClass = 'enabled'
     if (this.state.terbri.length < 1) {
-      removeButtonClass = 'disabled';
+      removeButtonClass = 'disabled'
     }
-    const terbri = this.state.terbri;
-    const self = this;
+    const terbri = this.state.terbri
+    const self = this
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
@@ -340,8 +339,8 @@ class Create extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Create;
+module.exports = Create

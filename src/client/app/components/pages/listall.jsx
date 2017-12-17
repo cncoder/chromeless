@@ -1,33 +1,33 @@
-const React = require('react');
-import request from 'superagent';
-import {getAllDefs, getDefById} from '../../utils/utils';
-import {Link} from 'react-router';
-import AddOptionButton from '../add_option_button.jsx';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import AppStateStore from '../../stores/AppStateStore';
-const p = (a) => console.log(JSON.stringify(a, null, 2));
+const React = require('react')
+import request from 'superagent'
+import {getAllDefs, getDefById} from '../../utils/utils'
+import {Link} from 'react-router'
+import AddOptionButton from '../add_option_button.jsx'
+import {getAuthenticated} from '../../stores/AppStateStore'
+import AppStateStore from '../../stores/AppStateStore'
+const p = (a) => console.log(JSON.stringify(a, null, 2))
 
 class ListAll extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       vlamei: []
-    };
+    }
   }
   componentWillMount() {
-    const self = this;
+    const self = this
     getAllDefs(function(err, vlamei) {
       if (!err)
-        self.setState({vlamei: vlamei});
+        self.setState({vlamei: vlamei})
       }
-    );
+    )
   }
   componentDidMount() {
-    document.title = "All definitions";
+    document.title = "All definitions"
   }
   render() {
-    const self = this;
-    const allvlamei = this.state.vlamei.err?[]:this.state.vlamei;
+    const self = this
+    const allvlamei = this.state.vlamei.err?[]:this.state.vlamei
     return (
       <div className="header-content">
         <div className="header-content-inner">
@@ -40,14 +40,14 @@ class ListAll extends React.Component {
                   <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
                     <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
                   </li>
-                );
+                )
               })}
             </ul>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = ListAll;
+module.exports = ListAll

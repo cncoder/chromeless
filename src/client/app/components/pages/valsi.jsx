@@ -1,30 +1,30 @@
-const React = require('react');
-import {path} from 'ramda';
-import request from 'superagent';
-import {getRandomDef, getDefById, getUserById} from '../../utils/utils';
-import {Link} from 'react-router';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import AppStateStore from '../../stores/AppStateStore';
-import {InlineTex} from 'react-tex';
+const React = require('react')
+import {path} from 'ramda'
+import request from 'superagent'
+import {getRandomDef, getDefById, getUserById} from '../../utils/utils'
+import {Link} from 'react-router'
+import {getAuthenticated} from '../../stores/AppStateStore'
+import AppStateStore from '../../stores/AppStateStore'
+import {InlineTex} from 'react-tex'
 
 class Valsi extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       valsi: null,
       finti_name: null,
       finti: null
-    };
+    }
   }
   componentWillMount() {
-    const self = this;
+    const self = this
     getDefById(self.props.params.id, function(err, valsi) {
       if (err) {
-        console.error('could not get a valsi from database:', err);
-        return;
+        console.error('could not get a valsi from database:', err)
+        return
       }
-      self.setState({valsi: valsi});
-      const user = valsi["finti"];
+      self.setState({valsi: valsi})
+      const user = valsi["finti"]
       self.setState({
         finti_name: path([
           'local', 'username'
@@ -35,28 +35,28 @@ class Valsi extends React.Component {
         ], user) || path([
           'google', 'displayName'
         ], user)
-      });
-      self.setState({finti: user});
-    });
+      })
+      self.setState({finti: user})
+    })
   }
   render() {
-    const self = this;
-    let valsi_obj = self.state.valsi || null;
+    const self = this
+    let valsi_obj = self.state.valsi || null
     let valsi = valsi_obj
       ? valsi_obj.valsi
-      : null;
-    let terbri_good = null;
+      : null
+    let terbri_good = null
     if (valsi_obj && valsi_obj.terbri) {
       terbri_good = valsi_obj.terbri.map(function(o) {
         if (o.idx === 0 && o.sluji)
-          return `\$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `;
+          return `\$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
         if (!o.nirna)
-          return;
-        return `${o.nirna} (${o.klesi}) \$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `;
-      }).join(" ").trim();
-    };
-    const finti = self.state.finti;
-    const finti_name = self.state.finti_name;
+          return
+        return `${o.nirna} (${o.klesi}) \$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
+      }).join(" ").trim()
+    }
+    const finti = self.state.finti
+    const finti_name = self.state.finti_name
     return (
       <div className="header-content">
         <div className="header-content-inner">
@@ -74,7 +74,7 @@ class Valsi extends React.Component {
             <h1>{valsi}</h1>
             <hr/> {(!finti_name || !finti)
               ? null
-              : <p key={`finti`}>Created by&nbsp;
+              : <p key={`finti`}>Created by&nbsp
                 <Link to={`/pilno/${finti._id}`}>{finti_name}</Link>
               </p>}
             <div className="formal-group">
@@ -87,8 +87,8 @@ class Valsi extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Valsi;
+module.exports = Valsi

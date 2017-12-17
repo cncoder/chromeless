@@ -45,6 +45,8 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * fill tcita table on each save
 * klesi has language, "your klesi"/"order all by frequency"
 * klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
+* there is always "undefined" tcita. remove it
+* dupicate tcita are being saved
 - on save to server save each new type to klesi model. if exists +1 for frequency. if no frequency =1
 - take klesi from Klesi table
 - type input should be extendable
