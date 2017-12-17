@@ -146,6 +146,7 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * export dictionary as html
 * use https://github.com/verekia/js-stack-from-scratch
 * localstorage should instead be stored via https://www.npmjs.com/package/redux-persist
+* Redis for horizontal scaling?
 * http://kotobanki.thatpage.org/ - implement sharing learnt lists
 ----
 pages
