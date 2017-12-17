@@ -34,7 +34,7 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * save lojban words with spaces
 - new klesi are not being added
 - no more errors that i already have defs for this word
-* /dict/:valsi_by_name
+- /dict/:valsi_by_name
 * dont allow saving identical read-only def. if another read-only already is
 * Comedy node.js for main functions. Test!
 - save only if truly logged in and credentials coincide! - looks like isAuthenticated does the trick
@@ -46,7 +46,9 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 * klesi has language, "your klesi"/"order all by frequency"
 * klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
 * there is always "undefined" tcita. remove it
-* dupicate tcita are being saved
+* duplicate tcita are being saved
+* OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
+* switch "editable by me, by all"
 - on save to server save each new type to klesi model. if exists +1 for frequency. if no frequency =1
 - take klesi from Klesi table
 - type input should be extendable

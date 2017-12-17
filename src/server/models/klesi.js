@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const findOrCreate = require('mongoose-findorcreate');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const findOrCreate = require('mongoose-findorcreate')
 
 const Klesi = new Schema({
   klesi: String,
@@ -18,7 +18,7 @@ const Klesi = new Schema({
       detri: Date
     }
   ]
-});
-Klesi.plugin(findOrCreate);
+})
+Klesi.plugin(findOrCreate)
 
-module.exports = mongoose.model('klesi', Klesi, 'klesi');
+module.exports = mongoose.model('klesi', Klesi, 'klesi')

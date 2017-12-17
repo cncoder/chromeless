@@ -35,21 +35,25 @@ const init_state = {
       idx: 0,
       nirna: '',
       klesi_hint: '',
+      sluji:'',
       sluji_hint: 'start of text'
     }, {
       idx: 1,
       nirna: 'x1',
       klesi_hint: 'types',
+      sluji:'',
       sluji_hint: 'text after x1'
     }, {
       idx: 2,
       nirna: 'x2',
       klesi_hint: 'types',
+      sluji:'',
       sluji_hint: 'text after x2'
     }, {
       idx: 3,
       nirna: 'x3',
       klesi_hint: 'types',
+      sluji:'',
       sluji_hint: 'text after x3'
     }
   ]
@@ -65,30 +69,42 @@ class BaseComponent extends React.Component {
   }
 }
 
+Object.deepExtend = function(destination, source) {
+  for (var property in source) {
+    if (source[property] && source[property].constructor && source[property].constructor === Object) {
+      destination[property] = destination[property] || {};
+      arguments.callee(destination[property], source[property]);
+    } else {
+      destination[property] = source[property];
+    }
+  }
+  return destination;
+};
+
 class Create extends BaseComponent {
   constructor() {
     super()
-    this._bind('handleSubmit', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
-    const lget = localStorage.get('finti')
-    const stored_state = JSON.parse(lget || '{}')
+    this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
+    const stored_state = JSON.parse(localStorage.get('finti') || '{}')
     stored_state.flashVisible = undefined
     stored_state.forcedoverwrite = false
     stored_state.addButtonDefault = init_state.addButtonDefault
     stored_state.addButton = init_state.addButton
-    stored_state.klemei = [...new Set((stored_state.klemei||[]).map(i => {
+    stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
         const freq = i.freq
           ? `[${i.freq}] `
           : ''
         return JSON.stringify({label: `${i.label}`, value: i.value})
       }))].map(i => JSON.parse(i))
-    const deepExtend = require('deep-extend')
-    this.state = deepExtend(init_state, stored_state)
+    const copy_init_state = JSON.parse(JSON.stringify((init_state)))
+    Object.deepExtend(copy_init_state, stored_state)
+    this.state = copy_init_state
   }
   componentDidMount() {
     document.title = `Add definition`
   }
   componentDidUpdate(prevProps, prevState) {
-    localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
+    // localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
   }
   componentWillMount() {
     const self = this
@@ -156,10 +172,9 @@ class Create extends BaseComponent {
     }, 3000)
   }
   handleClear() {
-    this.setState(init_state)
+    this.setState({terbri:init_state.terbri,valsi:'',bangu:'',terfanva:'',tcita:[]})
   }
   handleChangeOfTags(value) {
-    p(this.state)
     this.setState({tcita: value})
     this.setState({
       'tcitymei': [...new Set(this.state.tcitymei.concat(value))]

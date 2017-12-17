@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const Klecihe = new Schema({
   klesi: String,
   finti: {
@@ -79,6 +79,6 @@ const Klecihe = new Schema({
       undonedetri: Date
     }
   ]
-});
+})
 
-module.exports = mongoose.model('klecihe', Klecihe, 'klecihe');
+module.exports = mongoose.model('klecihe', Klecihe, 'klecihe')

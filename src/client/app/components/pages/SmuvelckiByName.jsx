@@ -1,39 +1,38 @@
-const React = require('react');
-import request from 'superagent';
-import {getRandomDef, getDefByName, getUserById} from '../../utils/utils';
-import {Link} from 'react-router';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import AppStateStore from '../../stores/AppStateStore';
-const p = (a) => console.log(JSON.stringify(a, null, 2));
+const React = require('react')
+import request from 'superagent'
+import {getRandomDef, getDefByName, getUserById} from '../../utils/utils'
+import {Link} from 'react-router'
+import {getAuthenticated} from '../../stores/AppStateStore'
+import AppStateStore from '../../stores/AppStateStore'
+import TorduSmuvelcki from '../tordu_smuvelcki.jsx'
+const p = (a) => console.log(JSON.stringify(a, null, 2))
 
 //show all definitions of a given word in ALL !!! languages
 class SmuvelckiByName extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       valsi: null
-    };
+    }
   }
   componentWillMount() {
-    this.getNewDef();
+    this.getNewDef()
   }
   getNewDef(flag) {
-    const self = this;
+    const self = this
     getDefByName(self.props.params.valsi, function(err, valsi) {
       if (err) {
-        console.error('could not get a valsi from database:', err);
-        return;
+        console.error('could not get a valsi from database:', err)
+        return
       }
-      self.setState({valsi: valsi});
-    });
+      self.setState({valsi: valsi})
+    })
   }
   render() {
-    const valsi = this.state.valsi;
-    const self = this;
+    const valsi = this.state.valsi
     return (
       <div className="header-content">
         <div className="header-content-inner">
-          <h1>{self.props.params.valsi}</h1>
           {!valsi
             ? null
             : <ul className="list-group row">
@@ -42,28 +41,17 @@ class SmuvelckiByName extends React.Component {
                   <div key={`/jorne2/${i._id}`}>
                     <li className="list-group-item col-xs-12" key={`/jorne/${i._id}`}>
                       <div className="formal-group">
-                        <div key={`terbri_${i._id}`}>
-                          {i.terbri.map(function(o) {
-                            if (o.idx === 0 && o.sluji)
-                              return `${o.sluji} `;
-                            if (!o.nirna)
-                              return;
-                            return `${o.nirna} (${o.klesi.map(j=>j.klesi).join(", ")}) ${o.sluji} `;
-                          }).join(" ").trim()}
-                        </div>
-                        <div>{i.finti
-                            ? i.finti.cmene || ''
-                            : null}</div>
+                        <TorduSmuvelcki valsi_props={i}/>
                       </div>
                     </li>
                   </div>
-                );
+                )
               })}
             </ul>}
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = SmuvelckiByName;
+module.exports = SmuvelckiByName
