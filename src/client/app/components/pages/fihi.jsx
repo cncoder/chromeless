@@ -2,6 +2,10 @@ const React = require('react');
 import {Link} from 'react-router';
 
 class Fihi extends React.Component {
+  componentDidMount() {
+    document.title = "Main page - la almavlaste";
+  }
+
   render() {
     return (
       <div className="header-content no-center">

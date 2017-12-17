@@ -168,10 +168,8 @@ const SessionStore = function(options, cb) {
           index: true
         }
       });
-
       MongoStore.options = options;
       MongoStore.client = mongoose.model(options.collection, schema, options.collection);
-
       for (let i in MongoStore) {
         SessionStore.prototype[i] = MongoStore[i];
       }
@@ -182,9 +180,7 @@ const SessionStore = function(options, cb) {
       } else {
         RedisStore.client = redis.createClient(options.port, options.host);
       }
-
       RedisStore.options = options;
-
       for (let i in RedisStore) {
         SessionStore.prototype[i] = RedisStore[i];
       }
