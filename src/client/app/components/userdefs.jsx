@@ -1,11 +1,11 @@
-const React = require('react');
-import AppStateStore from '../stores/AppStateStore';
-import {Link} from 'react-router';
+const React = require('react')
+import AppStateStore from '../stores/AppStateStore'
+import {Link} from 'react-router'
 
 class UserDefs extends React.Component {
   render() {
-    const userDefs = this.props.userDefs || [];
-    const defstitle = this.props.text || 'Your Defs:';
+    const userDefs = this.props.userDefs || []
+    const defstitle = this.props.text || 'Your Defs:'
     return (
       <div>
         <hr/>
@@ -16,12 +16,12 @@ class UserDefs extends React.Component {
               <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
                 <Link key={i._id} to={"/valsi/" + i._id}>{i.valsi}</Link>
               </li>
-            );
+            )
           })}
         </ul>
       </div>
-    );
+    )
   }
 }
 
-module.exports = UserDefs;
+module.exports = UserDefs

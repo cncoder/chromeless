@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const Krali = new Schema({
   krali: String,//"curmi tu'a su'o pilno", "ka'e jmina su'o bangu"
@@ -17,6 +17,6 @@ const Krali = new Schema({
       detri: Date
     }
   ]
-});
+})
 
-module.exports = mongoose.model('krali', Krali, 'krali');
+module.exports = mongoose.model('krali', Krali, 'krali')

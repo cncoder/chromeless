@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const random = require('mongoose-simple-random');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const random = require('mongoose-simple-random')
 const Comment = new Schema({
   root_type: String,//'comment','mupli','valsi','klesi'
   root_comment: String,//id of record in a model of root_type
@@ -63,6 +63,6 @@ const Comment = new Schema({
       undonedetri: Date
     }
   ]
-});
+})
 
-module.exports = mongoose.model('comment', Comment, 'comment');
+module.exports = mongoose.model('comment', Comment, 'comment')

@@ -1,76 +1,76 @@
-const React = require('react');
-import request from 'superagent';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import {browserHistory} from 'react-router';
-import {Link} from 'react-router';
+const React = require('react')
+import request from 'superagent'
+import {getAuthenticated} from '../../stores/AppStateStore'
+import {browserHistory} from 'react-router'
+import {Link} from 'react-router'
 
 function findKey(obj, value) {
-  return Object.keys(obj).filter(i => obj[i].idx === value)[0];
+  return Object.keys(obj).filter(i => obj[i].idx === value)[0]
 }
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class JBangu extends BaseComponent {
   constructor() {
-    super();
+    super()
     this.state = {
       tcita: [],
       krasi_cmene: '',
       bridi: false,
       info: null,
       Bangu: null
-    };
-    this._bind('handleSubmit', 'handleChange', '_validateForm');
+    }
+    this._bind('handleSubmit', 'handleChange', '_validateForm')
   }
   componentDidMount() {
-    document.title = `Add language`;
+    document.title = `Add language`
   }
   handleChange(e) {
     if (!e.target)
-      return;
+      return
     if (e.target.id === 'bangu') {
-      this.setState({krasi_cmene: e.target.value});
+      this.setState({krasi_cmene: e.target.value})
     } else if (e.target.id === 'bridi') {
-      this.setState({bridi: e.target.checked});
+      this.setState({bridi: e.target.checked})
     }
   }
   handleSubmit(e) {
-    e.preventDefault();
-    let self = this;
+    e.preventDefault()
+    let self = this
     if (!getAuthenticated()) {
-      document.getElementById('openLoginPrompt').click();
-      return;
+      document.getElementById('openLoginPrompt').click()
+      return
     }
     if (!this._validateForm()) {
-      document.getElementById('openBlankFieldsPrompt').click();
-      return;
+      document.getElementById('openBlankFieldsPrompt').click()
+      return
     }
     request.post('api/jmina_lebangu/').send({krasi_cmene: self.state.krasi_cmene, bridi: self.state.bridi}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (res.body.Bangu) {
-        self.setState({Bangu: res.body.Bangu});
+        self.setState({Bangu: res.body.Bangu})
       }
       if (res.body.message) {
-        self.setState({info: res.body.message});
-        return;
+        self.setState({info: res.body.message})
+        return
       }
       if (err || !res.ok) {
-        console.error('there was an error submitting form');
+        console.error('there was an error submitting form')
       }
-      browserHistory.push('/bangu/' + self.state.Bangu._id);
-    });
+      browserHistory.push('/bangu/' + self.state.Bangu._id)
+    })
   }
   _validateForm() {
-    let validated = true;
+    let validated = true
     if (this.state.krasi_cmene.length < 1)
-      validated = false;
-    return validated;
+      validated = false
+    return validated
   }
   render() {
-    const self = this;
+    const self = this
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
@@ -94,7 +94,7 @@ class JBangu extends BaseComponent {
               ? null
               : <div>
                 <p>{this.state.info}</p>
-                <p>Go to&nbsp;
+                <p>Go to&nbsp
                   <Link to={`/bangu/${this.state.Bangu._id}`}>{this.state.Bangu.krasi_cmene}</Link>
                 </p>
               </div>}
@@ -122,8 +122,8 @@ class JBangu extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = JBangu;
+module.exports = JBangu

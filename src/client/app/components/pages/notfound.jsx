@@ -1,4 +1,4 @@
-const React = require('react');
+const React = require('react')
 
 class NotFound extends React.Component {
   render() {
@@ -8,8 +8,8 @@ class NotFound extends React.Component {
           <h1>404 Not Found</h1>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = NotFound;
+module.exports = NotFound

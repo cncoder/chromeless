@@ -1,9 +1,9 @@
-const React = require('react');
-import {Link} from 'react-router';
+const React = require('react')
+import {Link} from 'react-router'
 
 class Fihi extends React.Component {
   componentDidMount() {
-    document.title = "Main page - la almavlaste";
+    document.title = "Main page - la almavlaste"
   }
 
   render() {
@@ -36,8 +36,8 @@ class Fihi extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Fihi;
+module.exports = Fihi

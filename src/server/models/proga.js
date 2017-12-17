@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const random = require('mongoose-simple-random');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const random = require('mongoose-simple-random')
 const Proga = new Schema({
   uenzi: String, //id of String, same across languages
   xefanva_pinka: String, //text, comment to the string
@@ -67,6 +67,6 @@ const Proga = new Schema({
       undonedetri: Date
     }
   ]
-});
+})
 
-module.exports = mongoose.model('proga', Proga, 'proga');
+module.exports = mongoose.model('proga', Proga, 'proga')

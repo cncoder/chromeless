@@ -1,38 +1,38 @@
-const React = require('react');
-import {checkAuthenticationAPI} from '../utils/utils';
-import AppStateStore from '../stores/AppStateStore.js';
-import LoginPrompt from './modal_loginprompt.jsx';
-import BlankFieldsPrompt from './modal_blankfieldsprompt.jsx';
-import {Link} from 'react-router';
+const React = require('react')
+import {checkAuthenticationAPI} from '../utils/utils'
+import AppStateStore from '../stores/AppStateStore.js'
+import LoginPrompt from './modal_loginprompt.jsx'
+import BlankFieldsPrompt from './modal_blankfieldsprompt.jsx'
+import {Link} from 'react-router'
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class Application extends BaseComponent {
   constructor() {
-    super();
-    this._bind('_onAppStateChange');
-    this.state = AppStateStore.getAppState();
+    super()
+    this._bind('_onAppStateChange')
+    this.state = AppStateStore.getAppState()
   }
   componentWillMount() {
-    checkAuthenticationAPI();
+    checkAuthenticationAPI()
   }
   componentDidMount() {
-    AppStateStore.addChangeListener(this._onAppStateChange);
+    AppStateStore.addChangeListener(this._onAppStateChange)
   }
   componentWillUnmount() {
-    AppStateStore.removeChangeListener(this._onAppStateChange);
+    AppStateStore.removeChangeListener(this._onAppStateChange)
   }
   _onAppStateChange() {
-    const state = AppStateStore.getAppState();
-    this.setState(state);
+    const state = AppStateStore.getAppState()
+    this.setState(state)
   }
   render() {
-    let navbar;
-    const logo = <img src="/img/pelnimre1.svg" className="logo"></img>;
+    let navbar
+    const logo = <img src="/img/pelnimre1.svg" className="logo"></img>
     if (this.state.authenticated) {
       navbar = <ul className="nav navbar-nav navbar-right">
         <li>
@@ -59,7 +59,7 @@ class Application extends BaseComponent {
         <li>
           <Link to="/signup">Join Us!</Link>
         </li>
-      </ul>;
+      </ul>
     }
     return (
       <div className="Layout">
@@ -89,8 +89,8 @@ class Application extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Application;
+module.exports = Application

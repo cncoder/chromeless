@@ -1,9 +1,9 @@
-const React = require('react');
-import {path} from 'ramda';
+const React = require('react')
+import {path} from 'ramda'
 
 class UserTable extends React.Component {
   render() {
-    const user = this.props.user;
+    const user = this.props.user
     return (
       <table className="table">
         <tbody>
@@ -45,8 +45,8 @@ class UserTable extends React.Component {
           </tr>
         </tbody>
       </table>
-    );
+    )
   }
 }
 
-module.exports = UserTable;
+module.exports = UserTable

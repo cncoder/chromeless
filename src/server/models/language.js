@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const findOrCreate = require('mongoose-findorcreate');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const findOrCreate = require('mongoose-findorcreate')
 
 const Language = new Schema({
   krasi_cmene: String,
@@ -58,7 +58,7 @@ const Language = new Schema({
       undonedetri: Date
     }
   ]
-});
-Language.plugin(findOrCreate);
+})
+Language.plugin(findOrCreate)
 
-module.exports = mongoose.model('language', Language, 'language');
+module.exports = mongoose.model('language', Language, 'language')

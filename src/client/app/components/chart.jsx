@@ -1,4 +1,4 @@
-const React = require('react');
+const React = require('react')
 
 class Chart extends React.Component {
   componentDidMount() {
@@ -14,13 +14,13 @@ class Chart extends React.Component {
       '#00aedb',
       '#f37735',
       '#ffc425'
-    ];
-    const adza = this.props.valsi.adza;
-    let labels = [];
-    let data = [];
+    ]
+    const adza = this.props.valsi.adza
+    let labels = []
+    let data = []
     for (let i of adza){
-      labels.push(i.option);
-      data.push(i.votes);
+      labels.push(i.option)
+      data.push(i.votes)
     }
     const data = {
       labels: labels,
@@ -30,8 +30,8 @@ class Chart extends React.Component {
           backgroundColor: colors
         }
       ]
-    };
-    const ctx = document.getElementById("myChart");
+    }
+    const ctx = document.getElementById("myChart")
     const myDoughnutChart = new ChartJs(ctx, {
       type: 'horizontalBar',
       data: data,
@@ -50,7 +50,7 @@ class Chart extends React.Component {
           ]
         }
       }
-    });
+    })
   }
   render() {
     return (
@@ -60,8 +60,8 @@ class Chart extends React.Component {
           height: 30
         }}></canvas>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Chart;
+module.exports = Chart

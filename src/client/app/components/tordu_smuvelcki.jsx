@@ -1,10 +1,10 @@
-const React = require('react');
-import {Link} from 'react-router';
-import {InlineTex} from 'react-tex';
+const React = require('react')
+import {Link} from 'react-router'
+import {InlineTex} from 'react-tex'
 
 class Valsi extends React.Component {
   render() {
-    const self = this;
+    const self = this
     let i = this.props.valsi_props || null
     let terbri_good
     if (i && i.terbri) {
@@ -38,4 +38,4 @@ class Valsi extends React.Component {
   }
 }
 
-module.exports = Valsi;
+module.exports = Valsi

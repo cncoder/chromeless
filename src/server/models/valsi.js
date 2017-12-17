@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const valsi = new Schema({
   valsi: String,
   finti: {
@@ -150,6 +150,6 @@ const valsi = new Schema({
       ]
     }
   ]
-});
+})
 
-module.exports = mongoose.model('valsi', valsi, 'valsi');
+module.exports = mongoose.model('valsi', valsi, 'valsi')

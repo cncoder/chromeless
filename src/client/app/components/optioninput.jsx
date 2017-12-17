@@ -1,17 +1,17 @@
-const React = require('react');
-import {Creatable} from 'react-select-plus';
-const p = (a) => console.log(JSON.stringify(a));
+const React = require('react')
+import {Creatable} from 'react-select-plus'
+const p = (a) => console.log(JSON.stringify(a))
 
 class OptionInput extends React.Component {
   render() {
-    const handleChange = this.props.handleChange;
-    const option = this.props.option;
-    const klemei = this.props.klemei;
-    const idx = option.idx;
-    const sh = option.sluji_hint;
-    const sluji = option.sluji;
-    const terbri = this.props.terbri.slice(1);
-    const places = this.props.places;
+    const handleChange = this.props.handleChange
+    const option = this.props.option
+    const klemei = this.props.klemei
+    const idx = option.idx
+    const sh = option.sluji_hint
+    const sluji = option.sluji
+    const terbri = this.props.terbri.slice(1)
+    const places = this.props.places
     if (option.idx === 0) {
       return (
         <div className="form-horizontal">
@@ -22,7 +22,7 @@ class OptionInput extends React.Component {
             </div>
           </div>
         </div>
-      );
+      )
     }
     return (
       <div className="form-horizontal">
@@ -46,8 +46,8 @@ class OptionInput extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = OptionInput;
+module.exports = OptionInput

@@ -1,45 +1,45 @@
-const React = require('react');
-import UserTable from '../usertable.jsx';
-import UserDefault from '../userdefault.jsx';
-import UserDefs from '../userdefs.jsx';
-import {getUserById, getDefsFromUserId} from '../../utils/utils';
-import {path} from 'ramda';
+const React = require('react')
+import UserTable from '../usertable.jsx'
+import UserDefault from '../userdefault.jsx'
+import UserDefs from '../userdefs.jsx'
+import {getUserById, getDefsFromUserId} from '../../utils/utils'
+import {path} from 'ramda'
 
 class Profile extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       pilno: null,
       userDefs: null
-    };
+    }
   }
   componentWillMount() {
-    const self = this;
+    const self = this
     if (path([
       'params', 'id'
     ], this.props)) {
       getUserById(self.props.params.id, function(err, user) {
         if (err) {
-          console.error('could not get a user from database:', err);
-          return;
+          console.error('could not get a user from database:', err)
+          return
         }
-        self.setState({pilno: user});
+        self.setState({pilno: user})
         getDefsFromUserId(user._id, function(err, defs) {
           if (err)
-            return console.error(err);
-          self.setState({userDefs: defs});
-        });
-        document.title = `${user.cmene} - la almavlaste`;
+            return console.error(err)
+          self.setState({userDefs: defs})
+        })
+        document.title = `${user.cmene} - la almavlaste`
       })
     }
   }
   render() {
-    let content;
-    const self = this;
+    let content
+    const self = this
     if (this.state.pilno) {
-      content = <UserTable user={self.state.pilno}/>;
+      content = <UserTable user={self.state.pilno}/>
     } else {
-      content = <UserDefault/>;
+      content = <UserDefault/>
     }
     return (
       <div className="header-content no-center">
@@ -51,8 +51,8 @@ class Profile extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Profile;
+module.exports = Profile

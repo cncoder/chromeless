@@ -1,7 +1,7 @@
-const express = require('express');
-const session = require('express-session');
-let mongoose = require('mongoose');
-// const redis = require("redis");
+const express = require('express')
+const session = require('express-session')
+let mongoose = require('mongoose')
+// const redis = require("redis")
 
 const MongoStore = {
   client: null,
@@ -12,23 +12,23 @@ const MongoStore = {
     }, function(err, doc) {
       try {
         if (err)
-          return cb(err, null);
+          return cb(err, null)
         if (!doc)
-          return cb();
+          return cb()
         cb(null, doc.data); // JSON.parse(doc.data)
       } catch (err) {
-        cb(err);
+        cb(err)
       }
-    });
+    })
   },
   set: function(sid, data, cb) {
     try {
-      let lastAccess = new Date();
-      let expires = lastAccess.setDate(lastAccess.getDate() + 1);
+      let lastAccess = new Date()
+      let expires = lastAccess.setDate(lastAccess.getDate() + 1)
       if (typeof data.cookie != 'undefined')
-        expires = data.cookie._expires;
+        expires = data.cookie._expires
       if (typeof data.lastAccess != 'undefined')
-        lastAccess = new Date(data.lastAccess);
+        lastAccess = new Date(data.lastAccess)
       MongoStore.client.findOneAndUpdate({
         sid: sid
       }, {
@@ -37,37 +37,37 @@ const MongoStore = {
         expires: expires
       }, {
         upsert: true
-      }, cb);
+      }, cb)
     } catch (err) {
-      console.log('express-pikta', err);
-      cb && cb(err);
+      console.log('express-pikta', err)
+      cb && cb(err)
     }
   },
   destroy: function(sid, cb) {
     MongoStore.client.remove({
       sid: sid
-    }, cb);
+    }, cb)
   },
   all: function(cb) {
     MongoStore.client.find(function(err, doc) {
       if (err)
-        return cb && cb(err);
-      cb && cb(null, doc);
-    });
+        return cb && cb(err)
+      cb && cb(null, doc)
+    })
   },
   length: function(cb) {
     MongoStore.client.count(function(err, count) {
       if (err)
-        return cb && cb(err);
-      cb && cb(null, count);
-    });
+        return cb && cb(err)
+      cb && cb(null, count)
+    })
   },
   clear: function(cb) {
     MongoStore.client.drop(function() {
       if (err)
-        return cb && cb(err);
-      cb && cb();
-    });
+        return cb && cb(err)
+      cb && cb()
+    })
   }
 }
 
@@ -78,50 +78,50 @@ const RedisStore = {
     RedisStore.client.get(RedisStore.options.collection + ':' + sid, function(err, doc) {
       try {
         if (err)
-          return cb(err, null);
+          return cb(err, null)
         if (!doc)
-          return cb();
+          return cb()
         cb(null, JSON.parse(doc)); // JSON.parse(doc.data)
       } catch (err) {
-        cb(err);
+        cb(err)
       }
-    });
+    })
   },
   set: function(sid, data, cb) {
     try {
-      let lastAccess = new Date();
-      let expires = lastAccess.setDate(lastAccess.getDate() + 1);
+      let lastAccess = new Date()
+      let expires = lastAccess.setDate(lastAccess.getDate() + 1)
       if (typeof data.cookie != 'undefined')
-        expires = data.cookie._expires;
+        expires = data.cookie._expires
       if (typeof data.lastAccess != 'undefined')
-        lastAccess = new Date(data.lastAccess);
-      RedisStore.client.set(RedisStore.options.collection + ':' + sid, JSON.stringify(data), cb);
+        lastAccess = new Date(data.lastAccess)
+      RedisStore.client.set(RedisStore.options.collection + ':' + sid, JSON.stringify(data), cb)
       if (RedisStore.options.expire)
-        RedisStore.client.expire(RedisStore.options.collection + ':' + sid, parseInt(RedisStore.options.expire));
+        RedisStore.client.expire(RedisStore.options.collection + ':' + sid, parseInt(RedisStore.options.expire))
     } catch (err) {
-      console.log('express-pikta', err);
-      cb && cb(err);
+      console.log('express-pikta', err)
+      cb && cb(err)
     }
   },
   destroy: function(sid, cb) {
-    RedisStore.client.del(RedisStore.options.collection + ':' + sid, cb);
+    RedisStore.client.del(RedisStore.options.collection + ':' + sid, cb)
   },
   all: function(cb) {
     RedisStore.client.keys(RedisStore.options.collection + ':*', function(err, docs) {
       if (err)
-        return cb && cb(err);
-      cb && cb(null, docs);
-    });
+        return cb && cb(err)
+      cb && cb(null, docs)
+    })
   },
   length: function(cb) {
     RedisStore.client.keys(RedisStore.options.collection + ':*', function(err, docs) {
       if (err)
-        return cb && cb(err);
-      cb && cb(null, docs.length);
-    });
+        return cb && cb(err)
+      cb && cb(null, docs.length)
+    })
   },
   clear: function(cb) {
-    RedisStore.client.del(RedisStore.options.collection + ':*', cb);
+    RedisStore.client.del(RedisStore.options.collection + ':*', cb)
   }
 }
 
@@ -136,16 +136,16 @@ const SessionStore = function(options, cb) {
     collection: options.collection || 'sessions',
     instance: options.instance || null,
     expire: options.expire || 86400
-  };
+  }
 
-  session.Store.call(this, options);
+  session.Store.call(this, options)
 
   switch (options.storage) {
     case 'mongodb':
       if (options.instance) {
-        mongoose = options.instance;
+        mongoose = options.instance
       } else {
-        mongoose.connect('mongodb://' + options.host + ':' + options.port + '/' + options.db);
+        mongoose.connect('mongodb://' + options.host + ':' + options.port + '/' + options.db)
       }
 
       const schema = new mongoose.Schema({
@@ -167,30 +167,30 @@ const SessionStore = function(options, cb) {
           type: Date,
           index: true
         }
-      });
-      MongoStore.options = options;
-      MongoStore.client = mongoose.model(options.collection, schema, options.collection);
+      })
+      MongoStore.options = options
+      MongoStore.client = mongoose.model(options.collection, schema, options.collection)
       for (let i in MongoStore) {
-        SessionStore.prototype[i] = MongoStore[i];
+        SessionStore.prototype[i] = MongoStore[i]
       }
-      break;
+      break
     case 'redis':
       if (options.instance) {
-        RedisStore.client = options.instance;
+        RedisStore.client = options.instance
       } else {
-        RedisStore.client = redis.createClient(options.port, options.host);
+        RedisStore.client = redis.createClient(options.port, options.host)
       }
-      RedisStore.options = options;
+      RedisStore.options = options
       for (let i in RedisStore) {
-        SessionStore.prototype[i] = RedisStore[i];
+        SessionStore.prototype[i] = RedisStore[i]
       }
-      break;
+      break
   }
 
   if (cb)
-    cb.call(null);
+    cb.call(null)
   }
 
-SessionStore.prototype = new session.Store();
+SessionStore.prototype = new session.Store()
 
-module.exports = SessionStore;
+module.exports = SessionStore

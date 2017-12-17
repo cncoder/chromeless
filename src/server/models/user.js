@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const findOrCreate = require('mongoose-findorcreate');
-const bcrypt = require('bcrypt-nodejs');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const findOrCreate = require('mongoose-findorcreate')
+const bcrypt = require('bcrypt-nodejs')
+const Schema = mongoose.Schema
 const userSchema = new Schema({
   cmene: String,
   login_type: String,
@@ -102,21 +102,21 @@ const userSchema = new Schema({
       undonedetri: Date
     }
   ]
-});
+})
 
 // methods ======================
 // generating a hash
 userSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
+}
 
 // checking if password is valid
 userSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.local.password);
-};
+  return bcrypt.compareSync(password, this.local.password)
+}
 
 // method for social authentication
-userSchema.plugin(findOrCreate);
+userSchema.plugin(findOrCreate)
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('user', userSchema, 'user');
+module.exports = mongoose.model('user', userSchema, 'user')

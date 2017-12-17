@@ -1,87 +1,87 @@
-const React = require('react');
-import {Link} from 'react-router';
-import request from 'superagent';
-import {browserHistory} from 'react-router';
-import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
-import FlashMessage from '../flashmessage.jsx';
+const React = require('react')
+import {Link} from 'react-router'
+import request from 'superagent'
+import {browserHistory} from 'react-router'
+import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators'
+import FlashMessage from '../flashmessage.jsx'
 
 const iconStyle = {
   fontSize: 52,
   margin: 10
-};
+}
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class Login extends BaseComponent {
   constructor() {
-    super();
-    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated');
+    super()
+    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated')
     this.state = {
       username: '',
       password: '',
       flashVisible: false,
       flashMessage: ''
-    };
+    }
   }
   componentDidMount() {
-    document.title = "Login";
+    document.title = "Login"
   }
   handleChange(e) {
     switch (e.target.id) {
       case 'username':
-        this.setState({username: e.target.value});
-        break;
+        this.setState({username: e.target.value})
+        break
       case 'password':
-        this.setState({password: e.target.value});
-        break;
+        this.setState({password: e.target.value})
+        break
     }
   }
   handleSubmit(e) {
-    e.preventDefault();
-    console.log('handleSubmit()');
-    const self = this;
+    e.preventDefault()
+    console.log('handleSubmit()')
+    const self = this
     request.post('/api/login').send({username: this.state.username, password: this.state.password}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
-          console.warn('incorrect username or password');
-          self.flashMessage('incorrect username or password');
+          console.warn('incorrect username or password')
+          self.flashMessage('incorrect username or password')
         } else {
-          console.error('there was an error submitting form');
+          console.error('there was an error submitting form')
         }
       } else if (res.body.user) {
-        console.log('login successful!', res.body);
-        setUser(res.body.user);
-        setAuthenticated(true);
-        browserHistory.push('/profile');
+        console.log('login successful!', res.body)
+        setUser(res.body.user)
+        setAuthenticated(true)
+        browserHistory.push('/profile')
       } else {
-        console.log('response from login post did not include the expected user: ', res.body);
+        console.log('response from login post did not include the expected user: ', res.body)
       }
-    });
+    })
   }
   flashMessage(msg) {
-    this.setState({flashVisible: true, flashMessage: msg});
-    const self = this;
+    this.setState({flashVisible: true, flashMessage: msg})
+    const self = this
     setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: ''});
-    }, 3000);
+      self.setState({flashVisible: false, flashMessage: ''})
+    }, 3000)
   }
   _formValidated() {
-    const username = this.state.username;
-    const password = this.state.password;
+    const username = this.state.username
+    const password = this.state.password
     if (username.length < 1)
-      return false;
+      return false
     if (password.length < 1)
-      return false;
-    return true;
+      return false
+    return true
   }
   render() {
-    let buttonClass = '';
+    let buttonClass = ''
     if (!this._formValidated()) {
-      buttonClass = 'disabled';
+      buttonClass = 'disabled'
     }
     return (
       <div className="header-content">
@@ -131,8 +131,8 @@ class Login extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Login;
+module.exports = Login

@@ -1,5 +1,5 @@
-const React = require('react');
-import {Link} from 'react-router';
+const React = require('react')
+import {Link} from 'react-router'
 
 const styleError = {
   borderRadius: 5,
@@ -11,7 +11,7 @@ const styleError = {
   marginRight: 'auto',
   marginTop: 20,
   marginBottom: 20
-};
+}
 const styleSuccess = {
   borderRadius: 5,
   border: '1px solid #007B0A',
@@ -22,7 +22,7 @@ const styleSuccess = {
   marginRight: 'auto',
   marginTop: 20,
   marginBottom: 20
-};
+}
 
 class FlashMessage extends React.Component {
   /*
@@ -30,17 +30,17 @@ class FlashMessage extends React.Component {
     * props.time -> optional, ms of length of show, defaults to 3000
      */
   render() {
-    const type = this.props.type || 'error';
-    let style;
+    const type = this.props.type || 'error'
+    let style
     switch (type) {
       case 'error':
-        style = styleError;
-        break;
+        style = styleError
+        break
       case 'success':
-        style = styleSuccess;
-        break;
+        style = styleSuccess
+        break
       default:
-        console.assert(false, 'invalid type given to FlashMessage component. type:', type);
+        console.assert(false, 'invalid type given to FlashMessage component. type:', type)
     }
 
     if (this.props.visible) {
@@ -51,17 +51,17 @@ class FlashMessage extends React.Component {
               <Link to={this.props.flashLink} target="_blank">Your defs</Link>
             </div>
           </div>
-        );
+        )
       }
       return (
         <p style={style}>{this.props.message}</p>
-      );
+      )
     } else {
       return <p style={{
         display: 'none'
-      }}></p>;
+      }}></p>
     }
   }
 }
 
-module.exports = FlashMessage;
+module.exports = FlashMessage

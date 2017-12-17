@@ -1,4 +1,4 @@
-const React = require('react');
+const React = require('react')
 
 class Test extends React.Component {
   render() {
@@ -6,8 +6,8 @@ class Test extends React.Component {
       <h1 style={{
         color: '#FFF'
       }}>testing {this.props.params.id}</h1>
-    );
+    )
   }
 }
 
-module.exports = Test;
+module.exports = Test

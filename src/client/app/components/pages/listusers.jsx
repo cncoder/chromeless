@@ -1,70 +1,70 @@
-const React = require('react');
-import {path} from 'ramda';
-import request from 'superagent';
-import {getAllUsers} from '../../utils/utils';
-import {Link} from 'react-router';
-import AddOptionButton from '../add_option_button.jsx';
-import {getAuthenticated} from '../../stores/AppStateStore';
-import AppStateStore from '../../stores/AppStateStore';
+const React = require('react')
+import {path} from 'ramda'
+import request from 'superagent'
+import {getAllUsers} from '../../utils/utils'
+import {Link} from 'react-router'
+import AddOptionButton from '../add_option_button.jsx'
+import {getAuthenticated} from '../../stores/AppStateStore'
+import AppStateStore from '../../stores/AppStateStore'
 
 class ListUsers extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       plimei: []
-    };
+    }
   }
   componentWillMount() {
-    const self = this;
+    const self = this
     getAllUsers(function(err, plimei) {
-      self.setState({plimei: plimei});
-    });
+      self.setState({plimei: plimei})
+    })
   }
   componentDidMount() {
-    document.title = `All users - la almavlaste`;
+    document.title = `All users - la almavlaste`
   }
   handleClick(e) {
-    const option_id = e.target.id;
-    const disabled = e.target.disabled;
+    const option_id = e.target.id
+    const disabled = e.target.disabled
     if (disabled)
-      return;
+      return
     if (option_id !== 'plus') {
-      return;
+      return
     }
-    const self = this;
-    //this.setState({loading: true});
-    const user = AppStateStore.getUser();
+    const self = this
+    //this.setState({loading: true})
+    const user = AppStateStore.getUser()
     request.post('/api/valsi/' + this.state.valsi._id).send({
       option_id: option_id,
       user: path(['_id'], user)
     }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err)
         return
-      console.error('could not post vote to server:', err);
-      self.setState({valsi: res.body, voted: true, loading: false});
-    });
+      console.error('could not post vote to server:', err)
+      self.setState({valsi: res.body, voted: true, loading: false})
+    })
   }
   handleAddNewOption(text) {
     if (!getAuthenticated()) {
-      document.getElementById('openLoginPrompt').click();
-      return;
+      document.getElementById('openLoginPrompt').click()
+      return
     }
     if (text.length < 1) {
-      document.getElementById('openBlankFieldsPrompt').click();
-      return;
+      document.getElementById('openBlankFieldsPrompt').click()
+      return
     }
-    const option_id = "new";
-    const option_text = text;
-    const self = this;
+    const option_id = "new"
+    const option_text = text
+    const self = this
     request.post('/api/valsi/' + this.state.valsi._id).send({option_id: option_id, option_text: option_text}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err)
         return
-      console.error('could not post vote to server:', err);
-    });
+      console.error('could not post vote to server:', err)
+    })
   }
   render() {
-    const self = this;
-    const allvlamei = this.state.plimei;
+    const self = this
+    const allvlamei = this.state.plimei
     return (
       <div className="header-content">
         <div className="header-content-inner">
@@ -86,13 +86,13 @@ class ListUsers extends React.Component {
                   <Link to={`/pilno/${i._id}`}>{i.cmene}
                     ({i.login_type})</Link>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = ListUsers;
+module.exports = ListUsers

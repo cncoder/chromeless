@@ -1,47 +1,47 @@
-const React = require('react');
-import UserTable from '../usertable.jsx';
-import UserDefault from '../userdefault.jsx';
-import UserDefs from '../userdefs.jsx';
-import AppStateStore from '../../stores/AppStateStore';
+const React = require('react')
+import UserTable from '../usertable.jsx'
+import UserDefault from '../userdefault.jsx'
+import UserDefs from '../userdefs.jsx'
+import AppStateStore from '../../stores/AppStateStore'
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class Profile extends BaseComponent {
   constructor() {
-    super();
-    this._bind('_flipView');
+    super()
+    this._bind('_flipView')
     this.state = {
       showTable: false
-    };
+    }
   }
   _flipView() {
-    const showTable = this.state.showTable;
+    const showTable = this.state.showTable
     this.setState({
       showTable: !showTable
-    });
+    })
   }
   componentWillMount() {
-    const user = AppStateStore.getUser();
-    this.setState({user: user});
+    const user = AppStateStore.getUser()
+    this.setState({user: user})
   }
   componentDidMount() {
-    document.title = `${this.state.user.cmene || 'User'} - profile`;
+    document.title = `${this.state.user.cmene || 'User'} - profile`
   }
   render() {
-    let content;
-    let buttonText;
-    const self = this;
-    const userDefs = AppStateStore.getUserDefs() || [];
+    let content
+    let buttonText
+    const self = this
+    const userDefs = AppStateStore.getUserDefs() || []
     if (this.state.showTable) {
-      content = <UserTable user={self.state.user}/>;
-      buttonText = 'less detailed view';
+      content = <UserTable user={self.state.user}/>
+      buttonText = 'less detailed view'
     } else {
-      content = <UserDefault/>;
-      buttonText = 'more detailed view';
+      content = <UserDefault/>
+      buttonText = 'more detailed view'
     }
     return (
       <div className="header-content no-center">
@@ -56,8 +56,8 @@ class Profile extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Profile;
+module.exports = Profile

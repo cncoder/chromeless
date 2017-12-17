@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const findOrCreate = require('mongoose-findorcreate');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const findOrCreate = require('mongoose-findorcreate')
 
 const Tcita = new Schema({
   tcita: String,
@@ -23,7 +23,7 @@ const Tcita = new Schema({
       detri: Date
     }
   ]
-});
-Tcita.plugin(findOrCreate);
+})
+Tcita.plugin(findOrCreate)
 
-module.exports = mongoose.model('tcita', Tcita, 'tcita');
+module.exports = mongoose.model('tcita', Tcita, 'tcita')

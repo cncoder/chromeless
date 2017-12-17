@@ -1,5 +1,5 @@
-const React = require('react');
-import {Link} from 'react-router';
+const React = require('react')
+import {Link} from 'react-router'
 
 const textStyle = {
   color: '#333'
@@ -7,7 +7,7 @@ const textStyle = {
 
 class LoginPrompt extends React.Component {
   closeModal() {
-    document.getElementById("closeLogin").click();
+    document.getElementById("closeLogin").click()
   }
   render() {
     return (
@@ -36,8 +36,8 @@ class LoginPrompt extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = LoginPrompt;
+module.exports = LoginPrompt

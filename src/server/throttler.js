@@ -22,17 +22,17 @@ module.exports = function createThrottler(config, limited) {
 
   // createThrottler(fn)
   if (typeof config === 'function') {
-    limited = config;
+    limited = config
     //config = null
   }
 
   // createThrottler(config, false)
   if (typeof limited !== 'function') {
-    limited = null;
+    limited = null
   }
-  defaultsDeep(config, defaults);
-  const Throttle = throttleModel(config);
-  return throttleMiddleware;
+  defaultsDeep(config, defaults)
+  const Throttle = throttleModel(config)
+  return throttleMiddleware
 
   function errHandler(res, next, error) {
     // DO WE WANT TO BREAK THE APP AND CAUSE A ISSUE OR DO WE WANT TO SILENTLY INTO THE NIGHT AND JUST LOG OUR ERRORS

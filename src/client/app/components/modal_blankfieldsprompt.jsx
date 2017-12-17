@@ -1,5 +1,5 @@
-const React = require('react');
-import {Link} from 'react-router';
+const React = require('react')
+import {Link} from 'react-router'
 
 const textStyle = {
   color: '#333'
@@ -7,7 +7,7 @@ const textStyle = {
 
 class BlankFieldsPrompt extends React.Component {
   closeModal() {
-    document.getElementById("closeLogin").click();
+    document.getElementById("closeLogin").click()
   }
   render() {
     return (
@@ -32,8 +32,8 @@ class BlankFieldsPrompt extends React.Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = BlankFieldsPrompt;
+module.exports = BlankFieldsPrompt

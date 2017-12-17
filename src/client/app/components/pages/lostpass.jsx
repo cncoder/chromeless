@@ -1,75 +1,75 @@
-const React = require('react');
-import {Link} from 'react-router';
-import request from 'superagent';
-import {browserHistory} from 'react-router';
-import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
-import FlashMessage from '../flashmessage.jsx';
+const React = require('react')
+import {Link} from 'react-router'
+import request from 'superagent'
+import {browserHistory} from 'react-router'
+import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators'
+import FlashMessage from '../flashmessage.jsx'
 
 const iconStyle = {
   fontSize: 52,
   margin: 10
-};
+}
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class LostPass extends BaseComponent {
   constructor() {
-    super();
+    super()
     this.state = {
       userdatum: '',
       message: `Currently you can't choose a new password. Instead we can only generate a new password for you ourselves. Passwords for your account can be sent not more often than once every 24 hours.`,
       backtologin: false
-    };
-    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated');
+    }
+    this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated')
   }
   componentDidMount() {
-    document.title = "Restore password";
+    document.title = "Restore password"
   }
   handleChange(e) {
     if (e.target.id === 'email') {
-      this.setState({userdatum: e.target.value});
+      this.setState({userdatum: e.target.value})
     }
   }
   flashMessage(msg, persistent) {
-    this.setState({flashVisible: true, flashMessage: msg});
-    const self = this;
+    this.setState({flashVisible: true, flashMessage: msg})
+    const self = this
     if (persistent)
-      return;
+      return
     setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: ''});
-    }, 3000);
+      self.setState({flashVisible: false, flashMessage: ''})
+    }, 3000)
   }
   handleSubmit(e) {
-    e.preventDefault();
-    const self = this;
+    e.preventDefault()
+    const self = this
     request.post('/api/restorepass').send({userdatum: this.state.userdatum}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
-          console.warn('incorrect username or email');
-          self.flashMessage('incorrect username or email');
+          console.warn('incorrect username or email')
+          self.flashMessage('incorrect username or email')
         } else {
-          console.error('there was an error submitting form');
+          console.error('there was an error submitting form')
         }
       } else if (res.body.sentemail) {
-        self.flashMessage(`Once the nickname or email is in the database and more than 24 hours passed since the previous request (if any) you will get a message with a new password in your e-mail inbox.`,true);
+        self.flashMessage(`Once the nickname or email is in the database and more than 24 hours passed since the previous request (if any) you will get a message with a new password in your e-mail inbox.`,true)
       } else {
-        console.log('unknown error');
+        console.log('unknown error')
       }
-    });
+    })
   }
   _formValidated() {
-    const userdatum = this.state.userdatum;
+    const userdatum = this.state.userdatum
     if (userdatum.length < 1)
-      return false;
-    return true;
+      return false
+    return true
   }
   render() {
-    let buttonClass = '';
+    let buttonClass = ''
     if (!this._formValidated()) {
-      buttonClass = 'disabled';
+      buttonClass = 'disabled'
     }
     return (
       <div className="header-content">
@@ -97,8 +97,8 @@ class LostPass extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = LostPass;
+module.exports = LostPass

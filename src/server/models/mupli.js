@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const random = require('mongoose-simple-random');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const random = require('mongoose-simple-random')
 
 const Sentence = new Schema({
   mupli: String,
@@ -123,7 +123,7 @@ const Sentence = new Schema({
       undonedetri: Date
     }
   ]
-});
-Sentence.plugin(random);
+})
+Sentence.plugin(random)
 
-module.exports = mongoose.model('sentence', Sentence, 'sentence');
+module.exports = mongoose.model('sentence', Sentence, 'sentence')

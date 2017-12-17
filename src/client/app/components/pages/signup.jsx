@@ -1,103 +1,103 @@
-const React = require('react');
-import request from 'superagent';
-import {browserHistory} from 'react-router';
-import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators';
-import FlashMessage from '../flashmessage.jsx';
+const React = require('react')
+import request from 'superagent'
+import {browserHistory} from 'react-router'
+import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators'
+import FlashMessage from '../flashmessage.jsx'
 
 const iconStyle = {
   fontSize: 52,
   margin: 10
-};
+}
 
 class BaseComponent extends React.Component {
   _bind(...methods) {
-    methods.forEach((method) => this[method] = this[method].bind(this));
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 }
 
 class Signup extends BaseComponent {
   constructor() {
-    super();
-    this.state = {username: '', email: '', password: '', passwordConfirm: '', flashVisible: false, flashMessage: ''};
-    this._bind('handleSubmit', 'handleChange');
+    super()
+    this.state = {username: '', email: '', password: '', passwordConfirm: '', flashVisible: false, flashMessage: ''}
+    this._bind('handleSubmit', 'handleChange')
   }
   handleChange(e) {
     switch (e.target.id) {
       case 'username':
         this.setState({
           username: e.target.value.substr(0, 140)
-        });
-        break;
+        })
+        break
       case 'email':
         this.setState({
           email: e.target.value
-        });
-        break;
+        })
+        break
       case 'password':
         this.setState({
           password: e.target.value.substr(0, 140)
-        });
-        break;
+        })
+        break
       case 'passwordConfirm':
         this.setState({
           passwordConfirm: e.target.value.substr(0, 140)
-        });
-        break;
+        })
+        break
       default:
         //do nothing
     }
   }
   handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault()
     if (!this._formValidated())
       return; //if not validated, don't submit form
-    const self = this;
-    const userdata = JSON.stringify({cmene: this.state.username, email: this.state.email});
+    const self = this
+    const userdata = JSON.stringify({cmene: this.state.username, email: this.state.email})
     request.post('/api/signup').send({username: userdata, password: this.state.password}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
-      //console.log(JSON.stringify(res.message));
+      //console.log(JSON.stringify(res.message))
       if (err) {
         if (err.status === 401 || err.status === 400) {
-          console.warn('username not available');
-          self.flashMessage('username or email is not available. Choose another one.');
+          console.warn('username not available')
+          self.flashMessage('username or email is not available. Choose another one.')
         } else {
-          console.error('there was an error submitting form');
+          console.error('there was an error submitting form')
         }
-        console.error('there was an error submitting form');
+        console.error('there was an error submitting form')
       } else if (res.body.user) {
-        setUser(res.body.user);
-        setAuthenticated(true);
-        browserHistory.push('/profile');
+        setUser(res.body.user)
+        setAuthenticated(true)
+        browserHistory.push('/profile')
       } else if (res.body.message) {
-        //console.log(JSON.stringify(res.body.message));
-        self.flashMessage(res.body.message);
+        //console.log(JSON.stringify(res.body.message))
+        self.flashMessage(res.body.message)
       } else {
-        console.warn('response from signup post did not include the expected user: ', res.body);
+        console.warn('response from signup post did not include the expected user: ', res.body)
       }
-    });
+    })
   }
   flashMessage(msg) {
-    this.setState({flashVisible: true, flashMessage: msg});
-    const self = this;
+    this.setState({flashVisible: true, flashMessage: msg})
+    const self = this
     setTimeout(function() {
-      self.setState({flashVisible: false, flashMessage: ''});
-    }, 3000);
+      self.setState({flashVisible: false, flashMessage: ''})
+    }, 3000)
   }
   _formValidated() {
-    const username = this.state.username;
-    const password = this.state.password;
-    const passwordConfirm = this.state.passwordConfirm;
+    const username = this.state.username
+    const password = this.state.password
+    const passwordConfirm = this.state.passwordConfirm
     if (username.length < 1)
-      return false;
+      return false
     if (password.length < 1)
-      return false;
+      return false
     if (password !== passwordConfirm)
-      return false;
-    return true;
+      return false
+    return true
   }
   render() {
-    let buttonClass = '';
+    let buttonClass = ''
     if (!this._formValidated()) {
-      buttonClass = 'disabled';
+      buttonClass = 'disabled'
     }
     return (
       <div className="header-content">
@@ -151,8 +151,8 @@ class Signup extends BaseComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-module.exports = Signup;
+module.exports = Signup
