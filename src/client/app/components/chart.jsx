@@ -2,7 +2,7 @@ const React = require('react')
 
 class Chart extends React.Component {
   componentDidMount() {
-    const ChartJs = require('chart.js'); //including here because it won't run on server due to 'window' references
+    const ChartJs = require('chart.js') //including here because it won't run on server due to 'window' references
     const colors = [
       '#96ceb4',
       '#ffeead',

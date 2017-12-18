@@ -17,7 +17,7 @@ function setAppState(state) {
 }
 function setUser(user) {
   AppState.user = user
-  AppState.userDefs = []; //clear vlamei from previous user
+  AppState.userDefs = [] //clear vlamei from previous user
   //todo: instead mongoose findall
   request.get('/api/getalldefs/' + user._id).end(function(err, res) {
     if (err)

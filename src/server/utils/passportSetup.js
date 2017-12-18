@@ -101,7 +101,7 @@ const passportSetup = function(passport) {
       if (err)
         return done(err)
       if (user) {
-        return done(null, false, {message: "nickname or email already registered"}); //username already exists
+        return done(null, false, {message: "nickname or email already registered"}) //username already exists
       } else {
         const newUser = new User()
         // set the user's local credentials
@@ -130,9 +130,9 @@ const passportSetup = function(passport) {
       if (err)
         return done(err)
       if (!user)
-        return done(null, false, {message: "We couldn't find that username.."}); //no username found
+        return done(null, false, {message: "We couldn't find that username.."}) //no username found
       if (!user.validPassword(password))
-        return done(null, false, {message: "Incorrect password.."}); //wrong password
+        return done(null, false, {message: "Incorrect password.."}) //wrong password
       return done(null, user)
     })
   }))

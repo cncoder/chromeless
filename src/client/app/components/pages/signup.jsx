@@ -50,7 +50,7 @@ class Signup extends BaseComponent {
   handleSubmit(e) {
     e.preventDefault()
     if (!this._formValidated())
-      return; //if not validated, don't submit form
+      return //if not validated, don't submit form
     const self = this
     const userdata = JSON.stringify({cmene: this.state.username, email: this.state.email})
     request.post('/api/signup').send({username: userdata, password: this.state.password}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {

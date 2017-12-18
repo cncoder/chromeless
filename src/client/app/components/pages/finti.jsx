@@ -104,7 +104,7 @@ class Create extends BaseComponent {
     document.title = `Add definition`
   }
   componentDidUpdate(prevProps, prevState) {
-    // localStorage.set('finti', JSON.stringify(this.state)); //Returns false, unsuccessful
+    localStorage.set('finti', JSON.stringify(this.state)) //Returns false, unsuccessful
   }
   componentWillMount() {
     const self = this
@@ -148,14 +148,14 @@ class Create extends BaseComponent {
     const next = terbri[last].idx + 1
     terbri.push({idx: next, nirna: `x${next}`, klesi_hint: 'types', sluji_hint: `text after x${next}`})
     const places = this.state.places
-    places.push(`x${next}`); //todo add according to what other symbols are chosen, what about lujvo?
+    places.push(`x${next}`) //todo add according to what other symbols are chosen, what about lujvo?
     this.setState({terbri: terbri, places: places})
   }
 
   removeOption(e) {
     e.preventDefault()
     if (this.state.terbri.length <= 1)
-      return; //make disabled
+      return //make disabled
     let terbri = this.state.terbri
     terbri.pop()
     let places = this.state.places

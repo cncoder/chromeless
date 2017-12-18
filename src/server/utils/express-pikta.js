@@ -15,7 +15,7 @@ const MongoStore = {
           return cb(err, null)
         if (!doc)
           return cb()
-        cb(null, doc.data); // JSON.parse(doc.data)
+        cb(null, doc.data) // JSON.parse(doc.data)
       } catch (err) {
         cb(err)
       }
@@ -81,7 +81,7 @@ const RedisStore = {
           return cb(err, null)
         if (!doc)
           return cb()
-        cb(null, JSON.parse(doc)); // JSON.parse(doc.data)
+        cb(null, JSON.parse(doc)) // JSON.parse(doc.data)
       } catch (err) {
         cb(err)
       }

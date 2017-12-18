@@ -117,8 +117,7 @@ const routes = function(app, passport) {
       '_id': req.body[kk._id]
     }).exec())).then(function(items) {
       let sum = []
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
+      for (let item of items) {
         if (!item) {
           return {item: null, err: `parameter ${thetwo[i]._id} not found`}
         }
@@ -749,7 +748,7 @@ const routes = function(app, passport) {
     if (path([
       'user', 'local'
     ], req)) {
-      output.user.local.password = '********'; //don't send password to client
+      output.user.local.password = '********' //don't send password to client
     }
     res.send(output)
   }).post(passport.authenticate('local-login'), function(req, res) {
@@ -757,7 +756,7 @@ const routes = function(app, passport) {
     const output = {
       user: req.user.toObject()
     }
-    output.user.local.password = '********'; //don't send password to client
+    output.user.local.password = '********' //don't send password to client
     res.send(output)
   })
 
@@ -777,7 +776,7 @@ const routes = function(app, passport) {
     if (path([
       'local', 'password'
     ], req))
-      output.user.local.password = '********'; //don't send password to client
+      output.user.local.password = '********' //don't send password to client
     res.send(output)
   })(req, res))
 
