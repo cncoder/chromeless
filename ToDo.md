@@ -1,7 +1,109 @@
 - testing
 + working
 * todo
-Soon:
+
+# ToDo
+
+* warning that this word in this lang already was added by you
+* save lojban words with spaces
+* klemei = klesi entered + from server, nothing more!
+* "dont publish" - not indexable smuvelcki
+* dont allow saving identical read-only def. if another read-only already is
+* Comedy node.js for main functions. Test!
+* shows other defs of this word after submit
+* save tags when jbangu, when finti
+* save state after server reload
+* fill tcita table on each save
+* klesi has language, "your klesi"/"order all by frequency"
+* klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
+* there is always "undefined" tcita. remove it
+* duplicate tcita are being saved
+* OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
+* switch "editable by me, by all"
+* /sisku client must determine via switch how to present the component for a given model: smuvelcki, mupli, bangu ...
+** !items case
+* maybe valsi saved even if returned null.id
+* /finti clear button
+* if predicate language then show terbri first, old terbri last. otherwise vice versa
+* confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
+* text before x1 => "text before" whatever. same for other hints
+* mobile /finti is not scrollable
+* /valsi show tcita. my tcita are separate
+* add your defs on profile page
+* tcita page
+* link to tcita on tcita itself
+* save logged in state in localstorage
+* move localstorage higher into layout
+* delete finti localstorage after success
+* can't add tag that's already mine and has the same value
+* add old terbri
+* add page to view users with their rights
+* if you have right "add rights" then show "add languages" to user rights in the list via tags
+* read only rights that "undone=undefined or false"
+* write date of creation
+* /recent.html last 7 days
+* list of my last definitions
+* show my latest words (sort by date of creation)
+* klesi_smuvelcki - klesi should have definitions, just text by user
+* use https://github.com/DmsChrisPena/reddit-clone-api/blob/master/package.json
+* add button to link to one of my words
+* add input to link to another def. support any links, confirm if found an id
+** on enter of the link show confirmation window.
+* UI localization table. Get strings from it, English by default, if logged user language by default
+* page listing all localization strings
+* /proga/:id
+* choose your language, tags your translation, similar to Valsi pages
+* choose your localization in settings
+* which woould be fallbacks: English, Lojban (will be chosen from the most used translation)
+* unknown strings are in fallback language
+* how to add a localization string? Fintilocalization page, linkage
+* admin right "remove comment". allows to remove pages with spam, remains in db with
+* admin right "remove user". allows to remove user
+* admin right "remove word". allows to remove definition. on -1 to each of its "klesi". then remove "klesi" that have 0 frequency
+* user registered using Twitter is displayed with his twitter name + an icon of twitter
+* search for precise match of word: return all definitions
+* add favicon https://medium.com/@bryantheastronaut/react-getting-started-the-mern-stack-tutorial-feat-es6-de1a2886be50
+* if change one string the string with same place must change its type accordingly
+* not only x but lujvo decomposition letters if it's a lujvo (must not coincide)
+** k, k', k'' for klaklakla
+* user's favorite languages: senelci_bangu
+* user's favorite languages: reorder them, add new
+* use senelci_bangu in definitions as recommendations
+* use senelci_bangu in mupli as recommendations
+* search page via http://mongoosejs.com/docs/queries.html
+* /finti - flag not to save history
+* how to edit a definition?
+* /cninomupli - flag not to save history
+* how to edit a mupli?
+* sitemap (routes, paths) like that of jbovlaste.lojban.org
+* adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
+* res.send in server/routes must send err message if any error
+* upvote words-s restore functionality. on press 'upvote' if already upvoted by me show message. if not upvoted save. if earlier downvoted - downvote not more often than once a day.
+* for downvote reverse method
+* html in react-select languages - freq to the right
+* check api. whenever send user dont send password!!!
+* check api. move all checks into it from client
+* react-select noResultsText - localize, searchPromptText
+* react-select-plus group support - my languages, other languages
+* saving user must be done on server side, dont send user from client `isLoggedIn`
+* SaveKlesi and SaveLanguage into one function
+* on page reload reatin authenticated state via JWT https://stackoverflow.com/questions/39097440/on-react-router-how-to-stay-logged-in-state-even-refresh-the-page (/profile always redirects to  /login)
+* isPredicateLanguage in my settings
+* TeX result of parsing. err: ..., parsed: ...
+* don't show stats in selected Klesi
+* integrate https://github.com/Hashnode/mern-starter
+* flashcards https://github.com/atlassian/react-beautiful-dnd
+* upgrade react router to https://ebaytech.berlin/universal-web-apps-with-react-router-4-15002bb30ccb https://stackoverflow.com/questions/42797543/whats-wrong-with-this-reactrouter-match-implementation/42798535#42798535
+* deleting tags, smuvelcki, klesi, user results in "disabled" for this record
+//{_id: {$in: [req.body.data]}
+* export dictionary as html
+* use https://github.com/verekia/js-stack-from-scratch
+* localstorage should instead be stored via https://www.npmjs.com/package/redux-persist
+* Redis for horizontal scaling?
+* http://kotobanki.thatpage.org/ - implement sharing learnt lists
+
+# Done
+
 - show author on valsi/:id
 - save my tags
 - check if second user can save his tags
@@ -27,28 +129,13 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - gh is saved as lojban word
 - no longer can populate fields
 - /sisku/finti=:finti&valsi=:valsi&selgerna_filovalsi=:selgerna_filovalsi root to show defs of valsi from finti
-* /sisku client must determine via switch how to present the component for a given model.
 - dont log out after restarting server
 - integrate express-sessions into the app and dont change name of pikta
-* warning that this word in this lang already was added by you
-* save lojban words with spaces
 - new klesi are not being added
 - no more errors that i already have defs for this word
 - /dict/:valsi_by_name
-* dont allow saving identical read-only def. if another read-only already is
-* Comedy node.js for main functions. Test!
 - save only if truly logged in and credentials coincide! - looks like isAuthenticated does the trick
-* shows other defs of this word after submit
 - tcita into separate model
-* save tags when jbangu, when finti
-* save state after server reload
-* fill tcita table on each save
-* klesi has language, "your klesi"/"order all by frequency"
-* klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
-* there is always "undefined" tcita. remove it
-* duplicate tcita are being saved
-* OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
-* switch "editable by me, by all"
 - on save to server save each new type to klesi model. if exists +1 for frequency. if no frequency =1
 - take klesi from Klesi table
 - type input should be extendable
@@ -58,98 +145,19 @@ x finti page css http://jsfiddle.net/thirtydot/s3zUd/1/
 - /finti - change to promises http://erikaybar.name/using-es6-promises-with-mongoosejs-queries/ https://stackoverflow.com/questions/39004185/how-to-promise-all-multiple-arrays-of-mongoose-document-inserts https://stackoverflow.com/questions/38955512/how-to-use-promise-all-with-mongoose-queries-as-arguments
 -- save only if all promises returned no-error
 -- on first save show popup that klesi will be added
-** !items case
-* maybe valsi saved even if returned null.id
 - /finti on load add to klemei from stored_storage
-* /finti clear button
-* if predicate language then show terbri first, old terbri last. otherwise vice versa
 - 1. check latex, cmaxes, 2. check language 3. promise.all check all klesi.
 -- ok now fi all hecks are clean (no err) then we need to return something else
 --- if force===true then promise.all(langs,klesi) update frequencies of langs and klesi. then: return results. either ok or error. then: now once again for each error return promise with with save new klesi within each promise 4. save word and return it. ||| So we have 4 embedded layers pf functions.
-* confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
-* text before x1 => "text before" whatever. same for other hints
-* mobile /finti is not scrollable
 - /valsi - all definitions of this word
-* /valsi show tcita. my tcita are separate
-* add your defs on profile page
-* tcita page
-* link to tcita on tcita itself
-* save logged in state in localstorage
 - /finti save state in localstorage
-* move localstorage higher into layout
-* delete finti localstorage after success
-* can't add tag that's already mine and has the same value
-* add old terbri
-* add page to view users with their rights
-* if you have right "add rights" then show "add languages" to user rights in the list via tags
-* read only rights that "undone=undefined or false"
 - add language of terbri
-* write date of creation
-* /recent.html last 7 days
-* list of my last definitions
-* show my latest words (sort by date of creation)
-* klesi_smuvelcki - klesi should have definitions, just text by user
-* use https://github.com/DmsChrisPena/reddit-clone-api/blob/master/package.json
-* add button to link to one of my words
-* add input to link to another def. support any links, confirm if found an id
-** on enter of the link show confirmation window.
 - add cmaxes
-* UI localization table. Get strings from it, English by default, if logged user language by default
-* page listing all localization strings
-* /proga/:id
-* choose your language, tags your translation, similar to Valsi pages
-* choose your localization in settings
-* which woould be fallbacks: English, Lojban (will be chosen from the most used translation)
-* unknown strings are in fallback language
-* how to add a localization string? Fintilocalization page, linkage
-* admin right "remove comment". allows to remove pages with spam, remains in db with
-* admin right "remove user". allows to remove user
-* admin right "remove word". allows to remove definition. on -1 to each of its "klesi". then remove "klesi" that have 0 frequency
-* user registered using Twitter is displayed with his twitter name + an icon of twitter
-* search for precise match of word: return all definitions
-* add favicon https://medium.com/@bryantheastronaut/react-getting-started-the-mern-stack-tutorial-feat-es6-de1a2886be50
-* if change one string the string with same place must change its type accordingly
-* not only x but lujvo decomposition letters if it's a lujvo (must not coincide)
-** k, k', k'' for klaklakla
-* user's favorite languages: senelci_bangu
-* user's favorite languages: reorder them, add new
-* use senelci_bangu in definitions as recommendations
-* use senelci_bangu in mupli as recommendations
 - throttle works? https://www.npmjs.com/package/mongo-throttle
-* search page via http://mongoosejs.com/docs/queries.html
-* /finti - flag not to save history
-* how to edit a definition?
-* /cninomupli - flag not to save history
-* how to edit a mupli?
-* sitemap (routes, paths) like that of jbovlaste.lojban.org
-* adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
-* res.send in server/routes must send err message if any error
-* upvote words-s restore functionality. on press 'upvote' if already upvoted by me show message. if not upvoted save. if earlier downvoted - downvote not more often than once a day.
-* for downvote reverse method
-* html in react-select languages - freq to the right
-* check api. whenever send user dont send password!!!
-* check api. move all checks into it from client
-* react-select noResultsText - localize, searchPromptText
-* react-select-plus group support - my languages, other languages
-* saving user must be done on server side, dont send user from client `isLoggedIn`
 - finti page. if not logged in redirect to login.
-* SaveKlesi and SaveLanguage into one function
-* on page reload reatin authenticated state via JWT https://stackoverflow.com/questions/39097440/on-react-router-how-to-stay-logged-in-state-even-refresh-the-page (/profile always redirects to  /login)
-* isPredicateLanguage in my settings
-* TeX result of parsing. err: ..., parsed: ...
-* don't show stats in selected Klesi
-* integrate https://github.com/Hashnode/mern-starter
-* flashcards https://github.com/atlassian/react-beautiful-dnd
-* upgrade react router to https://ebaytech.berlin/universal-web-apps-with-react-router-4-15002bb30ccb https://stackoverflow.com/questions/42797543/whats-wrong-with-this-reactrouter-match-implementation/42798535#42798535
-* deleting tags, smuvelcki, klesi, user results in "disabled" for this record
-//{_id: {$in: [req.body.data]}
-* export dictionary as html
-* use https://github.com/verekia/js-stack-from-scratch
-* localstorage should instead be stored via https://www.npmjs.com/package/redux-persist
-* Redis for horizontal scaling?
-* http://kotobanki.thatpage.org/ - implement sharing learnt lists
-----
-pages
+
+# pages
+
 * /def/:id - simply a readable def
 * /def/:id - add upvote downvote, sumvotes
 * /def/:id - later add writable tags
@@ -158,8 +166,8 @@ pages
 * /def/:id...:id - add upvotes, sumvote
 * /def/:id...:id - writable tags
 
-----
-/def/finti
+# /def/finti
+
 * don't save empty fields
 * enter on last field adds a new one
 
@@ -168,10 +176,11 @@ pages
 * etymology_comment: text
 * tags: [{user: users[i].id, tag: text}] - jargon is a tag
 
-examples
+# examples
+
 * linkage: [{wholinked: users[i].id, deflinked: defs[i].id, translation_text: }] - you must derive the language of translation_text from defs[i].language
 
-words - for indexing
+#words - for indexing
+
 * word: blalalavla
 * defs: [defs[i].id]
-----
