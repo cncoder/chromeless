@@ -45,6 +45,7 @@ class Valsi extends React.Component {
     let valsi = valsi_obj
       ? valsi_obj.valsi
       : null
+    document.title = valsi? `${valsi} - la almavlaste`:`la almavlaste`
     let terbri_good = null
     if (valsi_obj && valsi_obj.terbri) {
       terbri_good = valsi_obj.terbri.map(function(o) {
@@ -74,7 +75,7 @@ class Valsi extends React.Component {
             <h1>{valsi}</h1>
             <hr/> {(!finti_name || !finti)
               ? null
-              : <p key={`finti`}>Created by&nbsp
+              : <p key={`finti`}>Created by&nbsp;
                 <Link to={`/pilno/${finti._id}`}>{finti_name}</Link>
               </p>}
             <div className="formal-group">

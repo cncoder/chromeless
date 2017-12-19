@@ -3,7 +3,7 @@
 * todo
 
 # ToDo
-
+* new klesi are not being added, are added only for existing words
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
 * klemei = klesi entered + from server, nothing more!

@@ -117,7 +117,8 @@ const routes = function(app, passport) {
       '_id': req.body[kk._id]
     }).exec())).then(function(items) {
       let sum = []
-      for (let item of items) {
+      for (let i in items) {
+        const item=items[i]
         if (!item) {
           return {item: null, err: `parameter ${thetwo[i]._id} not found`}
         }
