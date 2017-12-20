@@ -345,7 +345,6 @@ const routes = function(app, passport) {
       newDef.selgerna_filovalsi = req.body.bangu["value"]
 
       const klesi_id_map = {}
-      //todo: wrong, resolve prs promises instead
       items.map(o => {
         if (o.type === 'klesi') {
           const k = {}
