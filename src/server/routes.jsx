@@ -75,27 +75,25 @@ function GetOptimizedTerbri(arrterbri) {
   }
   return terbri
 }
-const routes = function(app, passport) {
+const routes = (app, passport) => {
   function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated())
       return next()
-    } else {
-      const output = {
-        err: 'user is not authenticated'
-      }
-      res.status(401).send(output)
+    const output = {
+      err: 'user is not authenticated'
     }
+    res.status(401).send(output)
   }
   /*
- *
- *
- *
- * API routes
- *
- *
- */
+   *
+   *
+   *
+   * API routes
+   *
+   *
+   */
 
-  app.route('/api/finti').post(isLoggedIn, function(req, res) {
+  app.route('/api/finti').post(isLoggedIn, (req, res)=> {
     const forced = req.body.forcedoverwrite == 'true' || false
     // 0. simply bad request
     if (!path([
@@ -115,7 +113,7 @@ const routes = function(app, passport) {
       // 2. check cmaxes, check language=>promise
     const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
       '_id': req.body[kk._id]
-    }).exec())).then(function(items) {
+    }).exec())).then((items) => {
       let sum = []
       for (let i in items) {
         const item = items[i]
@@ -141,10 +139,10 @@ const routes = function(app, passport) {
       return sum
     })
     // 3. promise.all check all klesi. if no klesi return error
-    const flatklesi = terbri.map(o => o.klesi).reduce(function(sum, value) {
+    const flatklesi = terbri.map(o => o.klesi).reduce((sum, value)=> {
       return sum.concat(value)
     }, []).filter(Boolean)
-    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then(function(items) {
+    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items)=> {
       if (!items)
         return {item: null, err: 'no klesi'}
       let sum = []
@@ -168,7 +166,7 @@ const routes = function(app, passport) {
       return sum
     })
     //same word from the user already in the db
-    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then(function(items) {
+    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items)=> {
       if (!items)
         return null
       let sum = []
@@ -188,8 +186,8 @@ const routes = function(app, passport) {
       return sum
     })
     // -2-3- resolve promises
-    Promise.all([langpromises, klesipromises, xahopromises]).then(function(items) {
-      items = items.reduce(function(sum, value) {
+    Promise.all([langpromises, klesipromises, xahopromises]).then((items)=> {
+      items = items.reduce((sum, value)=> {
         return sum.concat(value)
       }, [])
       let prs = []
@@ -203,7 +201,7 @@ const routes = function(app, passport) {
         prs.push(promisified_item)
       }
       return Promise.all(prs)
-    }).then(function(items) {
+    }).then((items)=> {
       //todo: !items case
       if (items[0] && items[0].err) {
         const promisified_err_item = new Promise((resolve, reject) => {
@@ -269,7 +267,7 @@ const routes = function(app, passport) {
                 }
               }, {
                 new: true
-              }, function(err, doc) {
+              }, (err, doc)=> {
                 if (err) {
                   item.err = err.toString()
                 } else {
@@ -288,7 +286,7 @@ const routes = function(app, passport) {
                 }
               }, {
                 new: true
-              }, function(err, doc) {
+              }, (err, doc)=> {
                 if (err) {
                   item.err = err.toString()
                 } else {
@@ -311,7 +309,7 @@ const routes = function(app, passport) {
       JSON.parse(req.body.tcita).map(o => {
         const tcita = o.tcita
         const candidate = new Promise((resolve, reject) => {
-          Tcita.findOne({tcita}).lean().exec().then(function(item) {
+          Tcita.findOne({tcita}).lean().exec().then((item) => {
             if (!item)
               item = {}
             const freq = (!item || !item.freq)
@@ -328,14 +326,14 @@ const routes = function(app, passport) {
               }
               resolve(item)
             })
-          }, function(err) {
+          }, (err) => {
             resolve({type: 'tcita', tcita: o.tcita, err: err.toString()})
           })
         })
         prs.push(candidate)
       })
       return Promise.all(prs)
-    }).then(function(items) {
+    }).then((items)=> {
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));
@@ -381,7 +379,7 @@ const routes = function(app, passport) {
       })
       prs.push(valsipromise)
       return Promise.all(prs)
-    }).then(function(items) {
+    }).then((items) => {
       if (items[0].err || items[0].kunti || items[0].xaho) {
         return res.send(items[0])
       }
@@ -389,12 +387,10 @@ const routes = function(app, passport) {
       if (valsi_item.length > 0) {
         return res.send({Valsi: valsi_item[0].item})
       }
-    }).catch(function(err) {
-      return res.send({err: err.toString()})
-    })
+    }).catch((err) => res.send({err: err.toString()}))
   })
 
-  app.route('/api/sisku_satci').post(function(req, res) {
+  app.route('/api/sisku_satci').post((req, res) => {
     //todo: validator
     let opt = req.body
     const model_name = req.body.morna
@@ -412,7 +408,7 @@ const routes = function(app, passport) {
       }
     })
     //model.find(opt, function(err, vlamei) {
-    model.find(opt).populate('finti').populate('selgerna_filovalsi').populate('selgerna_filovelski').populate({path: 'terbri.klesi'}).populate({path: 'krasi.finti'}).populate({path: 'tcita.finti'}).populate({path: 'tcita.tcita'}).populate({path: 'jorne.finti'}).populate({path: 'jorne.felovelski'}).populate({path: 'jorne.tcita.finti'}).populate({path: 'jorne.tcita.tcita'}).lean().exec(function(err, vlamei) {
+    model.find(opt).populate('finti').populate('selgerna_filovalsi').populate('selgerna_filovelski').populate({path: 'terbri.klesi'}).populate({path: 'krasi.finti'}).populate({path: 'tcita.finti'}).populate({path: 'tcita.tcita'}).populate({path: 'jorne.finti'}).populate({path: 'jorne.felovelski'}).populate({path: 'jorne.tcita.finti'}).populate({path: 'jorne.tcita.tcita'}).lean().exec((err, vlamei) => {
       if (!vlamei)
         return res.send([])
       if (err)
@@ -434,7 +430,7 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/jmina_lebangu').post(isLoggedIn, function(req, res) {
+  app.route('/api/jmina_lebangu').post(isLoggedIn, (req, res) => {
     if (path([
       'body', 'krasi_cmene'
     ], req)) {
@@ -442,10 +438,9 @@ const routes = function(app, passport) {
       const bridi = req.body.bridi
       Language.findOne({
         'krasi_cmene': krasi_cmene
-      }, function(err, lang) {
-        if (lang) {
+      }, (err, lang) => {
+        if (lang)
           return res.send({message: 'bangu already exists', Bangu: lang})
-        }
         if (err)
           res.send({err: `unknown database error when creating language "${krasi_cmene}"`})
 
@@ -453,7 +448,7 @@ const routes = function(app, passport) {
         Language.findOrCreate({
           "krasi_cmene": krasi_cmene,
           "isPredicateLanguage": bridi
-        }, function(err, lang) {
+        }, (err, lang) => {
           if (err)
             res.send({err: `unknown database error when creating language "${krasi_cmene}"`})
           return res.send({message: 'created a bangu', Bangu: lang})
@@ -465,7 +460,7 @@ const routes = function(app, passport) {
     }
   })
 
-  app.route('/api/restorepass').post(function(req, res) {
+  app.route('/api/restorepass').post((req, res)=> {
     if (path([
       'body', 'userdatum'
     ], req)) {
@@ -481,7 +476,7 @@ const routes = function(app, passport) {
             'local.email': nameoremail
           }
         ]
-      }, function(err, user) {
+      }, (err, user) => {
         const now = new Date()
         const last = new Date(user.local.passwordLastRestored || 0)
         //can't restore more often than once a day
@@ -489,7 +484,7 @@ const routes = function(app, passport) {
           return res.send({sentemail: 'maybe sent something'})
         user.local.password = user.generateHash(password)
         user.local.passwordLastRestored = now
-        user.save(function(err) {
+        user.save((err) => {
           if (err)
             return console.error(err)
 
@@ -511,7 +506,7 @@ const routes = function(app, passport) {
             text: `${cmene}, you might have requested to change your password on Almavlaste. Currently it's not possible to select your new password manually so here is your new password from now on:\n\n${password}\n\nIf you didn't request restoring your password simply ignore this email.\n\n\nSincerely yours,\nAlmavlaste in action.`
           }
 
-          transporter.sendMail(mailOptions, function(error, info) {
+          transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
               console.log(error)
             } else {
@@ -526,11 +521,11 @@ const routes = function(app, passport) {
     }
   })
 
-  app.route('/api/getalldefs/:id').get(function(req, res) {
+  app.route('/api/getalldefs/:id').get((req, res)=> {
     const user_id = req.params.id
     Valsi.find({
       finti: user_id
-    }, function(err, vlamei) {
+    }, (err, vlamei) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!vlamei)
@@ -542,8 +537,8 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/listall').get(function(req, res) {
-    Valsi.find({}, function(err, vlamei) {
+  app.route('/api/listall').get((req, res)=> {
+    Valsi.find({}, (err, vlamei) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!vlamei || vlamei.length === 0)
@@ -555,8 +550,8 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/banmei').get(function(req, res) {
-    Language.find({}).sort({freq: -1}).exec(function(err, banmei) {
+  app.route('/api/banmei').get((req, res)=> {
+    Language.find({}).sort({freq: -1}).exec((err, banmei)=> {
       if (err)
         return res.status(400).send({err: err.message})
       if (!banmei || banmei.length === 0)
@@ -565,8 +560,8 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/klemei').get(function(req, res) {
-    Klesi.find({}).sort({freq: -1}).lean().exec(function(err, klemei) {
+  app.route('/api/klemei').get((req, res)=> {
+    Klesi.find({}).sort({freq: -1}).lean().exec((err, klemei)=> {
       if (err)
         return res.status(400).send({err: err.message})
       if (!klemei || klemei.length === 0)
@@ -580,8 +575,8 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/tcitymei').get(function(req, res) {
-    Tcita.find({}).sort({freq: -1}).lean().exec(function(err, tcitymei) {
+  app.route('/api/tcitymei').get((req, res)=> {
+    Tcita.find({}).sort({freq: -1}).lean().exec((err, tcitymei)=> {
       if (err)
         return res.status(400).send({err: err.message})
       if (!tcitymei || tcitymei.length === 0)
@@ -595,8 +590,8 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/listusers').get(function(req, res) {
-    User.find({}, function(err, users) {
+  app.route('/api/listusers').get((req, res)=> {
+    User.find({}, (err, users) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!users || users.length === 0)
@@ -609,9 +604,9 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/pilno/:id').get(function(req, res) {
+  app.route('/api/pilno/:id').get((req, res)=> {
     const id = req.params.id
-    User.findById(id, function(err, user) {
+    User.findById(id, (err, user) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!user)
@@ -621,9 +616,9 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/bangu/:id').get(function(req, res) {
+  app.route('/api/bangu/:id').get((req, res)=> {
     const id = req.params.id
-    Language.findById(id, function(err, bangu) {
+    Language.findById(id, (err, bangu) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!bangu)
@@ -632,9 +627,9 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/valsibyname/:valsi').get(function(req, res) {
+  app.route('/api/valsibyname/:valsi').get((req, res)=> {
     const valsi = req.params.valsi
-    Valsi.find({valsi: valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec(function(err, valsi) {
+    Valsi.find({valsi: valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec((err, valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!valsi || valsi.length === 0)
@@ -652,9 +647,9 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/valsi/:id').get(function(req, res) {
+  app.route('/api/valsi/:id').get((req, res)=> {
     const id = req.params.id
-    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec(function(err, valsi) {
+    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec((err, valsi)=> {
       if (err)
         return res.status(400).send({err: err.message})
       if (!valsi)
@@ -684,7 +679,7 @@ const routes = function(app, passport) {
       }
       res.send(newDef)
     })
-  }).post(function(req, res) {
+  }).post((req, res)=> {
     /*@:id -> id of Valsi you are voting on
             * @body.option_id -> id of option you want to vote for
             * @body.option_id -> 'new', then a new option will be created
@@ -699,12 +694,12 @@ const routes = function(app, passport) {
     const def_id = req.params.id
     const option_id = req.body.option_id
     const user_id = req.body.user
-    User.findById(user_id, function(err, user) {
+    User.findById(user_id, (err, user)=> {
       if (err) {
         return console.error('user not found: ' + user_id)
       }
     })
-    Valsi.findById(def_id, function(err, Valsi) {
+    Valsi.findById(def_id, (err, Valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
 
@@ -735,7 +730,7 @@ const routes = function(app, passport) {
         }
       }
 
-      Valsi.save(function(err) {
+      Valsi.save((err)=> {
         if (err)
           return console.error(err)
         res.send(Valsi)
@@ -743,7 +738,7 @@ const routes = function(app, passport) {
     })
   })
 
-  app.route('/api/login').get(isLoggedIn, function(req, res) {
+  app.route('/api/login').get(isLoggedIn, (req, res)=> {
     const output = {
       user: req.user.toObject()
     }
@@ -753,7 +748,7 @@ const routes = function(app, passport) {
       output.user.local.password = '********' //don't send password to client
     }
     res.send(output)
-  }).post(passport.authenticate('local-login'), function(req, res) {
+  }).post(passport.authenticate('local-login'), (req, res)=> {
     //successfully signed up, if authentication failed client will get 401 error
     const output = {
       user: req.user.toObject()
@@ -762,12 +757,12 @@ const routes = function(app, passport) {
     res.send(output)
   })
 
-  app.route('/api/logout').get(function(req, res) {
+  app.route('/api/logout').get((req, res)=> {
     req.logout()
     res.redirect('/')
   })
 
-  app.route('/api/signup').post((req, res) => passport.authenticate('local-signup', function(err, user, info) {
+  app.route('/api/signup').post((req, res) => passport.authenticate('local-signup', (err, user, info)=> {
     //successfully signed up, if authentication failed client will get 404 error
     const output = {
       user, //: req.user.toObject(),
@@ -806,7 +801,7 @@ const routes = function(app, passport) {
 
   app.route('/auth/google').get(passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}))
 
-  app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), function(req, res) {
+  app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), (req, res)=> {
     res.redirect('/profile')
   })
   /*
@@ -847,7 +842,7 @@ const routes = function(app, passport) {
     })
   })
   /*
-    app.use(function(req, res){
+    app.use((req, res)=>{
         let authenticated = false
         if(req.user) authenticated = true
         res.render(path_.resolve('src/client/public/index.hbs'),{__AUTHENTICATED__:authenticated})

@@ -3,9 +3,14 @@
 * todo
 
 # ToDo
-* new klesi are not being added, are added only for existing words
+- new klesi are not being added, are added only for existing words
+* there is always "undefined" tcita. remove it
+* duplicate tcita are being saved
+* OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
+* how to edit a definition?
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
+* adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
 * klemei = klesi entered + from server, nothing more!
 * "dont publish" - not indexable smuvelcki
 * dont allow saving identical read-only def. if another read-only already is
@@ -16,14 +21,10 @@
 * fill tcita table on each save
 * klesi has language, "your klesi"/"order all by frequency"
 * klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
-* there is always "undefined" tcita. remove it
-* duplicate tcita are being saved
-* OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
 * switch "editable by me, by all"
 * /sisku client must determine via switch how to present the component for a given model: smuvelcki, mupli, bangu ...
 ** !items case
 * maybe valsi saved even if returned null.id
-* /finti clear button
 * if predicate language then show terbri first, old terbri last. otherwise vice versa
 * confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
 * text before x1 => "text before" whatever. same for other hints
@@ -72,14 +73,12 @@
 * use senelci_bangu in mupli as recommendations
 * search page via http://mongoosejs.com/docs/queries.html
 * /finti - flag not to save history
-* how to edit a definition?
 * /cninomupli - flag not to save history
 * how to edit a mupli?
 * sitemap (routes, paths) like that of jbovlaste.lojban.org
-* adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
 * res.send in server/routes must send err message if any error
 * upvote words-s restore functionality. on press 'upvote' if already upvoted by me show message. if not upvoted save. if earlier downvoted - downvote not more often than once a day.
-* for downvote reverse method
+** for downvote reverse method
 * html in react-select languages - freq to the right
 * check api. whenever send user dont send password!!!
 * check api. move all checks into it from client
@@ -104,6 +103,7 @@
 
 # Done
 
+- /finti clear button
 - show author on valsi/:id
 - save my tags
 - check if second user can save his tags
