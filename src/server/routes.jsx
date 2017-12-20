@@ -112,13 +112,13 @@ const routes = function(app, passport) {
     if (terbri.err)
       return res.send(terbri)
 
-    // 2. check cmaxes, check language=>promise
+      // 2. check cmaxes, check language=>promise
     const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
       '_id': req.body[kk._id]
     }).exec())).then(function(items) {
       let sum = []
       for (let i in items) {
-        const item=items[i]
+        const item = items[i]
         if (!item) {
           return {item: null, err: `parameter ${thetwo[i]._id} not found`}
         }
@@ -225,7 +225,6 @@ const routes = function(app, passport) {
         }
         //now check if this word from the same user is already in the db.
         const xaho_items = items.filter(i => i["type"] === 'xahovalsi')
-        p(xaho_items)
         if (xaho_items.length > 0) {
           const promisified_xaho = new Promise((resolve, reject) => {
             resolve({xaho: true, vlamei: xaho_items})
@@ -236,7 +235,7 @@ const routes = function(app, passport) {
       //SAVE OR UPDATE
       let prs = []
       for (let i = 0; i < items.length; i++) {
-        const item = items[i]
+        let item = items[i]
         let candidate
         if (item.err) {
           item.err = 'not a correct lang or klesi'
@@ -244,8 +243,6 @@ const routes = function(app, passport) {
             resolve(item)
           })
         } else {
-          p(item)
-          p(item.item.klesi)
           if (item.kunti && item.type === 'klesi' && item.item.klesi) {
             //now update
             const klesi = new Klesi({freq: 1, klesi: item.item.klesi})
@@ -255,7 +252,7 @@ const routes = function(app, passport) {
                   item.err = err.toString()
                 } else {
                   item.saved = true
-                  item.saver = it
+                  item.item = it
                   item.numberAffected = numberAffected
                 }
                 resolve(item)
@@ -307,7 +304,7 @@ const routes = function(app, passport) {
             })
           }
         }
-        p(i)
+        items[i] = item
         prs.push(candidate)
       }
       //save tcita
@@ -337,12 +334,18 @@ const routes = function(app, passport) {
         })
         prs.push(candidate)
       })
+      return Promise.all(prs)
+    }).then(function(items) {
+      let prs = items.map(item => new Promise((resolve, reject) => {
+        resolve(item)
+      }));
       //save smuvelcki
       const newDef = new Valsi()
       newDef.valsi = req.body.valsi
       newDef.selgerna_filovalsi = req.body.bangu["value"]
 
       const klesi_id_map = {}
+      //todo: wrong, resolve prs promises instead
       items.map(o => {
         if (o.type === 'klesi') {
           const k = {}
@@ -422,13 +425,12 @@ const routes = function(app, passport) {
             i = FlushPassword(i)
             return i
             //{valsi: i.valsi, finti: i.finti, _id: i._id}
-          })
-          break
+          });
+          break;
         case "language":
           v = vlamei
           break
       }
-      //p(v)
       res.send(v)
     })
   })
@@ -448,7 +450,7 @@ const routes = function(app, passport) {
         if (err)
           res.send({err: `unknown database error when creating language "${krasi_cmene}"`})
 
-        //now create a language
+          //now create a language
         Language.findOrCreate({
           "krasi_cmene": krasi_cmene,
           "isPredicateLanguage": bridi
@@ -492,7 +494,7 @@ const routes = function(app, passport) {
           if (err)
             return console.error(err)
 
-          //send email
+            //send email
           const target_email = user.local.email
           const cmene = user.local.username
           const nodemailer = require('nodemailer')
