@@ -3,7 +3,7 @@
 * todo
 
 # ToDo
-- new klesi are not being added, are added only for existing words
+
 * there is always "undefined" tcita. remove it
 * duplicate tcita are being saved
 * OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
@@ -103,6 +103,7 @@
 
 # Done
 
+- new klesi are not being added, are added only for existing words
 - /finti clear button
 - show author on valsi/:id
 - save my tags

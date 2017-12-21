@@ -35,25 +35,25 @@ const init_state = {
       idx: 0,
       nirna: '',
       klesi_hint: '',
-      sluji:'',
+      sluji: '',
       sluji_hint: 'start of text'
     }, {
       idx: 1,
       nirna: 'x1',
       klesi_hint: 'types',
-      sluji:'',
+      sluji: '',
       sluji_hint: 'text after x1'
     }, {
       idx: 2,
       nirna: 'x2',
       klesi_hint: 'types',
-      sluji:'',
+      sluji: '',
       sluji_hint: 'text after x2'
     }, {
       idx: 3,
       nirna: 'x3',
       klesi_hint: 'types',
-      sluji:'',
+      sluji: '',
       sluji_hint: 'text after x3'
     }
   ]
@@ -90,12 +90,14 @@ class Create extends BaseComponent {
     stored_state.forcedoverwrite = false
     stored_state.addButtonDefault = init_state.addButtonDefault
     stored_state.addButton = init_state.addButton
-    stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
-        const freq = i.freq
-          ? `[${i.freq}] `
-          : ''
-        return JSON.stringify({label: `${i.label}`, value: i.value})
-      }))].map(i => JSON.parse(i))
+    stored_state.klemei = undefined
+    stored_state.tcitymei=undefined
+    // stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
+    //     const freq = i.freq
+    //       ? `[${i.freq}] `
+    //       : ''
+    //     return JSON.stringify({label: `${i.label}`, value: i.value})
+    //   }))].map(i => JSON.parse(i))
     const copy_init_state = JSON.parse(JSON.stringify((init_state)))
     Object.deepExtend(copy_init_state, stored_state)
     this.state = copy_init_state
@@ -133,11 +135,28 @@ class Create extends BaseComponent {
         })
       })
     })
-    getAllTcita(function(err, tcitymei) {
+    getAllKlesi(function(err, res) {
+      if (err) {
+        console.log("klemei", err)
+        return
+      }
+      const local_klemei = self.state.terbri.reduce((acc, i) => {
+        return acc.concat(i.klesi);
+      }, [])
+      const gunma = [...new Set((res.map(i => i.klesi).concat(local_klemei)))].map(i => {
+        return {label: i, value: i}
+      })
+      self.setState({klemei: gunma})
+    })
+    getAllTcita(function(err, res) {
       if (err) {
         console.log("tcitymei", err)
         return
       }
+      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita)))].map(i => {
+        return {label: i, value: i}
+      })
+      self.setState({tcitymei: gunma})
     })
   }
   addOption(e) {
@@ -172,13 +191,15 @@ class Create extends BaseComponent {
     }, 3000)
   }
   handleClear() {
-    this.setState({terbri:init_state.terbri,valsi:'',bangu:'',terfanva:'',tcita:[]})
+    this.setState({terbri: init_state.terbri, valsi: '', bangu: '', terfanva: '', tcita: []})
   }
   handleChangeOfTags(value) {
     this.setState({tcita: value})
+    p(value)
     this.setState({
       'tcitymei': [...new Set(this.state.tcitymei.concat(value))]
     })
+    p(this.state.tcitymei)
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
@@ -296,6 +317,7 @@ class Create extends BaseComponent {
     }
     const terbri = this.state.terbri
     const self = this
+    // p(self.state.tcitymei)
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
