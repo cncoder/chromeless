@@ -202,8 +202,7 @@ const routes = (app, passport) => {
       }
       return Promise.all(prs)
     }).then((items)=> {
-      //todo: !items case
-      if (items[0] && items[0].err) {
+      if (items && items[0] && items[0].err) {
         const promisified_err_item = new Promise((resolve, reject) => {
           resolve(items[0])
         })

@@ -4,14 +4,14 @@
 
 # ToDo
 
-* there is always "undefined" tcita. remove it
+- there is always "undefined" tcita. remove it
 * duplicate tcita are being saved
 * OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
 * how to edit a definition?
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
 * adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
-* klemei = klesi entered + from server, nothing more!
+- klemei = klesi entered + from server, nothing more!
 * "dont publish" - not indexable smuvelcki
 * dont allow saving identical read-only def. if another read-only already is
 * Comedy node.js for main functions. Test!
