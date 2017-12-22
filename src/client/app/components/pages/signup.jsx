@@ -66,7 +66,7 @@ class Signup extends BaseComponent {
       } else if (res.body.user) {
         setUser(res.body.user)
         setAuthenticated(true)
-        browserHistory.push('/profile')
+        browserHistory.push('/mi')
       } else if (res.body.message) {
         //console.log(JSON.stringify(res.body.message))
         self.flashMessage(res.body.message)

@@ -10,7 +10,7 @@ import {Creatable} from 'react-select-plus'
 import OptionInput from '../optioninput.jsx'
 import FlashMessage from '../flashmessage.jsx'
 import 'react-select-plus/dist/react-select-plus.css'
-const p = (a) => console.log(JSON.stringify(a))
+const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
 const init_state = {
   flashVisible: false,

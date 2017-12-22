@@ -56,7 +56,7 @@ class Login extends BaseComponent {
         console.log('login successful!', res.body)
         setUser(res.body.user)
         setAuthenticated(true)
-        browserHistory.push('/profile')
+        browserHistory.push('/mi')
       } else {
         console.log('response from login post did not include the expected user: ', res.body)
       }

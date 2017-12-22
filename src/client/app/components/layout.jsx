@@ -45,7 +45,7 @@ class Application extends BaseComponent {
           <Link to="/finti">Add yours</Link>
         </li>
         <li>
-          <Link to="/profile">My Profile</Link>
+          <Link to="/mi">My Profile</Link>
         </li>
         <li>
           <a href="/api/logout">Logout</a>

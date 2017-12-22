@@ -26,7 +26,7 @@ class LostPass extends BaseComponent {
     this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated')
   }
   componentDidMount() {
-    document.title = "Restore password"
+    document.title = "Send a new password"
   }
   handleChange(e) {
     if (e.target.id === 'email') {
@@ -75,7 +75,7 @@ class LostPass extends BaseComponent {
       <div className="header-content">
         <div className="header-content-inner">
           <div className="Login-container">
-            <h1>Restore password:</h1>
+            <h1>Send a new password:</h1>
             <hr/>
             <FlashMessage visible={this.state.flashVisible} message={this.state.flashMessage} type="error"/>
             <form className="form-horizontal" onChange={this.handleChange} onSubmit={this.handleSubmit}>

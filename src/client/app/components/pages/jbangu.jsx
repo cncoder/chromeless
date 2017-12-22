@@ -1,6 +1,6 @@
 const React = require('react')
 import request from 'superagent'
-import {getAuthenticated} from '../../stores/AppStateStore'
+import {getAuthenticated,getUser} from '../../stores/AppStateStore'
 import {browserHistory} from 'react-router'
 import {Link} from 'react-router'
 
@@ -71,6 +71,7 @@ class JBangu extends BaseComponent {
   }
   render() {
     const self = this
+
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">

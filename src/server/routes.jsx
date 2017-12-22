@@ -469,6 +469,11 @@ const routes = (app, passport) => {
     }
   })
 
+  app.route('/mi').post(isLoggedIn, (req, res) => {
+    const pilno = {_id: req.user._id, cmene: req.user.cmene}
+    res.json(pilno)
+  })
+
   app.route('/api/restorepass').post((req, res) => {
     if (path([
       'body', 'userdatum'
@@ -797,21 +802,21 @@ const routes = (app, passport) => {
   app.route('/auth/facebook').get(passport.authenticate('facebook'))
 
   app.route('/auth/facebook/callback').get(passport.authenticate('facebook', {
-    successRedirect: '/profile',
+    successRedirect: '/mi',
     failureRedirect: '/login'
   }))
 
   app.route('/auth/twitter').get(passport.authenticate('twitter'))
 
   app.route('/auth/twitter/callback').get(passport.authenticate('twitter', {
-    successRedirect: '/profile',
+    successRedirect: '/mi',
     failureRedirect: '/login'
   }))
 
   app.route('/auth/google').get(passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}))
 
   app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), (req, res) => {
-    res.redirect('/profile')
+    res.redirect('/mi')
   })
   /*
  *

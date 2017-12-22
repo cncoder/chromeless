@@ -1,10 +1,6 @@
 const React = require('react')
-import request from 'superagent'
-import {getAllDefs, getDefById} from '../../utils/utils'
+import {getAllDefs} from '../../utils/utils'
 import {Link} from 'react-router'
-import AddOptionButton from '../add_option_button.jsx'
-import {getAuthenticated} from '../../stores/AppStateStore'
-import AppStateStore from '../../stores/AppStateStore'
 const p = (a) => console.log(JSON.stringify(a, null, 2))
 
 class ListAll extends React.Component {
