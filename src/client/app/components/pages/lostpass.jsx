@@ -1,8 +1,7 @@
 const React = require('react')
 import {Link} from 'react-router'
 import request from 'superagent'
-import {browserHistory} from 'react-router'
-import {setUser, setAuthenticated} from '../../actions/AppStateActionCreators'
+import {getMe} from '../../utils/utils'
 import FlashMessage from '../flashmessage.jsx'
 
 const iconStyle = {
@@ -19,18 +18,26 @@ class LostPass extends BaseComponent {
   constructor() {
     super()
     this.state = {
-      userdatum: '',
       message: `Currently you can't choose a new password. Instead we can only generate a new password for you ourselves. Passwords for your account can be sent not more often than once every 24 hours.`,
-      backtologin: false
+      backtologin: false,
+      pilno: ''
     }
     this._bind('handleSubmit', 'handleChange', 'flashMessage', '_formValidated')
+  }
+  componentWillMount() {
+    const self=this
+    getMe(function(err, pilno) {
+      if (!err) {
+        self.setState({pilno: pilno.cmene})
+      }
+    })
   }
   componentDidMount() {
     document.title = "Send a new password"
   }
   handleChange(e) {
     if (e.target.id === 'email') {
-      this.setState({userdatum: e.target.value})
+      this.setState({pilno: e.target.value})
     }
   }
   flashMessage(msg, persistent) {
@@ -45,7 +52,7 @@ class LostPass extends BaseComponent {
   handleSubmit(e) {
     e.preventDefault()
     const self = this
-    request.post('/api/restorepass').send({userdatum: this.state.userdatum}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('/api/pilno').send({pilno: this.state.pilno}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
           console.warn('incorrect username or email')
@@ -61,8 +68,8 @@ class LostPass extends BaseComponent {
     })
   }
   _formValidated() {
-    const userdatum = this.state.userdatum
-    if (userdatum.length < 1)
+    const pilno = this.state.pilno
+    if (pilno.length < 1)
       return false
     return true
   }
@@ -88,11 +95,14 @@ class LostPass extends BaseComponent {
                   : <div>
                     <Link to="/login">Back to login</Link>
                   </div>}
-                <div className="col-sm-12">
-                  <input type="text" className="form-control" id="email" value={this.state.userdatum} placeholder="nickname or email"/>
+                <label className="col-sm-4 control-label" htmlFor="exampleInputEmail1">Email or username</label>
+                <div className="col-sm-6">
+                  <input type="text" className="form-control" id="email" value={this.state.pilno}/>
+                </div>
+                <div className="col-sm-2">
+                  <button type="submit" className={"btn btn-default " + buttonClass}>Submit</button>
                 </div>
               </div>
-              <button type="submit" className={"btn btn-default " + buttonClass}>Submit</button>
             </form>
           </div>
         </div>

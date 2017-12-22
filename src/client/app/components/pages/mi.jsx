@@ -3,10 +3,8 @@ import UserTable from '../usertable.jsx'
 import UserDefault from '../userdefault.jsx'
 import UserDefs from '../userdefs.jsx'
 import {Link} from 'react-router'
-import {getAuthenticated, getUser, getUserDefs} from '../../stores/AppStateStore'
 import {getMyDefs} from '../../utils/utils'
 import request from 'superagent'
-import {browserHistory} from 'react-router'
 const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
 class BaseComponent extends React.Component {
@@ -35,17 +33,19 @@ class Mi extends BaseComponent {
     const self = this
     getMyDefs(function(err, vlamei) {
       if (!err) {
-        p(vlamei)
         self.setState({vlamei: vlamei.vlamei, user: vlamei.finti})
       }
     })
+  }
+
+  componentDidMount() {
+    document.title = `${this.state.user.cmene} - la almavlaste`
   }
 
   render() {
     let content
     let buttonText
     const self = this
-    // p(self.userDefs)
     if (this.state.showTable) {
       content = <UserTable user={self.state.user}/>
       buttonText = 'less detailed view'

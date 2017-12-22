@@ -105,6 +105,15 @@ const getMyDefs = function(cb) {
   })
 }
 
+const getMe = function(cb) {
+  console.log('getting myself')
+  request.post('/api/mi').end(function(err, res) {
+    if (err)
+      return cb(err)
+    return cb(null, res.body)
+  })
+}
+
 const sisku_satci = function(options, cb) {
   console.log('getting all vlamei from id')
   request.post('/api/sisku_satci/').send(options).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
@@ -173,5 +182,6 @@ module.exports = {
   getUserById,
   getBanguById,
   getMyDefs,
+  getMe,
   echo
 }

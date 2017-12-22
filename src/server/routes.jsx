@@ -469,7 +469,7 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/mi').post(isLoggedIn, (req, res) => {
+  app.route('/api/mi').post(isLoggedIn, (req, res) => {
     const pilno = {
       _id: req.user._id,
       cmene: req.user.cmene
@@ -479,9 +479,9 @@ const routes = (app, passport) => {
 
   app.route('/api/restorepass').post((req, res) => {
     if (path([
-      'body', 'userdatum'
+      'body', 'pilno'
     ], req)) {
-      const nameoremail = req.body.userdatum
+      const nameoremail = req.body.pilno
       //our new password
       const generator = require('generate-password')
       const password = generator.generate({length: 12, numbers: true, excludeSimilarCharacters: true})
