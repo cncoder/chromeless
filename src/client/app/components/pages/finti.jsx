@@ -69,8 +69,17 @@ class BaseComponent extends React.Component {
   }
 }
 
-const tcitygau = (i) => {
-  return {label: i, value: i}
+const UniquifyArray = (arr, cmima, state_key, state) => {
+  const a = [...new Set(arr.map(i => {
+      const b = JSON.stringify(cmima.reduce((acc, j) => {
+        acc[j] = i[j]
+        return acc
+      }, {}))
+      return b
+    }))].map(i => JSON.parse(i))
+  const newstate = {}
+  newstate[state_key] = a
+  state.setState(newstate)
 }
 
 Object.deepExtend = function(destination, source) {
@@ -157,8 +166,11 @@ class Create extends BaseComponent {
         console.log("tcitymei", err)
         return
       }
-      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i => i.value))))].map(tcitygau)
-      self.setState({tcitymei: gunma})
+      UniquifyArray(res.map(i => {
+        return {value: i.tcita, label: i.tcita}
+      }).concat(self.state.tcita), [
+        "value", "label"
+      ], "tcitymei", self)
     })
   }
   addOption(e) {
@@ -197,7 +209,7 @@ class Create extends BaseComponent {
   }
 
   handleChangeOfTags(value) {
-    const self=this
+    const self = this
     this.setState({tcita: value})
     // p(value)
     // p(this.state.tcitymei)
@@ -206,14 +218,12 @@ class Create extends BaseComponent {
         console.log("tcitymei", err)
         return
       }
-      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i => i.value))))].map(tcitygau)
-      self.setState({tcitymei: gunma})
+      UniquifyArray(res.map(i => {
+        return {value: i.tcita, label: i.tcita}
+      }).concat(self.state.tcita), [
+        "value", "label"
+      ], "tcitymei", self)
     })
-    // this.setState({
-    //   'tcitymei': [...new Set(this.state.tcitymeimap(i => i.value).concat(value.map(i => i.value)))].map(i => {
-    //     return {value: i.value, label: i.label}
-    //   })
-    // })
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})

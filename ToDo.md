@@ -4,14 +4,12 @@
 
 # ToDo
 
-- when delete new tcita its duplicated in tcitymei
-- on every change of tags reload from server tcitymei
-* tcita must have values different from labels - freqs add
-- retain logging in at /profile
-- /mi doesnt show user details and defs by default
+* definition editable: by me, by everyone, by no one
+* favorite users - my circles of Users
+* definition editable by selected users
+* how to edit a definition?
 * /valsi show tcita. my tcita are separate
 * OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
-* how to edit a definition?
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
 * adding a language updates finti page https://stackoverflow.com/questions/36180414/reactjs-add-custom-event-listener-to-component and https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
@@ -67,6 +65,7 @@
 * search for precise match of word: return all definitions
 * add favicon https://medium.com/@bryantheastronaut/react-getting-started-the-mern-stack-tutorial-feat-es6-de1a2886be50
 * if change one string the string with same place must change its type accordingly
+* tcita must have values different from labels - freqs add - impossible to show selected tcita as different
 * not only x but lujvo decomposition letters if it's a lujvo (must not coincide)
 ** k, k', k'' for klaklakla
 * user's favorite languages: senelci_bangu
@@ -105,6 +104,10 @@
 
 # Done
 
+- when delete new tcita its duplicated in tcitymei
+- on every change of tags reload from server tcitymei
+- retain logging in at /profile
+- /mi doesnt show user details and defs by default
 - there is always "undefined" tcita. remove it
 - duplicate tcita are being saved
 - klemei = klesi entered + from server, nothing more!
