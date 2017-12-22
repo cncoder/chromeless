@@ -470,7 +470,10 @@ const routes = (app, passport) => {
   })
 
   app.route('/mi').post(isLoggedIn, (req, res) => {
-    const pilno = {_id: req.user._id, cmene: req.user.cmene}
+    const pilno = {
+      _id: req.user._id,
+      cmene: req.user.cmene
+    }
     res.json(pilno)
   })
 
@@ -535,8 +538,25 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/api/getalldefs/:id').get((req, res) => {
-    const user_id = req.params.id
+  app.route('/api/getmydefs').post(isLoggedIn, (req, res) => {
+    const user = req.user
+    user.local.password = undefined
+    Valsi.find({
+      finti: user._id
+    }, (err, vlamei) => {
+      if (err)
+        return res.status(400).send({err: err.message})
+      if (!vlamei)
+        return res.send({err: `can't search in defs for a given user ${user_id}}`})
+      const newDef = vlamei.map(i => {
+        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      })
+      res.send({vlamei: newDef, finti: user})
+    })
+  })
+
+  app.route('/api/getalldefs/:id').get(isLoggedIn, (req, res) => {
+    const user_id = req.params.id || req.user._id
     Valsi.find({
       finti: user_id
     }, (err, vlamei) => {

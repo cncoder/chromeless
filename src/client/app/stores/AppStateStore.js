@@ -7,7 +7,7 @@ const CHANGE_EVENT = 'change'
 
 let AppState = {
   user: {},
-  userDefs: [],
+  // userDefs: [],
   authenticated: false
 }
 
@@ -17,13 +17,13 @@ function setAppState(state) {
 }
 function setUser(user) {
   AppState.user = user
-  AppState.userDefs = [] //clear vlamei from previous user
-  //todo: instead mongoose findall
-  request.get('/api/getalldefs/' + user._id).end(function(err, res) {
-    if (err)
-      return console.error(err)
-    AppState.userDefs = res.body
-  })
+  // AppState.userDefs = [] //clear vlamei from previous user
+  // //todo: instead mongoose findall
+  // request.get('/api/getalldefs/' + user._id).end(function(err, res) {
+  //   if (err)
+  //     return console.error(err)
+  //   AppState.userDefs = res.body
+  // })
 }
 
 function setAuthenticated(bool) {
@@ -46,9 +46,9 @@ const AppStateStore = assign({}, EventEmitter.prototype, {
   getUser: function() {
     return AppState.user
   },
-  getUserDefs: function() {
-    return AppState.userDefs
-  },
+  // getUserDefs: function() {
+  //   return AppState.userDefs
+  // },
   getAuthenticated: function() {
     return AppState.authenticated
   }

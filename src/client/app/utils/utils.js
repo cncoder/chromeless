@@ -82,7 +82,6 @@ const getAllDefs = function(cb) {
   request.get('/api/listall').end(function(err, res) {
     if (err)
       return cb(err)
-
     //console.log('vlamei returned:',JSON.stringify(res.body))
     return cb(null, res.body)
   })
@@ -91,6 +90,15 @@ const getAllDefs = function(cb) {
 const getDefsFromUserId = function(id, cb) {
   console.log('getting all vlamei from id')
   request.get('/api/getalldefs/' + id).end(function(err, res) {
+    if (err)
+      return cb(err)
+    return cb(null, res.body)
+  })
+}
+
+const getMyDefs = function(cb) {
+  console.log('getting my defs')
+  request.post('/api/getmydefs').end(function(err, res) {
     if (err)
       return cb(err)
     return cb(null, res.body)
@@ -164,5 +172,6 @@ module.exports = {
   getDefByName,
   getUserById,
   getBanguById,
+  getMyDefs,
   echo
 }
