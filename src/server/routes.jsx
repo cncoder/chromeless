@@ -93,7 +93,7 @@ const routes = (app, passport) => {
    *
    */
 
-  app.route('/api/finti').post(isLoggedIn, (req, res)=> {
+  app.route('/api/finti').post(isLoggedIn, (req, res) => {
     const forced = req.body.forcedoverwrite == 'true' || false
     // 0. simply bad request
     if (!path([
@@ -139,10 +139,10 @@ const routes = (app, passport) => {
       return sum
     })
     // 3. promise.all check all klesi. if no klesi return error
-    const flatklesi = terbri.map(o => o.klesi).reduce((sum, value)=> {
+    const flatklesi = terbri.map(o => o.klesi).reduce((sum, value) => {
       return sum.concat(value)
     }, []).filter(Boolean)
-    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items)=> {
+    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items) => {
       if (!items)
         return {item: null, err: 'no klesi'}
       let sum = []
@@ -166,7 +166,7 @@ const routes = (app, passport) => {
       return sum
     })
     //same word from the user already in the db
-    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items)=> {
+    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items) => {
       if (!items)
         return null
       let sum = []
@@ -186,8 +186,8 @@ const routes = (app, passport) => {
       return sum
     })
     // -2-3- resolve promises
-    Promise.all([langpromises, klesipromises, xahopromises]).then((items)=> {
-      items = items.reduce((sum, value)=> {
+    Promise.all([langpromises, klesipromises, xahopromises]).then((items) => {
+      items = items.reduce((sum, value) => {
         return sum.concat(value)
       }, [])
       let prs = []
@@ -201,7 +201,7 @@ const routes = (app, passport) => {
         prs.push(promisified_item)
       }
       return Promise.all(prs)
-    }).then((items)=> {
+    }).then((items) => {
       if (items && items[0] && items[0].err) {
         const promisified_err_item = new Promise((resolve, reject) => {
           resolve(items[0])
@@ -266,7 +266,7 @@ const routes = (app, passport) => {
                 }
               }, {
                 new: true
-              }, (err, doc)=> {
+              }, (err, doc) => {
                 if (err) {
                   item.err = err.toString()
                 } else {
@@ -285,7 +285,7 @@ const routes = (app, passport) => {
                 }
               }, {
                 new: true
-              }, (err, doc)=> {
+              }, (err, doc) => {
                 if (err) {
                   item.err = err.toString()
                 } else {
@@ -308,31 +308,41 @@ const routes = (app, passport) => {
       JSON.parse(req.body.tcita).map(o => {
         const tcita = o.tcita
         const candidate = new Promise((resolve, reject) => {
-          Tcita.findOne({tcita}).lean().exec().then((item) => {
+          Tcita.findOrCreate({
+            tcita
+          }, (err, item) => {
+            if (err)
+              res.send({err: `unknown database error when find/create Tcita "${tcita}"`})
             if (!item)
               item = {}
             const freq = (!item || !item.freq)
               ? 1
               : parseInt(item.freq + 1)
-            const new_tcita = new Tcita({freq: freq, tcita, type: 'tcita'})
-            new_tcita.save((err, it, numberAffected) => {
-              if (err) {
-                item.err = err.toString()
-              } else {
-                item.saved = true
-                item.saver = it
-                item.numberAffected = numberAffected
+            Tcita.findOneAndUpdate({
+              _id: item._id
+            }, {
+              $set: {
+                freq
               }
-              resolve(item)
+            }, {
+              new: true
+            }, (err, doc) => {
+              if (err) {
+                doc.err = err.toString()
+              } else {
+                doc.updated = true
+              }
+              p(doc)
+              resolve(doc)
             })
-          }, (err) => {
-            resolve({type: 'tcita', tcita: o.tcita, err: err.toString()})
           })
+        }, (err) => {
+          resolve({type: 'tcita', tcita: o.tcita, err: err.toString()})
         })
         prs.push(candidate)
       })
       return Promise.all(prs)
-    }).then((items)=> {
+    }).then((items) => {
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));
@@ -450,7 +460,7 @@ const routes = (app, passport) => {
         }, (err, lang) => {
           if (err)
             res.send({err: `unknown database error when creating language "${krasi_cmene}"`})
-          return res.send({message: 'created a bangu', Bangu: lang})
+          return res.send({message: 'created/found a bangu', Bangu: lang})
         })
       })
     } else {
@@ -459,7 +469,7 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/api/restorepass').post((req, res)=> {
+  app.route('/api/restorepass').post((req, res) => {
     if (path([
       'body', 'userdatum'
     ], req)) {
@@ -520,7 +530,7 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/api/getalldefs/:id').get((req, res)=> {
+  app.route('/api/getalldefs/:id').get((req, res) => {
     const user_id = req.params.id
     Valsi.find({
       finti: user_id
@@ -536,7 +546,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/listall').get((req, res)=> {
+  app.route('/api/listall').get((req, res) => {
     Valsi.find({}, (err, vlamei) => {
       if (err)
         return res.status(400).send({err: err.message})
@@ -549,8 +559,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/banmei').get((req, res)=> {
-    Language.find({}).sort({freq: -1}).exec((err, banmei)=> {
+  app.route('/api/banmei').get((req, res) => {
+    Language.find({}).sort({freq: -1}).exec((err, banmei) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!banmei || banmei.length === 0)
@@ -559,8 +569,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/klemei').get((req, res)=> {
-    Klesi.find({}).sort({freq: -1}).lean().exec((err, klemei)=> {
+  app.route('/api/klemei').get((req, res) => {
+    Klesi.find({}).sort({freq: -1}).lean().exec((err, klemei) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!klemei || klemei.length === 0)
@@ -574,8 +584,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/tcitymei').get((req, res)=> {
-    Tcita.find({}).sort({freq: -1}).lean().exec((err, tcitymei)=> {
+  app.route('/api/tcitymei').get((req, res) => {
+    Tcita.find({}).sort({freq: -1}).lean().exec((err, tcitymei) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!tcitymei || tcitymei.length === 0)
@@ -589,7 +599,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/listusers').get((req, res)=> {
+  app.route('/api/listusers').get((req, res) => {
     User.find({}, (err, users) => {
       if (err)
         return res.status(400).send({err: err.message})
@@ -603,7 +613,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/pilno/:id').get((req, res)=> {
+  app.route('/api/pilno/:id').get((req, res) => {
     const id = req.params.id
     User.findById(id, (err, user) => {
       if (err)
@@ -615,7 +625,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/bangu/:id').get((req, res)=> {
+  app.route('/api/bangu/:id').get((req, res) => {
     const id = req.params.id
     Language.findById(id, (err, bangu) => {
       if (err)
@@ -626,7 +636,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsibyname/:valsi').get((req, res)=> {
+  app.route('/api/valsibyname/:valsi').get((req, res) => {
     const valsi = req.params.valsi
     Valsi.find({valsi: valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec((err, valsi) => {
       if (err)
@@ -646,9 +656,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsi/:id').get((req, res)=> {
+  app.route('/api/valsi/:id').get((req, res) => {
     const id = req.params.id
-    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec((err, valsi)=> {
+    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec((err, valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!valsi)
@@ -678,7 +688,7 @@ const routes = (app, passport) => {
       }
       res.send(newDef)
     })
-  }).post((req, res)=> {
+  }).post((req, res) => {
     /*@:id -> id of Valsi you are voting on
             * @body.option_id -> id of option you want to vote for
             * @body.option_id -> 'new', then a new option will be created
@@ -693,7 +703,7 @@ const routes = (app, passport) => {
     const def_id = req.params.id
     const option_id = req.body.option_id
     const user_id = req.body.user
-    User.findById(user_id, (err, user)=> {
+    User.findById(user_id, (err, user) => {
       if (err) {
         return console.error('user not found: ' + user_id)
       }
@@ -729,7 +739,7 @@ const routes = (app, passport) => {
         }
       }
 
-      Valsi.save((err)=> {
+      Valsi.save((err) => {
         if (err)
           return console.error(err)
         res.send(Valsi)
@@ -737,7 +747,7 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/login').get(isLoggedIn, (req, res)=> {
+  app.route('/api/login').get(isLoggedIn, (req, res) => {
     const output = {
       user: req.user.toObject()
     }
@@ -747,7 +757,7 @@ const routes = (app, passport) => {
       output.user.local.password = '********' //don't send password to client
     }
     res.send(output)
-  }).post(passport.authenticate('local-login'), (req, res)=> {
+  }).post(passport.authenticate('local-login'), (req, res) => {
     //successfully signed up, if authentication failed client will get 401 error
     const output = {
       user: req.user.toObject()
@@ -756,12 +766,12 @@ const routes = (app, passport) => {
     res.send(output)
   })
 
-  app.route('/api/logout').get((req, res)=> {
+  app.route('/api/logout').get((req, res) => {
     req.logout()
     res.redirect('/')
   })
 
-  app.route('/api/signup').post((req, res) => passport.authenticate('local-signup', (err, user, info)=> {
+  app.route('/api/signup').post((req, res) => passport.authenticate('local-signup', (err, user, info) => {
     //successfully signed up, if authentication failed client will get 404 error
     const output = {
       user, //: req.user.toObject(),
@@ -800,7 +810,7 @@ const routes = (app, passport) => {
 
   app.route('/auth/google').get(passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}))
 
-  app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), (req, res)=> {
+  app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), (req, res) => {
     res.redirect('/profile')
   })
   /*

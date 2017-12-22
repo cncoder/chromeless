@@ -91,7 +91,7 @@ class Create extends BaseComponent {
     stored_state.addButtonDefault = init_state.addButtonDefault
     stored_state.addButton = init_state.addButton
     stored_state.klemei = undefined
-    stored_state.tcitymei=undefined
+    stored_state.tcitymei=[]
     // stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
     //     const freq = i.freq
     //       ? `[${i.freq}] `
@@ -153,7 +153,7 @@ class Create extends BaseComponent {
         console.log("tcitymei", err)
         return
       }
-      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita)))].map(i => {
+      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i=>i.value))))].map(i => {
         return {label: i, value: i}
       })
       self.setState({tcitymei: gunma})
@@ -195,11 +195,11 @@ class Create extends BaseComponent {
   }
   handleChangeOfTags(value) {
     this.setState({tcita: value})
-    p(value)
+    // p(value)
     this.setState({
       'tcitymei': [...new Set(this.state.tcitymei.concat(value))]
     })
-    p(this.state.tcitymei)
+    // p(this.state.tcitymei)
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
@@ -317,7 +317,8 @@ class Create extends BaseComponent {
     }
     const terbri = this.state.terbri
     const self = this
-    // p(self.state.tcitymei)
+    p(self.state.tcita)
+    p(self.state.tcitymei)
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
