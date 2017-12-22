@@ -197,14 +197,23 @@ class Create extends BaseComponent {
   }
 
   handleChangeOfTags(value) {
+    const self=this
     this.setState({tcita: value})
     // p(value)
     // p(this.state.tcitymei)
-    this.setState({
-      'tcitymei': [...new Set(this.state.tcitymeimap(i => i.value).concat(value.map(i => i.value)))].map(i => {
-        return {value: i.value, label: i.label}
-      })
+    getAllTcita(function(err, res) {
+      if (err) {
+        console.log("tcitymei", err)
+        return
+      }
+      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i => i.value))))].map(tcitygau)
+      self.setState({tcitymei: gunma})
     })
+    // this.setState({
+    //   'tcitymei': [...new Set(this.state.tcitymeimap(i => i.value).concat(value.map(i => i.value)))].map(i => {
+    //     return {value: i.value, label: i.label}
+    //   })
+    // })
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})

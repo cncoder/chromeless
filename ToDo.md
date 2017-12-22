@@ -4,7 +4,8 @@
 
 # ToDo
 
-* when delete new tcita its duplicated in tcitymei
+- when delete new tcita its duplicated in tcitymei
+onevery change of tags reload from server tcitymei
 - retain logging in at /profile
 - /mi doesnt show user details and defs by default
 * /valsi show tcita. my tcita are separate
