@@ -69,6 +69,10 @@ class BaseComponent extends React.Component {
   }
 }
 
+const tcitygau = (i) => {
+  return {label: i, value: i}
+}
+
 Object.deepExtend = function(destination, source) {
   for (var property in source) {
     if (source[property] && source[property].constructor && source[property].constructor === Object) {
@@ -91,7 +95,7 @@ class Create extends BaseComponent {
     stored_state.addButtonDefault = init_state.addButtonDefault
     stored_state.addButton = init_state.addButton
     stored_state.klemei = undefined
-    stored_state.tcitymei=[]
+    stored_state.tcitymei = []
     // stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
     //     const freq = i.freq
     //       ? `[${i.freq}] `
@@ -153,9 +157,7 @@ class Create extends BaseComponent {
         console.log("tcitymei", err)
         return
       }
-      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i=>i.value))))].map(i => {
-        return {label: i, value: i}
-      })
+      const gunma = [...new Set((res.map(i => i.tcita).concat(self.state.tcita.map(i => i.value))))].map(tcitygau)
       self.setState({tcitymei: gunma})
     })
   }
@@ -193,13 +195,16 @@ class Create extends BaseComponent {
   handleClear() {
     this.setState({terbri: init_state.terbri, valsi: '', bangu: '', terfanva: '', tcita: []})
   }
+
   handleChangeOfTags(value) {
     this.setState({tcita: value})
     // p(value)
-    this.setState({
-      'tcitymei': [...new Set(this.state.tcitymei.concat(value))]
-    })
     // p(this.state.tcitymei)
+    this.setState({
+      'tcitymei': [...new Set(this.state.tcitymeimap(i => i.value).concat(value.map(i => i.value)))].map(i => {
+        return {value: i.value, label: i.label}
+      })
+    })
   }
   handleChange(n_idx, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})

@@ -4,8 +4,9 @@
 
 # ToDo
 
+* when delete new tcita its duplicated in tcitymei
 - retain logging in at /profile
-* /mi doesnt show user details and defs by default
+- /mi doesnt show user details and defs by default
 * /valsi show tcita. my tcita are separate
 * OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
 * how to edit a definition?
