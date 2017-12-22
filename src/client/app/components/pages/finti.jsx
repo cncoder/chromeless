@@ -317,8 +317,6 @@ class Create extends BaseComponent {
     }
     const terbri = this.state.terbri
     const self = this
-    p(self.state.tcita)
-    p(self.state.tcitymei)
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
