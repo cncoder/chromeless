@@ -76,309 +76,6 @@ function GetOptimizedTerbri(arrterbri) {
   return terbri
 }
 
-const fintika = (req,res)=> {
-  const forced = req.body.forcedoverwrite == 'true' || false
-  // 0. simply bad request
-  if (!path([
-    'body', 'valsi'
-  ], req) || !path([
-    'body', 'terbri'
-  ], req) || !path([
-    'body', 'bangu'
-  ], req)) {
-    return res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'})
-  }
-  // 1. check latex, prepare for 4.
-  const terbri = GetOptimizedTerbri(JSON.parse(req.body.terbri))
-  if (terbri.err)
-    return res.send(terbri)
-
-    // 2. check cmaxes, check language=>promise
-  const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
-    '_id': req.body[kk._id]
-  }).exec())).then((items) => {
-    let sum = []
-    for (let i in items) {
-      const item = items[i]
-      if (!item) {
-        return {item: null, err: `parameter ${thetwo[i]._id} not found`}
-      }
-      let candidate = {
-        item: item,
-        info: 'ok'
-      }
-      if (thetwo[i].gentufa && item.krasi_cmene === 'lojban.') {
-        const tcini = Lojban["romoi_lahi_cmaxes"](req.body["valsi"])["tcini"]
-        if (tcini === 'fliba') {
-          candidate = {
-            item: item,
-            err: 'not a lojban text'
-          }
-        }
-      }
-      candidate.type = 'lang'
-      sum.push(candidate)
-    }
-    return sum
-  })
-  // 3. promise.all check all klesi. if no klesi return error
-  const flatklesi = terbri.map(o => o.klesi).reduce((sum, value) => {
-    return sum.concat(value)
-  }, []).filter(Boolean)
-  const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items) => {
-    if (!items)
-      return {item: null, err: 'no klesi'}
-    let sum = []
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      let candidate = {
-        item: {
-          klesi: flatklesi[i]
-        },
-        kunti: true
-      }
-      if (item) {
-        candidate = {
-          item: item,
-          info: 'ok'
-        }
-      }
-      candidate.type = 'klesi'
-      sum.push(candidate)
-    }
-    return sum
-  })
-  //same word from the user already in the db
-  const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items) => {
-    if (!items)
-      return null
-    let sum = []
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      let candidate = {
-        item: {
-          valsi: req.body["valsi"],
-          id: item._id,
-          finti: item.finti,
-          selgerna_filovalsi: item.selgerna_filovalsi
-        },
-        type: "xahovalsi"
-      }
-      sum.push(candidate)
-    }
-    return sum
-  })
-  // -2-3- resolve promises
-  Promise.all([langpromises, klesipromises, xahopromises]).then((items) => {
-    items = items.reduce((sum, value) => {
-      return sum.concat(value)
-    }, [])
-    let prs = []
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      const promisified_item = new Promise((resolve, reject) => {
-        resolve(item)
-      })
-      if (item.err)
-        return Promise.all([promisified_item])
-      prs.push(promisified_item)
-    }
-    return Promise.all(prs)
-  }).then((items) => {
-    if (items && items[0] && items[0].err) {
-      const promisified_err_item = new Promise((resolve, reject) => {
-        resolve(items[0])
-      })
-      return Promise.all([promisified_err_item])
-    }
-    //ok, seems like no errors. now check for kunti
-    if (!forced) {
-      const kunti_items = items.filter(i => i.kunti)
-      if (kunti_items.length > 0) {
-        const promisified_kunti = new Promise((resolve, reject) => {
-          resolve({
-            kunti: true,
-            klemei: kunti_items.map(i => i.item.klesi)
-          })
-        })
-        return Promise.all([promisified_kunti])
-      }
-      //now check if this word from the same user is already in the db.
-      const xaho_items = items.filter(i => i["type"] === 'xahovalsi')
-      if (xaho_items.length > 0) {
-        const promisified_xaho = new Promise((resolve, reject) => {
-          resolve({xaho: true, vlamei: xaho_items})
-        })
-        return Promise.all([promisified_xaho])
-      }
-    }
-    //SAVE OR UPDATE
-    let prs = []
-    for (let i = 0; i < items.length; i++) {
-      let item = items[i]
-      let candidate
-      if (item.err) {
-        item.err = 'not a correct lang or klesi'
-        candidate = new Promise((resolve, reject) => {
-          resolve(item)
-        })
-      } else {
-        if (item.kunti && item.type === 'klesi' && item.item.klesi) {
-          //now update
-          const klesi = new Klesi({freq: 1, klesi: item.item.klesi})
-          candidate = new Promise((resolve, reject) => {
-            klesi.save((err, it, numberAffected) => {
-              if (err) {
-                item.err = err.toString()
-              } else {
-                item.saved = true
-                item.item = it
-                item.numberAffected = numberAffected
-              }
-              resolve(item)
-            })
-          })
-        } else if (item.type === 'klesi' && item.item.klesi) {
-          //not kunti so update freqs
-          candidate = new Promise((resolve, reject) => {
-            Klesi.findOneAndUpdate({
-              _id: item.item._id
-            }, {
-              $set: {
-                freq: parseInt(item.item.freq) + 1
-              }
-            }, {
-              new: true
-            }, (err, doc) => {
-              if (err) {
-                item.err = err.toString()
-              } else {
-                item.updated = true
-              }
-              resolve(item)
-            })
-          })
-        } else if (item.type === 'lang') {
-          candidate = new Promise((resolve, reject) => {
-            Language.findOneAndUpdate({
-              _id: item.item._id
-            }, {
-              $set: {
-                freq: parseInt(item.item.freq) + 1
-              }
-            }, {
-              new: true
-            }, (err, doc) => {
-              if (err) {
-                item.err = err.toString()
-              } else {
-                item.updated = true
-              }
-              resolve(item)
-            })
-          })
-        } else {
-          item.err = 'not a correct lang or klesi'
-          candidate = new Promise((resolve, reject) => {
-            resolve(item)
-          })
-        }
-      }
-      items[i] = item
-      prs.push(candidate)
-    }
-    //save tcita
-    JSON.parse(req.body.tcita).map(o => {
-      const tcita = o.tcita
-      const candidate = new Promise((resolve, reject) => {
-        Tcita.findOrCreate({
-          tcita
-        }, (err, item) => {
-          if (err)
-            res.send({err: `unknown database error when find/create Tcita "${tcita}"`})
-          if (!item)
-            item = {}
-          const freq = (!item || !item.freq)
-            ? 1
-            : parseInt(item.freq + 1)
-          Tcita.findOneAndUpdate({
-            _id: item._id
-          }, {
-            $set: {
-              freq
-            }
-          }, {
-            new: true
-          }, (err, doc) => {
-            if (err) {
-              doc.err = err.toString()
-            } else {
-              doc.updated = true
-            }
-            resolve({type: 'tcita', item: doc})
-          })
-        })
-      }, (err) => {
-        resolve({type: 'tcita', tcita: o.tcita, err: err.toString()})
-      })
-      prs.push(candidate)
-    })
-    return Promise.all(prs)
-  }).then((items) => {
-    let prs = items.map(item => new Promise((resolve, reject) => {
-      resolve(item)
-    }));
-    //save smuvelcki
-    const newDef = new Valsi()
-    newDef.valsi = req.body.valsi
-    newDef.selgerna_filovalsi = req.body.bangu["value"]
-
-    const klesi_id_map = {}
-    items.map(o => {
-      if (o.type === 'klesi') {
-        const k = {}
-        klesi_id_map[o.item.klesi] = o.item._id
-      }
-    })
-    newDef.terbri = terbri.map(o => {
-      if (o.klesi) {
-        o.klesi = o.klesi.map(i => klesi_id_map[i])
-      }
-      return o
-    })
-
-    newDef.finti = req.user._id
-    newDef.tcita = items.filter(i => i.type === 'tcita').map(i => {
-      return {tcita: i.item._id, finti: newDef.finti, undone: false}
-    })
-    const valsipromise = new Promise((resolve, reject) => {
-      newDef.save((err, it, numberAffected) => {
-        const valsi = {
-          type: 'valsi',
-          item: newDef
-        }
-        if (err) {
-          valsi.err = err.toString()
-        } else {
-          valsi.saved = true
-          valsi.numberAffected = numberAffected
-        }
-        resolve(valsi)
-      })
-    })
-    prs.push(valsipromise)
-    return Promise.all(prs)
-  }).then((items) => {
-    if (items[0].err || items[0].kunti || items[0].xaho) {
-      return res.send(items[0])
-    }
-    const valsi_item = items.filter(i => i.type === 'valsi')
-    if (valsi_item.length > 0) {
-      return res.send({Valsi: valsi_item[0].item})
-    }
-  }).catch((err) => res.send({err: err.toString()}))
-}
-
 const routes = (app, passport) => {
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
@@ -397,7 +94,308 @@ const routes = (app, passport) => {
    *
    */
 
-  app.route('/api/finti').post(isLoggedIn, fintika)
+  app.route('/api/finti').post(isLoggedIn, (req, res) => {
+    const forced = req.body.forcedoverwrite == 'true' || false
+    // 0. simply bad request
+    if (!path([
+      'body', 'valsi'
+    ], req) || !path([
+      'body', 'terbri'
+    ], req) || !path([
+      'body', 'bangu'
+    ], req)) {
+      return res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'})
+    }
+    // 1. check latex, prepare for 4.
+    const terbri = GetOptimizedTerbri(JSON.parse(req.body.terbri))
+    if (terbri.err)
+      return res.send(terbri)
+
+      // 2. check cmaxes, check language=>promise
+    const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
+      '_id': req.body[kk._id]
+    }).exec())).then((items) => {
+      let sum = []
+      for (let i in items) {
+        const item = items[i]
+        if (!item) {
+          return {item: null, err: `parameter ${thetwo[i]._id} not found`}
+        }
+        let candidate = {
+          item: item,
+          info: 'ok'
+        }
+        if (thetwo[i].gentufa && item.krasi_cmene === 'lojban.') {
+          const tcini = Lojban["romoi_lahi_cmaxes"](req.body["valsi"])["tcini"]
+          if (tcini === 'fliba') {
+            candidate = {
+              item: item,
+              err: 'not a lojban text'
+            }
+          }
+        }
+        candidate.type = 'lang'
+        sum.push(candidate)
+      }
+      return sum
+    })
+    // 3. promise.all check all klesi. if no klesi return error
+    const flatklesi = terbri.map(o => o.klesi).reduce((sum, value) => {
+      return sum.concat(value)
+    }, []).filter(Boolean)
+    const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items) => {
+      if (!items)
+        return {item: null, err: 'no klesi'}
+      let sum = []
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        let candidate = {
+          item: {
+            klesi: flatklesi[i]
+          },
+          kunti: true
+        }
+        if (item) {
+          candidate = {
+            item: item,
+            info: 'ok'
+          }
+        }
+        candidate.type = 'klesi'
+        sum.push(candidate)
+      }
+      return sum
+    })
+    //same word from the user already in the db
+    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items) => {
+      if (!items)
+        return null
+      let sum = []
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        let candidate = {
+          item: {
+            valsi: req.body["valsi"],
+            id: item._id,
+            finti: item.finti,
+            selgerna_filovalsi: item.selgerna_filovalsi
+          },
+          type: "xahovalsi"
+        }
+        sum.push(candidate)
+      }
+      return sum
+    })
+    // -2-3- resolve promises
+    Promise.all([langpromises, klesipromises, xahopromises]).then((items) => {
+      items = items.reduce((sum, value) => {
+        return sum.concat(value)
+      }, [])
+      let prs = []
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        const promisified_item = new Promise((resolve, reject) => {
+          resolve(item)
+        })
+        if (item.err)
+          return Promise.all([promisified_item])
+        prs.push(promisified_item)
+      }
+      return Promise.all(prs)
+    }).then((items) => {
+      if (items && items[0] && items[0].err) {
+        const promisified_err_item = new Promise((resolve, reject) => {
+          resolve(items[0])
+        })
+        return Promise.all([promisified_err_item])
+      }
+      //ok, seems like no errors. now check for kunti
+      if (!forced) {
+        const kunti_items = items.filter(i => i.kunti)
+        if (kunti_items.length > 0) {
+          const promisified_kunti = new Promise((resolve, reject) => {
+            resolve({
+              kunti: true,
+              klemei: kunti_items.map(i => i.item.klesi)
+            })
+          })
+          return Promise.all([promisified_kunti])
+        }
+        //now check if this word from the same user is already in the db.
+        const xaho_items = items.filter(i => i["type"] === 'xahovalsi')
+        if (xaho_items.length > 0) {
+          const promisified_xaho = new Promise((resolve, reject) => {
+            resolve({xaho: true, vlamei: xaho_items})
+          })
+          return Promise.all([promisified_xaho])
+        }
+      }
+      //SAVE OR UPDATE
+      let prs = []
+      for (let i = 0; i < items.length; i++) {
+        let item = items[i]
+        let candidate
+        if (item.err) {
+          item.err = 'not a correct lang or klesi'
+          candidate = new Promise((resolve, reject) => {
+            resolve(item)
+          })
+        } else {
+          if (item.kunti && item.type === 'klesi' && item.item.klesi) {
+            //now update
+            const klesi = new Klesi({freq: 1, klesi: item.item.klesi})
+            candidate = new Promise((resolve, reject) => {
+              klesi.save((err, it, numberAffected) => {
+                if (err) {
+                  item.err = err.toString()
+                } else {
+                  item.saved = true
+                  item.item = it
+                  item.numberAffected = numberAffected
+                }
+                resolve(item)
+              })
+            })
+          } else if (item.type === 'klesi' && item.item.klesi) {
+            //not kunti so update freqs
+            candidate = new Promise((resolve, reject) => {
+              Klesi.findOneAndUpdate({
+                _id: item.item._id
+              }, {
+                $set: {
+                  freq: parseInt(item.item.freq) + 1
+                }
+              }, {
+                new: true
+              }, (err, doc) => {
+                if (err) {
+                  item.err = err.toString()
+                } else {
+                  item.updated = true
+                }
+                resolve(item)
+              })
+            })
+          } else if (item.type === 'lang') {
+            candidate = new Promise((resolve, reject) => {
+              Language.findOneAndUpdate({
+                _id: item.item._id
+              }, {
+                $set: {
+                  freq: parseInt(item.item.freq) + 1
+                }
+              }, {
+                new: true
+              }, (err, doc) => {
+                if (err) {
+                  item.err = err.toString()
+                } else {
+                  item.updated = true
+                }
+                resolve(item)
+              })
+            })
+          } else {
+            item.err = 'not a correct lang or klesi'
+            candidate = new Promise((resolve, reject) => {
+              resolve(item)
+            })
+          }
+        }
+        items[i] = item
+        prs.push(candidate)
+      }
+      //save tcita
+      JSON.parse(req.body.tcita).map(o => {
+        const tcita = o.tcita
+        const candidate = new Promise((resolve, reject) => {
+          Tcita.findOrCreate({
+            tcita
+          }, (err, item) => {
+            if (err)
+              res.send({err: `unknown database error when find/create Tcita "${tcita}"`})
+            if (!item)
+              item = {}
+            const freq = (!item || !item.freq)
+              ? 1
+              : parseInt(item.freq + 1)
+            Tcita.findOneAndUpdate({
+              _id: item._id
+            }, {
+              $set: {
+                freq
+              }
+            }, {
+              new: true
+            }, (err, doc) => {
+              if (err) {
+                doc.err = err.toString()
+              } else {
+                doc.updated = true
+              }
+              resolve({type: 'tcita', item: doc})
+            })
+          })
+        }, (err) => {
+          resolve({type: 'tcita', tcita: o.tcita, err: err.toString()})
+        })
+        prs.push(candidate)
+      })
+      return Promise.all(prs)
+    }).then((items) => {
+      let prs = items.map(item => new Promise((resolve, reject) => {
+        resolve(item)
+      }));
+      //save smuvelcki
+      const newDef = new Valsi()
+      newDef.valsi = req.body.valsi
+      newDef.selgerna_filovalsi = req.body.bangu["value"]
+
+      const klesi_id_map = {}
+      items.map(o => {
+        if (o.type === 'klesi') {
+          const k = {}
+          klesi_id_map[o.item.klesi] = o.item._id
+        }
+      })
+      newDef.terbri = terbri.map(o => {
+        if (o.klesi) {
+          o.klesi = o.klesi.map(i => klesi_id_map[i])
+        }
+        return o
+      })
+
+      newDef.finti = req.user._id
+      newDef.tcita = items.filter(i => i.type === 'tcita').map(i => {
+        return {tcita: i.item._id, finti: newDef.finti, undone: false}
+      })
+      const valsipromise = new Promise((resolve, reject) => {
+        newDef.save((err, it, numberAffected) => {
+          const valsi = {
+            type: 'valsi',
+            item: newDef
+          }
+          if (err) {
+            valsi.err = err.toString()
+          } else {
+            valsi.saved = true
+            valsi.numberAffected = numberAffected
+          }
+          resolve(valsi)
+        })
+      })
+      prs.push(valsipromise)
+      return Promise.all(prs)
+    }).then((items) => {
+      if (items[0].err || items[0].kunti || items[0].xaho) {
+        return res.send(items[0])
+      }
+      const valsi_item = items.filter(i => i.type === 'valsi')
+      if (valsi_item.length > 0) {
+        return res.send({Valsi: valsi_item[0].item})
+      }
+    }).catch((err) => res.send({err: err.toString()}))
+  })
 
   app.route('/api/sisku_satci').post((req, res) => {
     //todo: validator
@@ -688,24 +686,7 @@ const routes = (app, passport) => {
         return res.status(400).send({err: err.message})
       if (!valsi)
         return res.status(400).send({err: 'valsi not found'})
-      const newDef = {
-        _id: valsi._id,
-        valsi: valsi.valsi,
-        terbri: valsi.terbri.map(place => {
-          if (place.klesi) {
-            place.klesi = place.klesi.map(i => {
-              if (i.klesi) {
-                return i.klesi
-              }
-              return
-            })
-            return place
-          }
-          return
-        }),
-        tcita: valsi.tcita,
-        finti: valsi.finti
-      }
+      const newDef = valsi
       if (path([
         'finti', 'local'
       ], newDef)) {
@@ -778,7 +759,7 @@ const routes = (app, passport) => {
     //but due to clojures doesnt wrk internally in routes.jsx
     if (!path([
       'body', 'tcitas'
-    ], req)||!path([
+    ], req) || !path([
       'body', 'add'
     ], req)) {
       res.status(400).send({err: 'no body'})
