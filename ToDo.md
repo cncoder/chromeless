@@ -7,6 +7,8 @@
 - empty klesi is shown in options
 - save tcita.tcita to db
 - save tcita's finti to db
+* way to always delete populated passwords
+* routes: too many elements like undone tcita are returned
 * /cenba - /finti template but prefilled with values
 * add new tcita is actually editing of def: simply only tcita fields are accepted for update
 * add new tcita to /valsi. separate Select, addable. /api/jmina_letcita to existing valsi.id

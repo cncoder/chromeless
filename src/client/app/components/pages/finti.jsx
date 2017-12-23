@@ -94,12 +94,62 @@ Object.deepExtend = function(destination, source) {
   }
   return destination
 }
-
+function getComponents(self) {
+  getAllBangu(function(err, banmei) {
+    if (err) {
+      console.log("banmei", err)
+      return
+    }
+    self.setState({
+      banmei: banmei.map(i => {
+        const freq = i.freq
+          ? `[${i.freq}] `
+          : ''
+        return {label: `${freq}${i.krasi_cmene}`, value: i._id}
+      })
+    })
+    banmei.sort(function(a, b) {
+      return parseInt(b.terfanva_freq || 0) - parseInt(a.terfanva_freq || 0)
+    })
+    self.setState({
+      terfanvymei: banmei.map(i => {
+        const freq = i.terfanva_freq
+          ? `[${i.terfanva_freq}] `
+          : ''
+        return {label: `${freq}${i.krasi_cmene}`, value: i._id}
+      })
+    })
+  })
+  getAllKlesi(function(err, res) {
+    if (err) {
+      console.log("klemei", err)
+      return
+    }
+    const local_klemei = self.state.terbri.reduce((acc, i) => {
+      return acc.concat(i.klesi);
+    }, []).filter(Boolean)
+    const gunma = [...new Set((res.map(i => i.klesi).concat(local_klemei)))].map(i => {
+      return {label: i, value: i}
+    })
+    self.setState({klemei: gunma})
+  })
+  getAllTcita(function(err, res) {
+    if (err) {
+      console.log("tcitymei", err)
+      return
+    }
+    UniquifyArray(res.map(i => {
+      return {value: i.tcita, label: i.tcita}
+    }).concat(self.state.tcita), [
+      "value", "label"
+    ], "tcitymei", self)
+  })
+}
 class Create extends BaseComponent {
   constructor() {
     super()
     this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
-    this.state=init_state
+    this.state = init_state
   }
   componentDidMount() {
     document.title = `Add definition`
@@ -114,81 +164,36 @@ class Create extends BaseComponent {
   componentWillMount() {
     const self = this
     let stored_state = {}
+    stored_state.flashVisible = undefined
+    stored_state.forcedoverwrite = false
+    stored_state.addButtonDefault = init_state.addButtonDefault
+    stored_state.addButton = init_state.addButton
+    stored_state.klemei = undefined
+    stored_state.tcitymei = []
     if (!path([
       'params', 'id'
-    ], this.props)) {
+    ], self.props)) {
       stored_state = JSON.parse(localStorage.get('finti') || '{}')
-      stored_state.flashVisible = undefined
-      stored_state.forcedoverwrite = false
-      stored_state.addButtonDefault = init_state.addButtonDefault
-      stored_state.addButton = init_state.addButton
-      stored_state.klemei = undefined
-      stored_state.tcitymei = []
-    }
-    else{
+      const copy_init_state = JSON.parse(JSON.stringify((init_state)))
+      Object.deepExtend(copy_init_state, stored_state)
+      self.setState(copy_init_state)
+      getComponents(self)
+    } else {
       //state is stored on server
       getDefById(self.props.params.id, function(err, valsi) {
         if (err) {
           console.error('could not get a valsi from database:', err)
           return
         }
-        self.setState({valsi: valsi})
-        self.setState({finti: valsi["finti"]})
-        self.setState({tcitymei: valsi.tcita.map(i=>{return {value: i.tcita.tcita,label:i.tcita.tcita}})})
+        stored_state.valsi = valsi.valsi
+        stored_state.finti = valsi["finti"]
+        stored_state.tcita = valsi.tcita.map(i => {
+          return {value: i.tcita.tcita, label: i.tcita.tcita}
+        })
+        self.setState(stored_state)
+        getComponents(self)
       })
     }
-    const copy_init_state = JSON.parse(JSON.stringify((init_state)))
-    Object.deepExtend(copy_init_state, stored_state)
-    this.state = copy_init_state
-    getAllBangu(function(err, banmei) {
-      if (err) {
-        console.log("banmei", err)
-        return
-      }
-      self.setState({
-        banmei: banmei.map(i => {
-          const freq = i.freq
-            ? `[${i.freq}] `
-            : ''
-          return {label: `${freq}${i.krasi_cmene}`, value: i._id}
-        })
-      })
-      banmei.sort(function(a, b) {
-        return parseInt(b.terfanva_freq || 0) - parseInt(a.terfanva_freq || 0)
-      })
-      self.setState({
-        terfanvymei: banmei.map(i => {
-          const freq = i.terfanva_freq
-            ? `[${i.terfanva_freq}] `
-            : ''
-          return {label: `${freq}${i.krasi_cmene}`, value: i._id}
-        })
-      })
-    })
-    getAllKlesi(function(err, res) {
-      if (err) {
-        console.log("klemei", err)
-        return
-      }
-      const local_klemei = self.state.terbri.reduce((acc, i) => {
-        return acc.concat(i.klesi);
-      }, []).filter(Boolean)
-      const gunma = [...new Set((res.map(i => i.klesi).concat(local_klemei)))].map(i => {
-        return {label: i, value: i}
-      })
-      self.setState({klemei: gunma})
-    })
-    getAllTcita(function(err, res) {
-      if (err) {
-        console.log("tcitymei", err)
-        return
-      }
-      UniquifyArray(res.map(i => {
-        return {value: i.tcita, label: i.tcita}
-      }).concat(self.state.tcita), [
-        "value", "label"
-      ], "tcitymei", self)
-    })
   }
   addOption(e) {
     e.preventDefault()
@@ -357,7 +362,7 @@ class Create extends BaseComponent {
     }
     const terbri = this.state.terbri
     const self = this
-    const valsi = self.state.valsi||''
+    const valsi = self.state.valsi || ''
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
@@ -372,7 +377,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="exampleInputEmail1">Text</label>
                 <div className="col-sm-10">
-                  <input onChange={self.handleChange.bind(null, -1)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={valsi||''}/>
+                  <input onChange={self.handleChange.bind(null, -1)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={valsi || ''}/>
                 </div>
               </div>
               <div className="form-group">

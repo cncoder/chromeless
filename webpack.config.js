@@ -1,14 +1,14 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 let FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
 
-var BUILD_DIR = path.resolve(__dirname, 'src/client/public/js');
-var APP_DIR = path.resolve(__dirname, 'src/client/app');
+const BUILD_DIR = path.resolve(__dirname, 'src/client/public/js');
+const APP_DIR = path.resolve(__dirname, 'src/client/app');
 process.traceDeprecation = true;
 
-var config = {
+const config = {
   entry: APP_DIR + '/index.jsx', // Your appʼs entry point
   plugins: [
     new NpmInstallPlugin(),
