@@ -125,12 +125,12 @@ class Create extends BaseComponent {
       stored_state.klemei = undefined
       stored_state.tcitymei = []
     }
+    else{
+      //state is stored on server
+    }
     const copy_init_state = JSON.parse(JSON.stringify((init_state)))
     Object.deepExtend(copy_init_state, stored_state)
     this.state = copy_init_state
-    // if (!path([
-    //   'params', 'id'
-    // ], this.props)) {}
     getAllBangu(function(err, banmei) {
       if (err) {
         console.log("banmei", err)

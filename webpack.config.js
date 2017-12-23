@@ -4,7 +4,7 @@ let FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
 
-var BUILD_DIR = path.resolve(__dirname, 'src/public/js');
+var BUILD_DIR = path.resolve(__dirname, 'build/js');
 var APP_DIR = path.resolve(__dirname, 'src/client/app');
 process.traceDeprecation = true;
 
