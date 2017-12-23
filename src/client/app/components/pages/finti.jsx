@@ -2,7 +2,7 @@ const React = require('react')
 import request from 'superagent'
 const localStorage = require('web-storage')().localStorage
 import {getAuthenticated} from '../../stores/AppStateStore'
-import {getAllBangu, getAllKlesi, getAllTcita} from '../../utils/utils'
+import {getDefById, getAllBangu, getAllKlesi, getAllTcita} from '../../utils/utils'
 import {browserHistory} from 'react-router'
 import {Link} from 'react-router'
 import Select from 'react-select-plus'
@@ -127,6 +127,15 @@ class Create extends BaseComponent {
     }
     else{
       //state is stored on server
+      getDefById(self.props.params.id, function(err, valsi) {
+        if (err) {
+          console.error('could not get a valsi from database:', err)
+          return
+        }
+        self.setState({valsi: valsi})
+        self.setState({finti: valsi["finti"]})
+        self.setState({tcitymei: valsi.tcita.map(i=>{return {value: i.tcita.tcita,label:i.tcita.tcita}})})
+      })
     }
     const copy_init_state = JSON.parse(JSON.stringify((init_state)))
     Object.deepExtend(copy_init_state, stored_state)

@@ -18,7 +18,6 @@ import NotFound from './components/pages/notfound.jsx'
 import Fihi from './components/pages/fihi.jsx'
 import { checkAuthenticationLocal } from './utils/utils'
 
-
 module.exports = (
     <Route path="/" component={Layout} >
         <IndexRoute component={Fihi} />
@@ -34,6 +33,7 @@ module.exports = (
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/finti" component={Finti} />
+        <Route path="/finti/:id" component={Finti} />
         <Route path="/jbangu" component={JBangu} />
         <Route path="/mi" component={Mi}/>
         <Route path="*" component={NotFound} />
