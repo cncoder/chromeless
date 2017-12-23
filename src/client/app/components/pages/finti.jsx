@@ -9,7 +9,7 @@ import Select from 'react-select-plus'
 import {Creatable} from 'react-select-plus'
 import OptionInput from '../optioninput.jsx'
 import FlashMessage from '../flashmessage.jsx'
-import {path} from 'ramda'
+import {path, merge} from 'ramda'
 import 'react-select-plus/dist/react-select-plus.css'
 const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
@@ -24,8 +24,8 @@ const init_state = {
   banmei: [],
   klemei: [],
   terfanvymei: [],
-  terfanva: undefined,
-  bangu: undefined,
+  terfanva: '',
+  bangu: '',
   forcedoverwrite: false,
   valsi: '',
   places: [
@@ -83,17 +83,6 @@ const UniquifyArray = (arr, cmima, state_key, state) => {
   state.setState(newstate)
 }
 
-Object.deepExtend = function(destination, source) {
-  for (var property in source) {
-    if (source[property] && source[property].constructor && source[property].constructor === Object) {
-      destination[property] = destination[property] || {}
-      arguments.callee(destination[property], source[property])
-    } else {
-      destination[property] = source[property]
-    }
-  }
-  return destination
-}
 function getComponents(self) {
   getAllBangu(function(err, banmei) {
     if (err) {
@@ -174,8 +163,8 @@ class Create extends BaseComponent {
       'params', 'id'
     ], self.props)) {
       stored_state = JSON.parse(localStorage.get('finti') || '{}')
-      const copy_init_state = JSON.parse(JSON.stringify((init_state)))
-      Object.deepExtend(copy_init_state, stored_state)
+      let copy_init_state = JSON.parse(JSON.stringify((init_state)))
+      copy_init_state = merge(copy_init_state, stored_state)
       self.setState(copy_init_state)
       getComponents(self)
     } else {
@@ -284,14 +273,10 @@ class Create extends BaseComponent {
     this.setState({terbri: terbri})
   }
   banguChange(e) {
-    this.setState({
-      bangu: e.value || ''
-    })
+    this.setState({bangu: e.value})
   }
   terfanvaChange(e) {
-    this.setState({
-      terfanva: e.value || ''
-    })
+    this.setState({terfanva: e.value})
   }
   handleSubmit(e) {
     e.preventDefault()
