@@ -332,9 +332,7 @@ const routes = (app, passport) => {
               } else {
                 doc.updated = true
               }
-              const t = {type: 'tcita', item: doc}
-              // p(doc)
-              resolve(t)
+              resolve({type: 'tcita', item: doc})
             })
           })
         }, (err) => {
@@ -344,7 +342,6 @@ const routes = (app, passport) => {
       })
       return Promise.all(prs)
     }).then((items) => {
-      // p(items)
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));
@@ -368,7 +365,7 @@ const routes = (app, passport) => {
       })
 
       newDef.finti = req.user._id
-      newDef.tcita = items.filter(i=> i.type==='tcita').map(i=> {return {tcita: i.item._id}})
+      newDef.tcita = items.filter(i=> i.type==='tcita').map(i=> {return {tcita: i.item._id,finti: newDef.finti}})
       const valsipromise = new Promise((resolve, reject) => {
         newDef.save((err, it, numberAffected) => {
           const valsi = {
