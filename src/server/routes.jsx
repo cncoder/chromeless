@@ -332,8 +332,9 @@ const routes = (app, passport) => {
               } else {
                 doc.updated = true
               }
-              p(doc)
-              resolve(doc)
+              const t = {type: 'tcita', item: doc}
+              // p(doc)
+              resolve(t)
             })
           })
         }, (err) => {
@@ -343,6 +344,7 @@ const routes = (app, passport) => {
       })
       return Promise.all(prs)
     }).then((items) => {
+      // p(items)
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));
@@ -366,11 +368,7 @@ const routes = (app, passport) => {
       })
 
       newDef.finti = req.user._id
-      newDef.tcita = JSON.parse(req.body.tcita) || []
-      newDef.tcita = newDef.tcita.map(i => {
-        return {"finti": newDef.finti, "tcita": i.tcita}
-      })
-
+      newDef.tcita = items.filter(i=> i.type==='tcita').map(i=> {return {tcita: i.item._id}})
       const valsipromise = new Promise((resolve, reject) => {
         newDef.save((err, it, numberAffected) => {
           const valsi = {
@@ -683,7 +681,7 @@ const routes = (app, passport) => {
 
   app.route('/api/valsi/:id').get((req, res) => {
     const id = req.params.id
-    Valsi.findById(id).populate('finti').populate({path: 'terbri.klesi'}).lean().exec((err, valsi) => {
+    Valsi.findById(id).populate('finti').populate({path: 'tcita.tcita'}).populate({path: 'terbri.klesi'}).lean().exec((err, valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!valsi)
@@ -703,6 +701,7 @@ const routes = (app, passport) => {
           }
           return
         }),
+        tcita: valsi.tcita,
         finti: valsi.finti
       }
       if (path([

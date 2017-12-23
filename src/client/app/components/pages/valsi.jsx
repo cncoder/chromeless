@@ -5,7 +5,9 @@ import {getRandomDef, getDefById, getUserById} from '../../utils/utils'
 import {Link} from 'react-router'
 import {getAuthenticated} from '../../stores/AppStateStore'
 import AppStateStore from '../../stores/AppStateStore'
+import {Creatable} from 'react-select-plus'
 import {InlineTex} from 'react-tex'
+const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
 class Valsi extends React.Component {
   constructor() {
@@ -23,21 +25,14 @@ class Valsi extends React.Component {
         console.error('could not get a valsi from database:', err)
         return
       }
+      // p(valsi)
       self.setState({valsi: valsi})
-      const user = valsi["finti"]
-      self.setState({
-        finti_name: path([
-          'local', 'username'
-        ], user) || path([
-          'facebook', 'displayName'
-        ], user) || path([
-          'twitter', 'displayName'
-        ], user) || path([
-          'google', 'displayName'
-        ], user)
-      })
-      self.setState({finti: user})
+      self.setState({finti: valsi["finti"]})
+      self.setState({tcitymei: valsi.tcita.map(i=>{return {value: i.tcita.tcita,label:i.tcita.tcita}})})
     })
+  }
+  componentDidMount(){
+    document.title = this.state.valsi? `${this.state.valsi.valsi} - la almavlaste`:`la almavlaste`
   }
   render() {
     const self = this
@@ -45,7 +40,6 @@ class Valsi extends React.Component {
     let valsi = valsi_obj
       ? valsi_obj.valsi
       : null
-    document.title = valsi? `${valsi} - la almavlaste`:`la almavlaste`
     let terbri_good = null
     if (valsi_obj && valsi_obj.terbri) {
       terbri_good = valsi_obj.terbri.map(function(o) {
@@ -56,8 +50,6 @@ class Valsi extends React.Component {
         return `${o.nirna} (${o.klesi}) \$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
       }).join(" ").trim()
     }
-    const finti = self.state.finti
-    const finti_name = self.state.finti_name
     return (
       <div className="header-content">
         <div className="header-content-inner">
@@ -73,17 +65,21 @@ class Valsi extends React.Component {
               Invisible Launch Login Prompt
             </button>
             <h1>{valsi}</h1>
-            <hr/> {(!finti_name || !finti)
+            <hr/> {(!self.state.finti)
               ? null
               : <p key={`finti`}>Created by&nbsp;
-                <Link to={`/pilno/${finti._id}`}>{finti_name}</Link>
+                <Link to={`/pilno/${self.state.finti._id}`}>{self.state.finti.cmene}</Link>
               </p>}
-            <div className="formal-group">
-              <p key={`terbri`}>
+            <div className="formal-group" key={`terbri`}>
                 {!terbri_good
                   ? null
                   : <InlineTex texContent={terbri_good}/>}
-              </p>
+            </div>
+            <div className="form-group">
+              <label className="col-sm-2 control-label">Tags</label>
+              <div className="col-sm-10">
+                <Creatable name="form-control" multi value={self.state.tcitymei} options={self.state.tcitymei}/>
+              </div>
             </div>
           </div>
         </div>

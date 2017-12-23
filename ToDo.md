@@ -4,11 +4,14 @@
 
 # ToDo
 
+- empty klesi is shown in options
+- save tcita.tcita to db
+* save tcita's finti to db
+* /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
+* see tags from friends only
 * definition editable: by me, by everyone, by no one
 * favorite users - my circles of Users
 * definition editable by selected users
-* how to edit a definition?
-* /valsi show tcita. my tcita are separate
 * OptionInput is changing a controlled input of type text to be uncontrolled. Input elements should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component.
 * warning that this word in this lang already was added by you
 * save lojban words with spaces
@@ -30,7 +33,7 @@
 * confirmation dialog if adding a new type. "var newKlesiConfirmed=true" simply read flashmessage and press add again. on handlechange newKlesiConfirmed=false
 * text before x1 => "text before" whatever. same for other hints
 * mobile /finti is not scrollable
-* add your defs on profile page
+- add your defs on profile page
 * tcita page
 * link to tcita on tcita itself
 * save logged in state in localstorage

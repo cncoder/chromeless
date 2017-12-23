@@ -155,7 +155,7 @@ class Create extends BaseComponent {
       }
       const local_klemei = self.state.terbri.reduce((acc, i) => {
         return acc.concat(i.klesi);
-      }, [])
+      }, []).filter(Boolean)
       const gunma = [...new Set((res.map(i => i.klesi).concat(local_klemei)))].map(i => {
         return {label: i, value: i}
       })
