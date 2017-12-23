@@ -78,7 +78,7 @@ class Valsi extends React.Component {
             <div className="form-group">
               <label className="col-sm-2 control-label">Tags</label>
               <div className="col-sm-10">
-                <Creatable name="form-control" multi value={self.state.tcitymei} options={self.state.tcitymei}/>
+                <Creatable name="form-control" multi value={self.state.tcitymei} options={self.state.tcitymei} disabled={true}/>
               </div>
             </div>
           </div>

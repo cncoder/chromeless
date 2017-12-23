@@ -365,7 +365,7 @@ const routes = (app, passport) => {
       })
 
       newDef.finti = req.user._id
-      newDef.tcita = items.filter(i=> i.type==='tcita').map(i=> {return {tcita: i.item._id,finti: newDef.finti}})
+      newDef.tcita = items.filter(i=> i.type==='tcita').map(i=> {return {tcita: i.item._id,finti: newDef.finti, undone: false}})
       const valsipromise = new Promise((resolve, reject) => {
         newDef.save((err, it, numberAffected) => {
           const valsi = {
@@ -715,6 +715,66 @@ const routes = (app, passport) => {
             * @body.option_id -> 'new', then a new option will be created
             * @body.option_text -> string of text if you are requesting a new option
              */
+    if (!path([
+      'body', 'option_id'
+    ], req)) {
+      res.status(400).send({err: 'invalid body, did not find body.option_id or body._id'})
+      return console.error('invalid body in post to /api/Valsi/:id', req)
+    }
+    const def_id = req.params.id
+    const option_id = req.body.option_id
+    const user_id = req.body.user
+    User.findById(user_id, (err, user) => {
+      if (err) {
+        return console.error('user not found: ' + user_id)
+      }
+    })
+    Valsi.findById(def_id, (err, Valsi) => {
+      if (err)
+        return res.status(400).send({err: err.message})
+
+      if (option_id === 'new') {
+        //voting for new option
+        if (!req.isAuthenticated()) {
+          res.status(401).send({err: 'you must be authenticated to add an option!'})
+          return console.error('unauthenticated request to add option to Valsi', req)
+        }
+        if (!path([
+          'body', 'option_text'
+        ], req)) {
+          res.status(400).send({err: 'new option was requested, but could not find body.option_text'})
+          return console.error('invalid body in post to /api/Valsi/:id', req)
+        }
+        const option_text = req.body.option_text
+        const new_option = {
+          adza: option_text,
+          votes: 1
+        }
+        Valsi.options.push(new_option)
+      } else if (option_id === 'plus') {
+        //adding upvote to the array of Valsi's upvotes
+        if (Valsi.upvotes.filter(i => i.user === user_id).length > 0) { //array
+          console.log('already voted ' + user_id)
+        } else {
+          Valsi.upvotes.push({user: user_id})
+        }
+      }
+
+      Valsi.save((err) => {
+        if (err)
+          return console.error(err)
+        res.send(Valsi)
+      })
+    })
+  })
+
+  app.route('/api/jmina_letcita/:valsi').post(isLoggedIn, (req, res) => {
+    // just add to :valsi a new tcita with req.user.id finti
+    // 1. finti
+    const pilno = req.user._id
+    // 2. find/create tcita's id
+    // just take finti's existing tags and compare to tags being pushed. db's missing - add (possibly create), client's missing - undone in db
+
     if (!path([
       'body', 'option_id'
     ], req)) {

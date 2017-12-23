@@ -6,8 +6,12 @@
 
 - empty klesi is shown in options
 - save tcita.tcita to db
-* save tcita's finti to db
+- save tcita's finti to db
+* add new tcita to /valsi. separate Select, addable. /api/jmina_letcita to existing valsi.id
+
+* throttle model no longer logs
 * /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
+* friends functionality
 * see tags from friends only
 * definition editable: by me, by everyone, by no one
 * favorite users - my circles of Users
@@ -21,11 +25,11 @@
 * Comedy node.js for main functions. Test!
 * shows other defs of this word after submit - simply improve {Valsi}?
 * save tags when jbangu, when finti
-* save state after server reload
-* fill tcita table on each save
+* https://github.com/bvaughn/react-virtualized-select/ for tcita and klesi
+- save state after server reload
+- fill tcita table on each save
 * klesi has language, "your klesi"/"order all by frequency"
 * klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
-* switch "editable by me, by all"
 * /sisku client must determine via switch how to present the component for a given model: smuvelcki, mupli, bangu ...
 ** !items case
 * maybe valsi saved even if returned null.id
