@@ -775,10 +775,13 @@ const routes = (app, passport) => {
     //but due to clojures doesnt wrk internally in routes.jsx
     if (!path([
       'body', 'tcitas'
+    ], req)||!path([
+      'body', 'add'
     ], req)) {
       res.status(400).send({err: 'no body'})
       return console.error('invalid body in post')
     }
+
     const tcitas = //req.body.tcitas
     Tcita.find({
       'tcita': {
@@ -792,7 +795,7 @@ const routes = (app, passport) => {
       const missing_tcitas = tcitas.filter(i => !l[i]).map(i => {
         return {tcita: i}
       })
-      if (missing_tcitas.length > 0) {
+      if (!req.body.add || missing_tcitas.length > 0) {
         Tcita.insertMany(missing_tcitas, (error, miss) => {
           miss.map(i => {
             l[i.tcita] = i._id
@@ -800,6 +803,7 @@ const routes = (app, passport) => {
           res.send(l)
         });
       } else {
+        //return only existing tcita
         res.send(l)
       }
     });

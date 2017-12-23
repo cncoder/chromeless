@@ -9,6 +9,7 @@ import Select from 'react-select-plus'
 import {Creatable} from 'react-select-plus'
 import OptionInput from '../optioninput.jsx'
 import FlashMessage from '../flashmessage.jsx'
+import {path} from 'ramda'
 import 'react-select-plus/dist/react-select-plus.css'
 const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
@@ -98,31 +99,38 @@ class Create extends BaseComponent {
   constructor() {
     super()
     this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
-    const stored_state = JSON.parse(localStorage.get('finti') || '{}')
-    stored_state.flashVisible = undefined
-    stored_state.forcedoverwrite = false
-    stored_state.addButtonDefault = init_state.addButtonDefault
-    stored_state.addButton = init_state.addButton
-    stored_state.klemei = undefined
-    stored_state.tcitymei = []
-    // stored_state.klemei = [...new Set((stored_state.klemei || []).map(i => {
-    //     const freq = i.freq
-    //       ? `[${i.freq}] `
-    //       : ''
-    //     return JSON.stringify({label: `${i.label}`, value: i.value})
-    //   }))].map(i => JSON.parse(i))
-    const copy_init_state = JSON.parse(JSON.stringify((init_state)))
-    Object.deepExtend(copy_init_state, stored_state)
-    this.state = copy_init_state
+    this.state=init_state
   }
   componentDidMount() {
     document.title = `Add definition`
   }
   componentDidUpdate(prevProps, prevState) {
-    localStorage.set('finti', JSON.stringify(this.state)) //Returns false, unsuccessful
+    if (!path([
+      'params', 'id'
+    ], this.props)) {
+      localStorage.set('finti', JSON.stringify(this.state)) //Returns false, unsuccessful
+    }
   }
   componentWillMount() {
     const self = this
+    let stored_state = {}
+    if (!path([
+      'params', 'id'
+    ], this.props)) {
+      stored_state = JSON.parse(localStorage.get('finti') || '{}')
+      stored_state.flashVisible = undefined
+      stored_state.forcedoverwrite = false
+      stored_state.addButtonDefault = init_state.addButtonDefault
+      stored_state.addButton = init_state.addButton
+      stored_state.klemei = undefined
+      stored_state.tcitymei = []
+    }
+    const copy_init_state = JSON.parse(JSON.stringify((init_state)))
+    Object.deepExtend(copy_init_state, stored_state)
+    this.state = copy_init_state
+    // if (!path([
+    //   'params', 'id'
+    // ], this.props)) {}
     getAllBangu(function(err, banmei) {
       if (err) {
         console.log("banmei", err)
@@ -284,7 +292,6 @@ class Create extends BaseComponent {
       return
     }
     const self = this
-    const valsi = self.state.valsi
     const terbri_ = self.state.terbri.map((o) => {
       return {idx: o.idx, klesi: o.klesi, nirna: o.nirna, sluji: o.sluji}
     })
@@ -296,7 +303,7 @@ class Create extends BaseComponent {
       bangu: self.state.bangu,
       terfanva: self.state.terfanva,
       tcita: JSON.stringify(tcita_),
-      valsi: valsi,
+      valsi: self.state.valsi,
       terbri: JSON.stringify(terbri_)
     }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault})
@@ -341,6 +348,7 @@ class Create extends BaseComponent {
     }
     const terbri = this.state.terbri
     const self = this
+    const valsi = self.state.valsi||''
     return (
       <div className="header-content no-center">
         <div className="header-content-inner">
@@ -355,7 +363,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="exampleInputEmail1">Text</label>
                 <div className="col-sm-10">
-                  <input onChange={self.handleChange.bind(null, -1)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={self.state.valsi}/>
+                  <input onChange={self.handleChange.bind(null, -1)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={valsi||''}/>
                 </div>
               </div>
               <div className="form-group">

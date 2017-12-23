@@ -7,8 +7,9 @@
 - empty klesi is shown in options
 - save tcita.tcita to db
 - save tcita's finti to db
+* /cenba - /finti template but prefilled with values
+* add new tcita is actually editing of def: simply only tcita fields are accepted for update
 * add new tcita to /valsi. separate Select, addable. /api/jmina_letcita to existing valsi.id
-
 * throttle model no longer logs
 * /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
 * friends functionality
