@@ -4,13 +4,9 @@
 
 # ToDo
 
-- empty klesi is shown in options
-- save tcita.tcita to db
-- save tcita's finti to db
-* valsi is added in /finti even before confirmation
 * tcita and klesi are saved probably before writing smuvelcki
-- /finti/:valsi should not save to localstorage - on componentdidupdate
 * editing of definitions
+* /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
 * hyperlink field - two fields for each?
 * way to always delete populated passwords
 * routes: too many elements like undone tcita are returned
@@ -18,7 +14,6 @@
 * add new tcita is actually editing of def: simply only tcita fields are accepted for update
 * add new tcita to /valsi. separate Select, addable. /api/jmina_letcita to existing valsi.id
 * throttle model no longer logs
-* /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
 * friends functionality
 * see tags from friends only
 * definition editable: by me, by everyone, by no one
@@ -34,8 +29,6 @@
 * shows other defs of this word after submit - simply improve {Valsi}?
 * save tags when jbangu, when finti
 * https://github.com/bvaughn/react-virtualized-select/ for tcita and klesi
-- save state after server reload
-- fill tcita table on each save
 * klesi has language, "your klesi"/"order all by frequency"
 * klecihe - smuvelcki, clickable when on klesi. Has velski, language, author
 * /sisku client must determine via switch how to present the component for a given model: smuvelcki, mupli, bangu ...
@@ -120,6 +113,13 @@
 
 # Done
 
+- save state after server reload
+- fill tcita table on each save
+- empty klesi is shown in options
+- save tcita.tcita to db
+- save tcita's finti to db
+- valsi is added in /finti even before confirmation
+- /finti/:valsi should not save to localstorage - on componentdidupdate
 - when delete new tcita its duplicated in tcitymei
 - on every change of tags reload from server tcitymei
 - retain logging in at /profile
