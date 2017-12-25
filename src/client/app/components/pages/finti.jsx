@@ -24,8 +24,8 @@ const init_state = {
   banmei: [],
   klemei: [],
   terfanvymei: [],
-  terfanva: '',
-  bangu: '',
+  selgerna_filovelski: '',
+  selgerna_filovalsi: '',
   forcedoverwrite: false,
   valsi: '',
   places: [
@@ -66,7 +66,7 @@ const LoadNewWord = (self) => {
   stored_state.forcedoverwrite = false
   stored_state.addButtonDefault = init_state.addButtonDefault
   stored_state.addButton = init_state.addButton
-  stored_state.klemei = undefined
+  stored_state.klemei = []
   stored_state.tcitymei = []
   if (!path([
     'params', 'id'
@@ -78,13 +78,12 @@ const LoadNewWord = (self) => {
     getComponents(self)
   } else {
     //state is stored on server
-    getDefById(self.props.params.id, function(err, valsi) {
+    getDefById(self.props.params.id, function(err, server_state) {
       if (err) {
         console.error('could not get a valsi from database:', err)
         return
       }
-      stored_state.valsi = valsi.valsi
-      stored_state.finti = valsi["finti"]
+      stored_state = server_state
       stored_state.tcita = valsi.tcita.map(i => {
         return {value: i.tcita.tcita, label: i.tcita.tcita}
       })
@@ -175,7 +174,7 @@ function getComponents(self) {
 class Create extends BaseComponent {
   constructor() {
     super()
-    this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'banguChange', 'terfanvaChange', 'handleChangeOfTags')
+    this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
     this.state = init_state
   }
   componentDidMount() {
@@ -233,7 +232,7 @@ class Create extends BaseComponent {
     }, 3000)
   }
   handleClear() {
-    this.setState({terbri: init_state.terbri, valsi: '', bangu: '', terfanva: '', tcita: []})
+    this.setState({terbri: init_state.terbri, valsi: '', selgerna_filovalsi: '', selgerna_filovelski: '', tcita: []})
   }
 
   handleChangeOfTags(value) {
@@ -289,11 +288,11 @@ class Create extends BaseComponent {
     }
     this.setState({terbri})
   }
-  banguChange(e) {
-    this.setState({bangu: e.value})
+  selgerna_filovalsiChange(e) {
+    this.setState({selgerna_filovalsi: e.value})
   }
-  terfanvaChange(e) {
-    this.setState({terfanva: e.value})
+  selgerna_filovelskiChange(e) {
+    this.setState({selgerna_filovelski: e.value})
   }
   handleSubmit(e) {
     e.preventDefault()
@@ -316,8 +315,8 @@ class Create extends BaseComponent {
     })
     request.post('api/finti/').send({
       forcedoverwrite: self.state.forcedoverwrite,
-      bangu: self.state.bangu,
-      terfanva: self.state.terfanva,
+      selgerna_filovalsi: self.state.selgerna_filovalsi,
+      selgerna_filovelski: self.state.selgerna_filovelski,
       tcita: JSON.stringify(tcita_),
       valsi: self.state.valsi,
       terbri: JSON.stringify(terbri_)
@@ -385,7 +384,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="exampleInputEmail1">Language of text</label>
                 <div className="col-sm-7">
-                  <Select name="form-control" clearable={false} arrowRenderer={() => self.arrowRenderer("←")} value={self.state.bangu} options={self.state.banmei} onChange={self.banguChange}/>
+                  <Select name="form-control" clearable={false} arrowRenderer={() => self.arrowRenderer("←")} value={self.state.selgerna_filovalsi} options={self.state.banmei} onChange={self.selgerna_filovalsiChange}/>
                 </div>
                 <div className="col-sm-3 control-label">
                   <Link className="pull-left" to="/jbangu" target="_blank">Add a language</Link>
@@ -395,7 +394,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="exampleInputEmail1">Language of definition</label>
                 <div className="col-sm-7">
-                  <Select name="form-control" clearable={false} arrowRenderer={() => self.arrowRenderer("→")} value={self.state.terfanva} options={self.state.terfanvymei} onChange={self.terfanvaChange}/>
+                  <Select name="form-control" clearable={false} arrowRenderer={() => self.arrowRenderer("→")} value={self.state.selgerna_filovelski} options={self.state.terfanvymei} onChange={self.selgerna_filovelskiChange}/>
                 </div>
                 <div className="col-sm-3 control-label">
                   <Link className="pull-left" to="/jbangu" target="_blank">Add a language</Link>

@@ -349,7 +349,8 @@ const routes = (app, passport) => {
       //save smuvelcki
       const newDef = new Valsi()
       newDef.valsi = req.body.valsi
-      newDef.selgerna_filovalsi = req.body.bangu["value"]
+      newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
+      newDef.selgerna_filovelski = req.body.selgerna_filovelski
 
       const klesi_id_map = {}
       items.map(o => {
