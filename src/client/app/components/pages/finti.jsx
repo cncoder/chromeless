@@ -84,10 +84,10 @@ const LoadNewWord = (self) => {
         return
       }
       const stored_state = reduce(mergeDeepRight, init_state, [server_state, init_state2])
-      stored_state.tcita = valsi.tcita.map(i => {
+      stored_state.tcita = stored_state.tcita.map(i => {
         return {value: i.tcita.tcita, label: i.tcita.tcita}
       })
-      stored_state.terbri = valsi.terbri.map(o => {
+      stored_state.terbri = stored_state.terbri.map(o => {
         return {
           idx: o.idx,
           sluji: o.sluji,
@@ -342,7 +342,7 @@ class Create extends BaseComponent {
         return
       }
       console.log('smuvelcki added to the backend db', JSON.stringify(res.body))
-      browserHistory.push('/valsi/' + res.body.Valsi._id)
+      browserHistory.push('/finti/' + res.body.Valsi._id)
     })
   }
   _validateForm() {
