@@ -74,8 +74,7 @@ const LoadNewWord = (self) => {
     'params', 'id'
   ], self.props)) {
     const stored_state = JSON.parse(localStorage.get('finti') || '{}')
-    const copy_init_state = reduce(mergeDeepRight, init_state, [stored_state, init_state2])
-    self.setState(copy_init_state)
+    self.setState(reduce(mergeDeepRight, init_state, [stored_state, init_state2]))
     getComponents(self)
   } else {
     //state is stored on server
