@@ -19,11 +19,11 @@ const p = (a) => console.log(JSON.stringify(a, null, 2))
 
 const thetwo = [
   {
-    _id: "bangu",
+    _id: "selgerna_filovalsi",
     gentufa: true,
     freq: "freq"
   }, {
-    _id: "terfanva",
+    _id: "selgerna_filovelski",
     gentufa: false,
     freq: "terfanva_freq"
   }
@@ -102,7 +102,9 @@ const routes = (app, passport) => {
     ], req) || !path([
       'body', 'terbri'
     ], req) || !path([
-      'body', 'bangu'
+      'body', 'selgerna_filovalsi'
+    ], req) || !path([
+      'body', 'selgerna_filovelski'
     ], req)) {
       return res.status(400).send({err: 'invalid body in post, did you include a valsi, language and terbri?'})
     }
@@ -343,6 +345,12 @@ const routes = (app, passport) => {
       })
       return Promise.all(prs)
     }).then((items) => {
+      if (items && items[0] && (items[0].err||items[0].kunti)) {
+        const promisified_err_item = new Promise((resolve, reject) => {
+          resolve(items[0])
+        })
+        return Promise.all([promisified_err_item])
+      }
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));

@@ -9,7 +9,7 @@ import Select from 'react-select-plus'
 import {Creatable} from 'react-select-plus'
 import OptionInput from '../optioninput.jsx'
 import FlashMessage from '../flashmessage.jsx'
-import {path, merge} from 'ramda'
+import {path, reduce, mergeDeepRight} from 'ramda'
 import 'react-select-plus/dist/react-select-plus.css'
 const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
 
@@ -60,20 +60,21 @@ const init_state = {
   ]
 }
 
+const init_state2 = {
+  flashVisible: false,
+  forcedoverwrite: false,
+  addButtonDefault: 'Add',
+  addButton: 'Add',
+  klemei: [],
+  tcitymei: []
+}
+
 const LoadNewWord = (self) => {
-  let stored_state = {}
-  stored_state.flashVisible = undefined
-  stored_state.forcedoverwrite = false
-  stored_state.addButtonDefault = init_state.addButtonDefault
-  stored_state.addButton = init_state.addButton
-  stored_state.klemei = []
-  stored_state.tcitymei = []
   if (!path([
     'params', 'id'
   ], self.props)) {
-    stored_state = JSON.parse(localStorage.get('finti') || '{}')
-    let copy_init_state = JSON.parse(JSON.stringify((init_state)))
-    copy_init_state = merge(copy_init_state, stored_state)
+    const stored_state = JSON.parse(localStorage.get('finti') || '{}')
+    const copy_init_state = reduce(mergeDeepRight, init_state, [stored_state, init_state2])
     self.setState(copy_init_state)
     getComponents(self)
   } else {
@@ -83,7 +84,7 @@ const LoadNewWord = (self) => {
         console.error('could not get a valsi from database:', err)
         return
       }
-      stored_state = server_state
+      const stored_state = reduce(mergeDeepRight, init_state, [server_state, init_state2])
       stored_state.tcita = valsi.tcita.map(i => {
         return {value: i.tcita.tcita, label: i.tcita.tcita}
       })
