@@ -313,13 +313,17 @@ class Create extends BaseComponent {
     const tcita_ = self.state.tcita.map((o) => {
       return {tcita: o.value}
     })
-    request.post('api/finti/').send({
+    const valsi_id = path([
+      'params', 'id'
+    ], self.props)? self.props.params.id: null
+    request.post('/api/finti/').send({
       forcedoverwrite: self.state.forcedoverwrite,
       selgerna_filovalsi: self.state.selgerna_filovalsi,
       selgerna_filovelski: self.state.selgerna_filovelski,
       tcita: JSON.stringify(tcita_),
       valsi: self.state.valsi,
-      terbri: JSON.stringify(terbri_)
+      terbri: JSON.stringify(terbri_),
+      valsi_id
     }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault})
       if (res.body.err) {

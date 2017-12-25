@@ -4,8 +4,10 @@
 
 # ToDo
 
-* tcita and klesi are saved probably before writing smuvelcki
+* if :valsi then not saave new but update existing
+* editing: 1. delete all klesi, my tcita, update fields from new ones.
 * editing of definitions
+* tcita and klesi are saved probably before writing smuvelcki
 * /valsi show tcita. my tcita are separate. others' tcita - finti's prefix
 * hyperlink field - two fields for each?
 * way to always delete populated passwords

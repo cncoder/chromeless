@@ -345,7 +345,7 @@ const routes = (app, passport) => {
       })
       return Promise.all(prs)
     }).then((items) => {
-      if (items && items[0] && (items[0].err||items[0].kunti)) {
+      if (items && items[0] && (items[0].err || items[0].kunti)) {
         const promisified_err_item = new Promise((resolve, reject) => {
           resolve(items[0])
         })
@@ -354,48 +354,79 @@ const routes = (app, passport) => {
       let prs = items.map(item => new Promise((resolve, reject) => {
         resolve(item)
       }));
-      //save smuvelcki
+
+      // SAVE/UPDATE smuvelcki
       const newDef = new Valsi()
-      newDef.valsi = req.body.valsi
-      newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
-      newDef.selgerna_filovelski = req.body.selgerna_filovelski
-
-      const klesi_id_map = {}
-      items.map(o => {
-        if (o.type === 'klesi') {
-          const k = {}
-          klesi_id_map[o.item.klesi] = o.item._id
-        }
-      })
-      newDef.terbri = terbri.map(o => {
-        if (o.klesi) {
-          o.klesi = o.klesi.map(i => klesi_id_map[i])
-        }
-        return o
-      })
-
-      newDef.finti = req.user._id
-      newDef.tcita = items.filter(i => i.type === 'tcita').map(i => {
-        return {tcita: i.item._id, finti: newDef.finti, undone: false}
-      })
-      const valsipromise = new Promise((resolve, reject) => {
-        newDef.save((err, it, numberAffected) => {
-          const valsi = {
-            type: 'valsi',
-            item: newDef
-          }
-          if (err) {
-            valsi.err = err.toString()
-          } else {
-            valsi.saved = true
-            valsi.numberAffected = numberAffected
-          }
-          resolve(valsi)
+      if (req.body.valsi_id) {
+        // update existing smuvelcki
+        const valsipromise = new Promise((resolve, reject) => {
+        Valsi.findById(req.body.valsi_id, (err, newDef) => {
+            // newDef = {_id:newDef._id}
+            p(newDef)
+            newDef.valsi = req.body.valsi
+            newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
+            newDef.selgerna_filovelski = req.body.selgerna_filovelski
+            newDef.save((err, it, numberAffected) => {
+              const valsi = {
+                type: 'valsi',
+                item: newDef
+              }
+              if (err) {
+                valsi.err = err.toString()
+              } else {
+                valsi.saved = true
+                valsi.numberAffected = numberAffected
+              }
+              p(valsi)
+              resolve(valsi)
+            })
+          })
         })
-      })
-      prs.push(valsipromise)
+        prs.push(valsipromise)
+      } else {
+        // save existing smuvelcki
+        newDef.valsi = req.body.valsi
+        newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
+        newDef.selgerna_filovelski = req.body.selgerna_filovelski
+
+        const klesi_id_map = {}
+        items.map(o => {
+          if (o.type === 'klesi') {
+            const k = {}
+            klesi_id_map[o.item.klesi] = o.item._id
+          }
+        })
+        newDef.terbri = terbri.map(o => {
+          if (o.klesi) {
+            o.klesi = o.klesi.map(i => klesi_id_map[i])
+          }
+          return o
+        })
+
+        newDef.finti = req.user._id
+        newDef.tcita = items.filter(i => i.type === 'tcita').map(i => {
+          return {tcita: i.item._id, finti: newDef.finti, undone: false}
+        })
+        const valsipromise = new Promise((resolve, reject) => {
+          newDef.save((err, it, numberAffected) => {
+            const valsi = {
+              type: 'valsi',
+              item: newDef
+            }
+            if (err) {
+              valsi.err = err.toString()
+            } else {
+              valsi.saved = true
+              valsi.numberAffected = numberAffected
+            }
+            resolve(valsi)
+          })
+        })
+        prs.push(valsipromise)
+      }
       return Promise.all(prs)
     }).then((items) => {
+      p(items.length)
       if (items[0].err || items[0].kunti || items[0].xaho) {
         return res.send(items[0])
       }
