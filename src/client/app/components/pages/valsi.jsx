@@ -42,12 +42,12 @@ class Valsi extends React.Component {
       : null
     let terbri_good = null
     if (valsi_obj && valsi_obj.terbri) {
-      terbri_good = valsi_obj.terbri.map(function(o) {
+      terbri_good = valsi_obj.terbri.map((o) => {
         if (o.idx === 0 && o.sluji)
           return `\$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
         if (!o.nirna)
           return
-        return `${o.nirna} (${o.klesi}) \$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
+        return `${o.nirna} (${o.klesi.map(j=>j.klesi)}) \$\$${ (o.sluji || '').replace(/ /g, '\~')}\$\$ `
       }).join(" ").trim()
     }
     return (
