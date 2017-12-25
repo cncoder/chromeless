@@ -95,6 +95,7 @@ const routes = (app, passport) => {
    */
 
   app.route('/api/finti').post(isLoggedIn, (req, res) => {
+    p(req.body)
     const forced = req.body.forcedoverwrite == 'true' || false
     // 0. simply bad request
     if (!path([

@@ -7,7 +7,7 @@
 - empty klesi is shown in options
 - save tcita.tcita to db
 - save tcita's finti to db
-* valsi is added in /finti to db 2 times
+* valsi is added in /finti even before confirmation
 * editing of definitions
 * hyperlink field - two fields for each?
 * way to always delete populated passwords
