@@ -8,6 +8,7 @@
 - save tcita.tcita to db
 - save tcita's finti to db
 * valsi is added in /finti even before confirmation
+* /finti/:valsi should not save to localstorage - on componentdidupdate
 * editing of definitions
 * hyperlink field - two fields for each?
 * way to always delete populated passwords

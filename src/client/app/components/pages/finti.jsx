@@ -60,8 +60,46 @@ const init_state = {
   ]
 }
 
-function findKey(obj, value) {
-  return Object.keys(obj).filter(i => obj[i].idx === value)[0]
+const LoadNewWord = (self) => {
+  let stored_state = {}
+  stored_state.flashVisible = undefined
+  stored_state.forcedoverwrite = false
+  stored_state.addButtonDefault = init_state.addButtonDefault
+  stored_state.addButton = init_state.addButton
+  stored_state.klemei = undefined
+  stored_state.tcitymei = []
+  if (!path([
+    'params', 'id'
+  ], self.props)) {
+    stored_state = JSON.parse(localStorage.get('finti') || '{}')
+    let copy_init_state = JSON.parse(JSON.stringify((init_state)))
+    copy_init_state = merge(copy_init_state, stored_state)
+    self.setState(copy_init_state)
+    getComponents(self)
+  } else {
+    //state is stored on server
+    getDefById(self.props.params.id, function(err, valsi) {
+      if (err) {
+        console.error('could not get a valsi from database:', err)
+        return
+      }
+      stored_state.valsi = valsi.valsi
+      stored_state.finti = valsi["finti"]
+      stored_state.tcita = valsi.tcita.map(i => {
+        return {value: i.tcita.tcita, label: i.tcita.tcita}
+      })
+      stored_state.terbri = valsi.terbri.map(o => {
+        return {
+          idx: o.idx,
+          sluji: o.sluji,
+          nirna: o.nirna,
+          klesi: o.klesi.map(i => i.klesi)
+        }
+      })
+      self.setState(stored_state)
+      getComponents(self)
+    })
+  }
 }
 
 class BaseComponent extends React.Component {
@@ -146,51 +184,22 @@ class Create extends BaseComponent {
   componentDidUpdate(prevProps, prevState) {
     if (!path([
       'params', 'id'
-    ], this.props)) {
+    ], this.props) && !path([
+      'params', 'id'
+    ], prevProps)) {
       localStorage.set('finti', JSON.stringify(this.state)) //Returns false, unsuccessful
+    }
+    if ((path([
+      'params', 'id'
+    ], this.props) || '') !== (path([
+      'params', 'id'
+    ], prevProps) || '')) {
+      const stored_state = JSON.parse(localStorage.get('finti') || '{}')
+      LoadNewWord(this)
     }
   }
   componentWillMount() {
-    const self = this
-    let stored_state = {}
-    stored_state.flashVisible = undefined
-    stored_state.forcedoverwrite = false
-    stored_state.addButtonDefault = init_state.addButtonDefault
-    stored_state.addButton = init_state.addButton
-    stored_state.klemei = undefined
-    stored_state.tcitymei = []
-    if (!path([
-      'params', 'id'
-    ], self.props)) {
-      stored_state = JSON.parse(localStorage.get('finti') || '{}')
-      let copy_init_state = JSON.parse(JSON.stringify((init_state)))
-      copy_init_state = merge(copy_init_state, stored_state)
-      self.setState(copy_init_state)
-      getComponents(self)
-    } else {
-      //state is stored on server
-      getDefById(self.props.params.id, function(err, valsi) {
-        if (err) {
-          console.error('could not get a valsi from database:', err)
-          return
-        }
-        stored_state.valsi = valsi.valsi
-        stored_state.finti = valsi["finti"]
-        stored_state.tcita = valsi.tcita.map(i => {
-          return {value: i.tcita.tcita, label: i.tcita.tcita}
-        })
-        stored_state.terbri = valsi.terbri.map(o => {
-          return {
-            idx: o.idx,
-            sluji: o.sluji,
-            nirna: o.nirna,
-            klesi: o.klesi.map(i => i.klesi)
-          }
-        })
-        self.setState(stored_state)
-        getComponents(self)
-      })
-    }
+    LoadNewWord(this)
   }
   addOption(e) {
     e.preventDefault()
