@@ -7,6 +7,9 @@
 - empty klesi is shown in options
 - save tcita.tcita to db
 - save tcita's finti to db
+* valsi is added in /finti to db 2 times
+* editing of definitions
+* hyperlink field - two fields for each?
 * way to always delete populated passwords
 * routes: too many elements like undone tcita are returned
 * /cenba - /finti template but prefilled with values
@@ -42,6 +45,7 @@
 * mobile /finti is not scrollable
 - add your defs on profile page
 * tcita page
+* implement Flow. Mongoose models via https://gist.github.com/nodkz/812519ca9473b28493122872ae57e9c3#file-user-js-L206
 * link to tcita on tcita itself
 * save logged in state in localstorage
 * move localstorage higher into layout

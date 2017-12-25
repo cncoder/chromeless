@@ -179,6 +179,14 @@ class Create extends BaseComponent {
         stored_state.tcita = valsi.tcita.map(i => {
           return {value: i.tcita.tcita, label: i.tcita.tcita}
         })
+        stored_state.terbri = valsi.terbri.map(o => {
+          return {
+            idx: o.idx,
+            sluji: o.sluji,
+            nirna: o.nirna,
+            klesi: o.klesi.map(i => i.klesi)
+          }
+        })
         self.setState(stored_state)
         getComponents(self)
       })
@@ -270,7 +278,7 @@ class Create extends BaseComponent {
         return i
       })
     }
-    this.setState({terbri: terbri})
+    this.setState({terbri})
   }
   banguChange(e) {
     this.setState({bangu: e.value})
