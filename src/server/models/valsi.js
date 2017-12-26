@@ -94,6 +94,8 @@ const valsi = new Schema({
       },
       detri: Date,
       undone: Boolean,
+      url: String,
+      comment: String,
       undonedetri: Date
     }
   ],

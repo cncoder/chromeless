@@ -7,7 +7,8 @@ import {browserHistory} from 'react-router'
 import {Link} from 'react-router'
 import Select from 'react-select-plus'
 import {Creatable} from 'react-select-plus'
-import OptionInput from '../optioninput.jsx'
+import Terbri from '../terbri.jsx'
+import Tcita from '../tcita.jsx'
 import FlashMessage from '../flashmessage.jsx'
 import {path, reduce, mergeDeepRight} from 'ramda'
 import 'react-select-plus/dist/react-select-plus.css'
@@ -315,7 +316,9 @@ class Create extends BaseComponent {
     })
     const valsi_id = path([
       'params', 'id'
-    ], self.props)? self.props.params.id: null
+    ], self.props)
+      ? self.props.params.id
+      : null
     request.post('/api/finti/').send({
       forcedoverwrite: self.state.forcedoverwrite,
       selgerna_filovalsi: self.state.selgerna_filovalsi,
@@ -405,12 +408,22 @@ class Create extends BaseComponent {
                 </div>
               </div>
               {terbri.map(function(option) {
-                return <OptionInput option={option} idx={option.idx} key={option.idx} terbri={self.state.terbri} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>
+                return <Terbri option={option} idx={option.idx} key={option.idx} terbri={self.state.terbri} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>
               })}
               <div className="form-group">
                 <label className="col-sm-2 control-label">Tags</label>
                 <div className="col-sm-10">
                   <Creatable name="form-control" multi value={self.state.tcita} options={self.state.tcitymei} onChange={self.handleChangeOfTags}/>
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="col-sm-2 control-label">Tcita form</label>
+                <div className="col-sm-10">
+                  {self.state.tcita.map((t,index) => {
+                    return (
+                      <Tcita handleChangeOfTags={self.handleChangeOfTags} idx={`tcita_select_${index}`} key={`tcita_select_${index}`} tcita={t.value} pinka={t.pinka||''} tcitymei={self.state.tcitymei} options={self.state.tcitymei}/>
+                    )
+                  })}
                 </div>
               </div>
             </div>

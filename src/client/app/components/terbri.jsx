@@ -2,7 +2,7 @@ const React = require('react')
 import {Creatable} from 'react-select-plus'
 const p = (a) => console.log(JSON.stringify(a))
 
-class OptionInput extends React.Component {
+class Terbri extends React.Component {
   render() {
     const handleChange = this.props.handleChange
     const option = this.props.option
@@ -50,4 +50,4 @@ class OptionInput extends React.Component {
   }
 }
 
-module.exports = OptionInput
+module.exports = Terbri
