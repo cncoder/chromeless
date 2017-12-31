@@ -247,7 +247,35 @@ class Create extends BaseComponent {
     this.setState({terbri: init_state.terbri, valsi: '', selgerna_filovalsi: '', selgerna_filovelski: '', tcita: []})
   }
 
-  handleChangeOfTags(value) {
+  handleChangeOfTags(n, e) {
+    this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
+    const type = Object.keys(n)[0]
+    const idx = n[type]
+    const value = type === 'klesi'
+      ? e.map(i => i.value)
+      : e.target.value
+    let terbri = this.state.terbri.map(i => {
+      if (i["idx"].toString() === idx.toString()) {
+        i[type] = value
+      }
+      return i
+    })
+    //check if two elements have the same "klesi" value
+    if (type === 'klesi') {
+      this.setState({
+        'klemei': [...new Set(this.state.klemei.concat(value))]
+      })
+      terbri = terbri.map(i => {
+        if (i.nirna === terbri[idx].nirna) {
+          i.klesi = terbri[idx].klesi
+        }
+        return i
+      })
+    }
+    this.setState({terbri})
+  }
+
+  handleChangeOfTagsOld(value) {
     p(value)
     const self = this
     this.setState({tcita: value})
@@ -275,13 +303,11 @@ class Create extends BaseComponent {
 
   handleChange(n, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
-    p(n)
-    p(e.length)
     const type = Object.keys(n)[0]
     const idx = n[type]
-    const value = type==='klesi'
-    ? e.map(i => i.value)
-    : e.target.value
+    const value = type === 'klesi'
+      ? e.map(i => i.value)
+      : e.target.value
     let terbri = this.state.terbri.map(i => {
       if (i["idx"].toString() === idx.toString()) {
         i[type] = value
