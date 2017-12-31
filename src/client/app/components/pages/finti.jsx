@@ -87,10 +87,11 @@ const LoadNewWord = (self) => {
         return
       }
       const stored_state = reduce(mergeDeepRight, init_state, [server_state, init_state2])
-      stored_state.tcita = stored_state.tcita.map(i => {
+      stored_state.tcita = stored_state.tcita.map((o, idx) => {
         return {
-          tcita: i.tcita.tcita || '',
-          pinka: i.pinka || ''
+          tcita: o.tcita.tcita || '',
+          pinka: o.pinka || '',
+          idx
         }
       })
       stored_state.terbri = stored_state.terbri.map(o => {
@@ -209,7 +210,7 @@ class Create extends BaseComponent {
   addTag(e) {
     e.preventDefault()
     let tcita = this.state.tcita
-    tcita.push({tcita: '', pinka: ''});
+    tcita.push({tcita: '', pinka: '', idx: tcita.length});
     this.setState({tcita})
   }
   addOption(e) {
@@ -248,31 +249,18 @@ class Create extends BaseComponent {
   }
 
   handleChangeOfTags(n, e) {
-    this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
-    const type = Object.keys(n)[0]
-    const idx = n[type]
-    const value = type === 'klesi'
-      ? e.map(i => i.value)
-      : e.target.value
-    let terbri = this.state.terbri.map(i => {
-      if (i["idx"].toString() === idx.toString()) {
-        i[type] = value
-      }
-      return i
-    })
-    //check if two elements have the same "klesi" value
-    if (type === 'klesi') {
-      this.setState({
-        'klemei': [...new Set(this.state.klemei.concat(value))]
-      })
-      terbri = terbri.map(i => {
-        if (i.nirna === terbri[idx].nirna) {
-          i.klesi = terbri[idx].klesi
+    //tcita: [{tcita, idx, pinka}]
+    const tcita = this.state.tcita.map(o => {
+      if (o.idx === n.idx) {
+        if (n.pinka !== undefined) {
+          o.pinka = e.target.value
+        } else if (n.tcita !== undefined) {
+          o.tcita = e.value
         }
-        return i
-      })
-    }
-    this.setState({terbri})
+      }
+      return o
+    })
+    this.setState({tcita, forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
   }
 
   handleChangeOfTagsOld(value) {
@@ -459,7 +447,7 @@ class Create extends BaseComponent {
                 <label className="col-sm-2 control-label">Tcita form</label>
                 <div className="col-sm-10">
                   {self.state.tcita.map((t, index) => {
-                    return (<Tcita handleChangeOfTags={self.handleChangeOfTags} idx={`tcita_select_${index}`} key={`tcita_select_${index}`} tcita={t.tcita} pinka={t.pinka} tcitymei={self.state.tcitymei}/>)
+                    return (<Tcita handleChangeOfTags={self.handleChangeOfTags} idx={t.idx} key={`tcita_select_${index}`} tcita={t.tcita} pinka={t.pinka} tcitymei={self.state.tcitymei}/>)
                   })}
                 </div>
               </div>
