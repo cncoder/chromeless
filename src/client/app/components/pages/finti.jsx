@@ -181,7 +181,7 @@ function getComponents(self) {
 class Create extends BaseComponent {
   constructor() {
     super()
-    this._bind('handleSubmit', 'handleClear', 'handleChange', 'handleChangeWord', 'addOption', 'addTag', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
+    this._bind('handleSubmit', 'handleClear', 'handleChange', 'handleChangeWord', 'addOption', 'addTag', 'removeTag', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
     this.state = init_state
   }
   componentDidMount() {
@@ -213,6 +213,15 @@ class Create extends BaseComponent {
     tcita.push({tcita: '', pinka: '', idx: tcita.length});
     this.setState({tcita})
   }
+  removeTag(e) {
+    e.preventDefault()
+    if (this.state.tcita.length <= 1)
+      return //make disabled
+    let tcita = this.state.tcita
+    tcita.pop();
+    this.setState({tcita})
+  }
+
   addOption(e) {
     e.preventDefault()
     const terbri = this.state.terbri
@@ -249,7 +258,6 @@ class Create extends BaseComponent {
   }
 
   handleChangeOfTags(n, e) {
-    //tcita: [{tcita, idx, pinka}]
     const tcita = this.state.tcita.map(o => {
       if (o.idx === n.idx) {
         if (n.pinka !== undefined) {
