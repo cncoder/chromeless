@@ -12,7 +12,9 @@ import Tcita from '../tcita.jsx'
 import FlashMessage from '../flashmessage.jsx'
 import {path, reduce, mergeDeepRight} from 'ramda'
 import 'react-select-plus/dist/react-select-plus.css'
-const p = (a, root, indent) => console.log(JSON.stringify(a, root || null, indent || 2));
+function p(a, root, indent) {
+  console.log(JSON.stringify(a, root || null, indent || 2))
+}
 
 const init_state = {
   flashVisible: false,
@@ -86,7 +88,10 @@ const LoadNewWord = (self) => {
       }
       const stored_state = reduce(mergeDeepRight, init_state, [server_state, init_state2])
       stored_state.tcita = stored_state.tcita.map(i => {
-        return {value: i.tcita.tcita, label: i.tcita.tcita}
+        return {
+          tcita: i.tcita.tcita || '',
+          pinka: i.pinka || ''
+        }
       })
       stored_state.terbri = stored_state.terbri.map(o => {
         return {
@@ -166,16 +171,16 @@ function getComponents(self) {
       return
     }
     UniquifyArray(res.map(i => {
-      return {value: i.tcita, label: i.tcita}
-    }).concat(self.state.tcita), [
-      "value", "label"
-    ], "tcitymei", self)
+      return {tcita: i.tcita}
+    }).concat(self.state.tcita.map(i => {
+      return {tcita: i.tcita}
+    })), ["tcita"], "tcitymei", self)
   })
 }
 class Create extends BaseComponent {
   constructor() {
     super()
-    this._bind('handleSubmit', 'handleClear', 'handleChange', 'addOption', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
+    this._bind('handleSubmit', 'handleClear', 'handleChange','handleChangeWord', 'addOption', 'addTag', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
     this.state = init_state
   }
   componentDidMount() {
@@ -200,6 +205,12 @@ class Create extends BaseComponent {
   }
   componentWillMount() {
     LoadNewWord(this)
+  }
+  addTag(e) {
+    e.preventDefault()
+    let tcita = this.state.tcita
+    tcita.push({tcita: '', pinka: ''});
+    this.setState({tcita})
   }
   addOption(e) {
     e.preventDefault()
@@ -237,8 +248,10 @@ class Create extends BaseComponent {
   }
 
   handleChangeOfTags(value) {
+    p(value)
     const self = this
     this.setState({tcita: value})
+    return
     // p(value)
     // p(this.state.tcitymei)
     getAllTcita(function(err, res) {
@@ -247,30 +260,28 @@ class Create extends BaseComponent {
         return
       }
       UniquifyArray(res.map(i => {
+        return {value: i.tcita, label: i.pinka}
+      }).concat(self.state.tcita.map(i => {
         return {value: i.tcita, label: i.tcita}
-      }).concat(self.state.tcita), [
+      })), [
         "value", "label"
       ], "tcitymei", self)
     })
   }
-  handleChange(n_idx, e) {
+
+  handleChangeWord(e){
+    this.setState({valsi: e.target.value})
+  }
+
+  handleChange(n, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
-    if (!e.target && (e && e.length > 0 && !e[0].value))
-      return
     const value = e.target
       ? e.target.value
       : e.map(i => i.value)
-    if (n_idx < 0) {
-      this.setState({valsi: value})
-      return
-    }
-    if (n_idx.indexOf("_") === -1)
-      return
-    const arr_n = n_idx.split("_")
-    const type = arr_n[0]
-    const idx = arr_n[1]
+    const type = Object.keys(n)[0]
+    const idx = n[type]
     let terbri = this.state.terbri.map(i => {
-      if (i["idx"].toString() === idx) {
+      if (i["idx"].toString() === idx.toString()) {
         i[type] = value
       }
       return i
@@ -385,7 +396,7 @@ class Create extends BaseComponent {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="exampleInputEmail1">Text</label>
                 <div className="col-sm-10">
-                  <input onChange={self.handleChange.bind(null, -1)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={valsi || ''}/>
+                  <input onChange={self.handleChangeWord.bind(null)} type="text" className="form-control" placeholder="blalalavla" id="valsi" value={valsi || ''}/>
                 </div>
               </div>
               <div className="form-group">
@@ -408,31 +419,33 @@ class Create extends BaseComponent {
                 </div>
               </div>
               {terbri.map(function(option) {
-                return <Terbri option={option} idx={option.idx} key={option.idx} terbri={self.state.terbri} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>
+                return <Terbri option={option} key={option.idx} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>
               })}
               <div className="form-group">
-                <label className="col-sm-2 control-label">Tags</label>
-                <div className="col-sm-10">
-                  <Creatable name="form-control" multi value={self.state.tcita} options={self.state.tcitymei} onChange={self.handleChangeOfTags}/>
-                </div>
+                <button className="btn btn-default" onClick={self.addOption}>
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button className={"btn btn-default " + removeButtonClass} onClick={self.removeOption}>
+                  <i className="fa fa-minus" aria-hidden="true"></i>
+                </button>
               </div>
               <div className="form-group">
                 <label className="col-sm-2 control-label">Tcita form</label>
                 <div className="col-sm-10">
-                  {self.state.tcita.map((t,index) => {
-                    return (
-                      <Tcita handleChangeOfTags={self.handleChangeOfTags} idx={`tcita_select_${index}`} key={`tcita_select_${index}`} tcita={t.value} pinka={t.pinka||''} tcitymei={self.state.tcitymei} options={self.state.tcitymei}/>
-                    )
+                  {self.state.tcita.map((t, index) => {
+                    return (<Tcita handleChangeOfTags={self.handleChangeOfTags} idx={`tcita_select_${index}`} key={`tcita_select_${index}`} tcita={t.tcita} pinka={t.pinka} tcitymei={self.state.tcitymei}/>)
                   })}
                 </div>
               </div>
             </div>
-            <button className="btn btn-default" onClick={self.addOption}>
-              <i className="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <button className={"btn btn-default " + removeButtonClass} onClick={self.removeOption}>
-              <i className="fa fa-minus" aria-hidden="true"></i>
-            </button>
+            <div className="form-group">
+              <button className="btn btn-default" onClick={self.addTag}>
+                <i className="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <button className={"btn btn-default " + removeButtonClass} onClick={self.removeTag}>
+                <i className="fa fa-minus" aria-hidden="true"></i>
+              </button>
+            </div>
             <button className="btn btn-default" onClick={self.handleClear}>Clear</button>
             <button type="submit" onClick={self.handleSubmit} className="btn btn-primary">{self.state.addButton}</button>
             <FlashMessage visible={self.state.flashVisible} message={self.state.flashMessage} flashLink ={self.state.flashLink} type="error"/>

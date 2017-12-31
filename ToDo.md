@@ -4,6 +4,10 @@
 
 # ToDo
 
+* editable def: my tags are deleted via "where" or "update" operation
+* {}
+* https://github.com/merolhack/mern-stack/tree/069b8abf57f052b52af97b4f06ce91037525a998#making-a-progressive-web-app
+* https://www.djamware.com/post/59faec0a80aca7739224ee1f/building-crud-web-application-using-mern-stack
 * if :valsi then not saave new but update existing
 * editing: 1. delete all klesi, my tcita, update fields from new ones.
 * editing of definitions
