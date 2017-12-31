@@ -16,16 +16,16 @@ class ListUsers extends React.Component {
   }
   componentWillMount() {
     const self = this
-    getAllUsers(function(err, plimei) {
-      self.setState({plimei: plimei})
+    getAllUsers((err, plimei)=> {
+      self.setState({plimei})
     })
   }
   componentDidMount() {
     document.title = `All users - la almavlaste`
   }
-  handleClick(e) {
-    const option_id = e.target.id
-    const disabled = e.target.disabled
+  handleClick({target}) {
+    const option_id = target.id
+    const disabled = target.disabled
     if (disabled)
       return
     if (option_id !== 'plus') {
@@ -34,14 +34,14 @@ class ListUsers extends React.Component {
     const self = this
     //this.setState({loading: true})
     const user = AppStateStore.getUser()
-    request.post('/api/valsi/' + this.state.valsi._id).send({
-      option_id: option_id,
+    request.post(`/api/valsi/${this.state.valsi._id}`).send({
+      option_id,
       user: path(['_id'], user)
-    }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end((err, {body}) => {
       if (err)
         return
       console.error('could not post vote to server:', err)
-      self.setState({valsi: res.body, voted: true, loading: false})
+      self.setState({valsi: body, voted: true, loading: false})
     })
   }
   handleAddNewOption(text) {
@@ -56,7 +56,7 @@ class ListUsers extends React.Component {
     const option_id = "new"
     const option_text = text
     const self = this
-    request.post('/api/valsi/' + this.state.valsi._id).send({option_id: option_id, option_text: option_text}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post(`/api/valsi/${this.state.valsi._id}`).send({option_id, option_text}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end((err, res) => {
       if (err)
         return
       console.error('could not post vote to server:', err)
@@ -80,18 +80,18 @@ class ListUsers extends React.Component {
               Invisible Launch Login Prompt
             </button>
             <h1>All users</h1>
-            <hr/> {allvlamei.map(i => {
+            <hr/> {allvlamei.map(({_id, cmene, login_type}) => {
               return (
-                <div key={`/pilno/${i._id}`}>
-                  <Link to={`/pilno/${i._id}`}>{i.cmene}
-                    ({i.login_type})</Link>
+                <div key={`/pilno/${_id}`}>
+                  <Link to={`/pilno/${_id}`}>{cmene}
+                    ({login_type})</Link>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -44,7 +44,7 @@ class Login extends BaseComponent {
     e.preventDefault()
     console.log('handleSubmit()')
     const self = this
-    request.post('/api/login').send({username: this.state.username, password: this.state.password}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('/api/login').send({username: this.state.username, password: this.state.password}).set('Content-Type', 'application/x-www-form-urlencoded').end((err, res)=> {
       if (err) {
         if (err.status === 401 || err.status === 400) {
           console.warn('incorrect username or password')
@@ -65,7 +65,7 @@ class Login extends BaseComponent {
   flashMessage(msg) {
     this.setState({flashVisible: true, flashMessage: msg})
     const self = this
-    setTimeout(function() {
+    setTimeout(()=> {
       self.setState({flashVisible: false, flashMessage: ''})
     }, 3000)
   }

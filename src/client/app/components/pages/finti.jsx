@@ -81,7 +81,7 @@ const LoadNewWord = (self) => {
     getComponents(self)
   } else {
     //state is stored on server
-    getDefById(self.props.params.id, function(err, server_state) {
+    getDefById(self.props.params.id, (err, server_state) => {
       if (err) {
         console.error('could not get a valsi from database:', err)
         return
@@ -127,7 +127,7 @@ const UniquifyArray = (arr, cmima, state_key, state) => {
 }
 
 function getComponents(self) {
-  getAllBangu(function(err, banmei) {
+  getAllBangu((err, banmei) => {
     if (err) {
       console.log("banmei", err)
       return
@@ -140,7 +140,7 @@ function getComponents(self) {
         return {label: `${freq}${i.krasi_cmene}`, value: i._id}
       })
     })
-    banmei.sort(function(a, b) {
+    banmei.sort((a, b) => {
       return parseInt(b.terfanva_freq || 0) - parseInt(a.terfanva_freq || 0)
     })
     self.setState({
@@ -152,7 +152,7 @@ function getComponents(self) {
       })
     })
   })
-  getAllKlesi(function(err, res) {
+  getAllKlesi((err, res) => {
     if (err) {
       console.log("klemei", err)
       return
@@ -165,7 +165,7 @@ function getComponents(self) {
     })
     self.setState({klemei: gunma})
   })
-  getAllTcita(function(err, res) {
+  getAllTcita((err, res) => {
     if (err) {
       console.log("tcitymei", err)
       return
@@ -180,7 +180,7 @@ function getComponents(self) {
 class Create extends BaseComponent {
   constructor() {
     super()
-    this._bind('handleSubmit', 'handleClear', 'handleChange','handleChangeWord', 'addOption', 'addTag', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
+    this._bind('handleSubmit', 'handleClear', 'handleChange', 'handleChangeWord', 'addOption', 'addTag', 'removeOption', 'selgerna_filovalsiChange', 'selgerna_filovelskiChange', 'handleChangeOfTags')
     this.state = init_state
   }
   componentDidMount() {
@@ -239,7 +239,7 @@ class Create extends BaseComponent {
     const self = this
     if (persistent)
       return
-    setTimeout(function() {
+    setTimeout(() => {
       self.setState({flashVisible: false, flashMessage: '', flashLink})
     }, 3000)
   }
@@ -254,7 +254,7 @@ class Create extends BaseComponent {
     return
     // p(value)
     // p(this.state.tcitymei)
-    getAllTcita(function(err, res) {
+    getAllTcita((err, res) => {
       if (err) {
         console.log("tcitymei", err)
         return
@@ -269,17 +269,19 @@ class Create extends BaseComponent {
     })
   }
 
-  handleChangeWord(e){
+  handleChangeWord(e) {
     this.setState({valsi: e.target.value})
   }
 
   handleChange(n, e) {
     this.setState({forcedoverwrite: false, addButton: this.state.addButtonDefault, flashVisible: false})
-    const value = e.target
-      ? e.target.value
-      : e.map(i => i.value)
+    p(n)
+    p(e.length)
     const type = Object.keys(n)[0]
     const idx = n[type]
+    const value = type==='klesi'
+    ? e.map(i => i.value)
+    : e.target.value
     let terbri = this.state.terbri.map(i => {
       if (i["idx"].toString() === idx.toString()) {
         i[type] = value
@@ -338,7 +340,7 @@ class Create extends BaseComponent {
       valsi: self.state.valsi,
       terbri: JSON.stringify(terbri_),
       valsi_id
-    }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    }).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end((err, res) => {
       self.setState({forcedoverwrite: false, addButton: self.state.addButtonDefault})
       if (res.body.err) {
         self.flashMessage(res.body.err)
@@ -418,9 +420,7 @@ class Create extends BaseComponent {
                   <Link className="pull-left" to="/jbangu" target="_blank">Add a language</Link>
                 </div>
               </div>
-              {terbri.map(function(option) {
-                return <Terbri option={option} key={option.idx} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>
-              })}
+              {terbri.map(option => <Terbri option={option} key={option.idx} places={self.state.places} handleChange={self.handleChange} klemei={self.state.klemei}/>)}
               <div className="form-group">
                 <button className="btn btn-default" onClick={self.addOption}>
                   <i className="fa fa-plus" aria-hidden="true"></i>
@@ -452,7 +452,7 @@ class Create extends BaseComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

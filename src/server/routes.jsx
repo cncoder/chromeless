@@ -29,8 +29,8 @@ const thetwo = [
   }
 ]
 
-const FlushPasswordInJson = (i) => {
-  return {_id: i.finti._id, cmene: i.finti.cmene}
+const FlushPasswordInJson = ({finti}) => {
+  return {_id: finti._id, cmene: finti.cmene};
 }
 
 function FlushPassword(i) {
@@ -57,7 +57,7 @@ function GetOptimizedTerbri(arrterbri) {
     const parsed = latexParser.parse(o.sluji || '')
     //{"status":false,"index":{"offset":9,"line":1,"column":10},"expected":["'$'","'%'","'\\'","'\\begin'","'^'","'_'","'{'","text character"]}
     if (!parsed.status) {
-      return {err: "bad TeX", parsed: parsed}
+      return {err: "bad TeX", parsed};
     }
     if (o.idx === 0) {
       terbri.push({
@@ -114,8 +114,8 @@ const routes = (app, passport) => {
       return res.send(terbri)
 
       // 2. check cmaxes, check language=>promise
-    const langpromises = Promise.all(thetwo.map(kk => Language.findOne({
-      '_id': req.body[kk._id]
+    const langpromises = Promise.all(thetwo.map(({_id}) => Language.findOne({
+      '_id': req.body[_id]
     }).exec())).then((items) => {
       let sum = []
       for (let i in items) {
@@ -124,14 +124,14 @@ const routes = (app, passport) => {
           return {item: null, err: `parameter ${thetwo[i]._id} not found`}
         }
         let candidate = {
-          item: item,
+          item,
           info: 'ok'
         }
         if (thetwo[i].gentufa && item.krasi_cmene === 'lojban.') {
           const tcini = Lojban["romoi_lahi_cmaxes"](req.body["valsi"])["tcini"]
           if (tcini === 'fliba') {
             candidate = {
-              item: item,
+              item,
               err: 'not a lojban text'
             }
           }
@@ -142,15 +142,15 @@ const routes = (app, passport) => {
       return sum
     })
     // 3. promise.all check all klesi. if no klesi return error
-    const flatklesi = terbri.map(o => o.klesi).reduce((sum, value) => {
+    const flatklesi = terbri.map(({klesi}) => klesi).reduce((sum, value) => {
       return sum.concat(value)
     }, []).filter(Boolean)
     const klesipromises = Promise.all(flatklesi.map(g => Klesi.findOne({klesi: g}).exec())).then((items) => {
       if (!items)
         return {item: null, err: 'no klesi'}
       let sum = []
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
+
+      items.forEach((item, i) => {
         let candidate = {
           item: {
             klesi: flatklesi[i]
@@ -159,13 +159,14 @@ const routes = (app, passport) => {
         }
         if (item) {
           candidate = {
-            item: item,
+            item,
             info: 'ok'
           }
         }
         candidate.type = 'klesi'
         sum.push(candidate)
-      }
+      });
+
       return sum
     })
     //same word from the user already in the db
@@ -173,8 +174,8 @@ const routes = (app, passport) => {
       if (!items)
         return null
       let sum = []
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
+
+      for (const item of items) {
         let candidate = {
           item: {
             valsi: req.body["valsi"],
@@ -186,6 +187,7 @@ const routes = (app, passport) => {
         }
         sum.push(candidate)
       }
+
       return sum
     })
     // -2-3- resolve promises
@@ -194,8 +196,8 @@ const routes = (app, passport) => {
         return sum.concat(value)
       }, [])
       let prs = []
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
+
+      for (const item of items) {
         const promisified_item = new Promise((resolve, reject) => {
           resolve(item)
         })
@@ -203,6 +205,7 @@ const routes = (app, passport) => {
           return Promise.all([promisified_item])
         prs.push(promisified_item)
       }
+
       return Promise.all(prs)
     }).then((items) => {
       if (items && items[0] && items[0].err) {
@@ -213,12 +216,12 @@ const routes = (app, passport) => {
       }
       //ok, seems like no errors. now check for kunti
       if (!forced) {
-        const kunti_items = items.filter(i => i.kunti)
+        const kunti_items = items.filter(({kunti}) => kunti)
         if (kunti_items.length > 0) {
           const promisified_kunti = new Promise((resolve, reject) => {
             resolve({
               kunti: true,
-              klemei: kunti_items.map(i => i.item.klesi)
+              klemei: kunti_items.map(({item}) => item.klesi)
             })
           })
           return Promise.all([promisified_kunti])
@@ -390,10 +393,10 @@ const routes = (app, passport) => {
         newDef.selgerna_filovelski = req.body.selgerna_filovelski
 
         const klesi_id_map = {}
-        items.map(o => {
-          if (o.type === 'klesi') {
+        items.map(({type, item}) => {
+          if (type === 'klesi') {
             const k = {}
-            klesi_id_map[o.item.klesi] = o.item._id
+            klesi_id_map[item.klesi] = item._id
           }
         })
         newDef.terbri = terbri.map(o => {
@@ -404,8 +407,8 @@ const routes = (app, passport) => {
         })
 
         newDef.finti = req.user._id
-        newDef.tcita = items.filter(i => i.type === 'tcita').map(i => {
-          return {tcita: i.item._id, finti: newDef.finti, undone: false}
+        newDef.tcita = items.filter(({type}) => type === 'tcita').map(({item}) => {
+          return {tcita: item._id, finti: newDef.finti, undone: false};
         })
         const valsipromise = new Promise((resolve, reject) => {
           newDef.save((err, it, numberAffected) => {
@@ -430,17 +433,17 @@ const routes = (app, passport) => {
       if (items[0].err || items[0].kunti || items[0].xaho) {
         return res.send(items[0])
       }
-      const valsi_item = items.filter(i => i.type === 'valsi')
+      const valsi_item = items.filter(({type}) => type === 'valsi')
       if (valsi_item.length > 0) {
         return res.send({Valsi: valsi_item[0].item})
       }
     }).catch((err) => res.send({err: err.toString()}))
   })
 
-  app.route('/api/sisku_satci').post((req, res) => {
+  app.route('/api/sisku_satci').post(({body}, res) => {
     //todo: validator
-    let opt = req.body
-    const model_name = req.body.morna
+    let opt = body
+    const model_name = body.morna
     if (!model_name) {
       res.status(400).send({err: `db model not specified`})
       return
@@ -507,10 +510,10 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/api/mi').post(isLoggedIn, (req, res) => {
+  app.route('/api/mi').post(isLoggedIn, ({user}, res) => {
     const pilno = {
-      _id: req.user._id,
-      cmene: req.user.cmene
+      _id: user._id,
+      cmene: user.cmene
     }
     res.json(pilno)
   })
@@ -561,11 +564,11 @@ const routes = (app, passport) => {
             text: `${cmene}, you might have requested to change your password on Almavlaste. Currently it's not possible to select your new password manually so here is your new password from now on:\n\n${password}\n\nIf you didn't request restoring your password simply ignore this email.\n\n\nSincerely yours,\nAlmavlaste in action.`
           }
 
-          transporter.sendMail(mailOptions, (error, info) => {
+          transporter.sendMail(mailOptions, (error, {response}) => {
             if (error) {
               console.log(error)
             } else {
-              console.log('Email sent: ' + info.response)
+              console.log(`Email sent: ${response}`)
             }
           })
           return res.send({sentemail: 'maybe sent something'})
@@ -586,15 +589,15 @@ const routes = (app, passport) => {
         return res.status(400).send({err: err.message})
       if (!vlamei)
         return res.send({err: `can't search in defs for a given user ${user_id}}`})
-      const newDef = vlamei.map(i => {
-        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      const newDef = vlamei.map(({_id, valsi, terbri, finti}) => {
+        return {_id: _id, valsi: valsi, terbri: terbri, finti: finti};
       })
       res.send({vlamei: newDef, finti: user})
     })
   })
 
-  app.route('/api/getalldefs/:id').get(isLoggedIn, (req, res) => {
-    const user_id = req.params.id || req.user._id
+  app.route('/api/getalldefs/:id').get(isLoggedIn, ({params, user}, res) => {
+    const user_id = params.id || user._id
     Valsi.find({
       finti: user_id
     }, (err, vlamei) => {
@@ -602,8 +605,8 @@ const routes = (app, passport) => {
         return res.status(400).send({err: err.message})
       if (!vlamei)
         return res.send({err: `can't search in defs for a given user ${user_id}}`})
-      const newDef = vlamei.map(i => {
-        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      const newDef = vlamei.map(({_id, valsi, terbri, finti}) => {
+        return {_id: _id, valsi: valsi, terbri: terbri, finti: finti};
       })
       res.send(newDef)
     })
@@ -615,8 +618,8 @@ const routes = (app, passport) => {
         return res.status(400).send({err: err.message})
       if (!vlamei || vlamei.length === 0)
         return res.send({err: "empty Valsi database"})
-      const newDef = vlamei.map(i => {
-        return {_id: i._id, valsi: i.valsi, terbri: i.terbri, finti: i.finti}
+      const newDef = vlamei.map(({_id, valsi, terbri, finti}) => {
+        return {_id: _id, valsi: valsi, terbri: terbri, finti: finti};
       })
       res.send(newDef)
     })
@@ -676,8 +679,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/pilno/:id').get((req, res) => {
-    const id = req.params.id
+  app.route('/api/pilno/:id').get(({params}, res) => {
+    const id = params.id
     User.findById(id, (err, user) => {
       if (err)
         return res.status(400).send({err: err.message})
@@ -688,8 +691,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/bangu/:id').get((req, res) => {
-    const id = req.params.id
+  app.route('/api/bangu/:id').get(({params}, res) => {
+    const id = params.id
     Language.findById(id, (err, bangu) => {
       if (err)
         return res.status(400).send({err: err.message})
@@ -699,9 +702,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsibyname/:valsi').get((req, res) => {
-    const valsi = req.params.valsi
-    Valsi.find({valsi: valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec((err, valsi) => {
+  app.route('/api/valsibyname/:valsi').get(({params}, res) => {
+    const valsi = params.valsi
+    Valsi.find({valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec((err, valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
       if (!valsi || valsi.length === 0)
@@ -719,8 +722,8 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsi/:id').get((req, res) => {
-    const id = req.params.id
+  app.route('/api/valsi/:id').get(({params}, res) => {
+    const id = params.id
     Valsi.findById(id).populate('finti').populate({path: 'tcita.tcita'}).populate({path: 'terbri.klesi'}).lean().exec((err, valsi) => {
       if (err)
         return res.status(400).send({err: err.message})
@@ -752,7 +755,7 @@ const routes = (app, passport) => {
     const user_id = req.body.user
     User.findById(user_id, (err, user) => {
       if (err) {
-        return console.error('user not found: ' + user_id)
+        return console.error(`user not found: ${user_id}`);
       }
     })
     Valsi.findById(def_id, (err, Valsi) => {
@@ -779,8 +782,8 @@ const routes = (app, passport) => {
         Valsi.options.push(new_option)
       } else if (option_id === 'plus') {
         //adding upvote to the array of Valsi's upvotes
-        if (Valsi.upvotes.filter(i => i.user === user_id).length > 0) { //array
-          console.log('already voted ' + user_id)
+        if (Valsi.upvotes.filter(({user}) => user === user_id).length > 0) { //array
+          console.log(`already voted ${user_id}`)
         } else {
           Valsi.upvotes.push({user: user_id})
         }
@@ -813,16 +816,16 @@ const routes = (app, passport) => {
       }
     }, 'tcita').exec((err, docs) => {
       const l = {}
-      docs.map(i => {
-        l[i.tcita] = i._id
+      docs.map(({tcita, _id}) => {
+        l[tcita] = _id
       })
       const missing_tcitas = tcitas.filter(i => !l[i]).map(i => {
         return {tcita: i}
       })
       if (!req.body.add || missing_tcitas.length > 0) {
         Tcita.insertMany(missing_tcitas, (error, miss) => {
-          miss.map(i => {
-            l[i.tcita] = i._id
+          miss.map(({tcita, _id}) => {
+            l[tcita] = _id
           })
           res.send(l)
         });
@@ -833,16 +836,16 @@ const routes = (app, passport) => {
     });
   })
 
-  app.route('/api/jmina_letcita/:valsi').get(isLoggedIn, (req, res) => {
+  app.route('/api/jmina_letcita/:valsi').get(isLoggedIn, ({body, user, params}, res) => {
     // just add to :valsi a new tcita with req.user.id finti
-    p(req.body)
+    p(body)
     //body is like {new_tcitas: ["hi", "mi"]}
     // 1. finti
-    const pilno = req.user._id
+    const pilno = user._id
     // 2. tcita to their id. if no then create
     // 3. find existing tcita of :valsi and :user
     Valsi.find({
-      _id: req.params.valsi,
+      _id: params.valsi,
       'tcita.finti': pilno
     }, 'tcita').exec((err, tcitas) => {
       //.populate({path: 'tcita.tcita'})
@@ -879,10 +882,10 @@ const routes = (app, passport) => {
       output.user.local.password = '********' //don't send password to client
     }
     res.send(output)
-  }).post(passport.authenticate('local-login'), (req, res) => {
+  }).post(passport.authenticate('local-login'), ({user}, res) => {
     //successfully signed up, if authentication failed client will get 401 error
     const output = {
-      user: req.user.toObject()
+      user: user.toObject()
     }
     output.user.local.password = '********' //don't send password to client
     res.send(output)
@@ -943,10 +946,10 @@ const routes = (app, passport) => {
  *
  *
  */
-  app.use((req, res) => {
+  app.use(({url, user}, res) => {
     match({
       routes: reactRoutes,
-      location: req.url
+      location: url
     }, (err, redirect, props) => {
       // in here we can make some decisions all at once
       if (err) {
@@ -960,10 +963,10 @@ const routes = (app, passport) => {
         // if we got props then we matched a route and can render
         const ReactMarkup = renderToString(<RouterContext {...props}/>)
         let authenticated = false
-        if (req.user)
+        if (user)
           authenticated = true
         res.render(path_.resolve('src/client/public/index.hbs'), {
-          ReactMarkup: ReactMarkup,
+          ReactMarkup,
           __AUTHENTICATED__: authenticated
         })
       } else {

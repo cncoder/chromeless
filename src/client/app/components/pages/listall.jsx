@@ -12,9 +12,9 @@ class ListAll extends React.Component {
   }
   componentWillMount() {
     const self = this
-    getAllDefs(function(err, vlamei) {
+    getAllDefs((err, vlamei) => {
       if (!err)
-        self.setState({vlamei: vlamei})
+        self.setState({vlamei})
       }
     )
   }
@@ -31,18 +31,18 @@ class ListAll extends React.Component {
             <h1>All definitions</h1>
             <hr/>
             <ul className="list-group-horizontal row">
-              {allvlamei.map(i => {
+              {allvlamei.map(({_id, valsi}) => {
                 return (
-                  <li className="list-group-item col-xs-4" key={`/jorne/${i._id}`}>
-                    <Link to={`/valsi/${i._id}`}>{i.valsi}</Link>
+                  <li className="list-group-item col-xs-4" key={`/jorne/${_id}`}>
+                    <Link to={`/valsi/${_id}`}>{valsi}</Link>
                   </li>
-                )
+                );
               })}
             </ul>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

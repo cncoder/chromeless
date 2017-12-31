@@ -49,7 +49,7 @@ class JBangu extends BaseComponent {
       document.getElementById('openBlankFieldsPrompt').click()
       return
     }
-    request.post('api/jmina_lebangu/').send({krasi_cmene: self.state.krasi_cmene, bridi: self.state.bridi}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('api/jmina_lebangu/').send({krasi_cmene: self.state.krasi_cmene, bridi: self.state.bridi}).set('Accept', 'application/json').set('Content-Type', 'application/x-www-form-urlencoded').end((err, res)=> {
       if (res.body.Bangu) {
         self.setState({Bangu: res.body.Bangu})
       }

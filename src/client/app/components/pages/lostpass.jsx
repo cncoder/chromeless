@@ -26,7 +26,7 @@ class LostPass extends BaseComponent {
   }
   componentWillMount() {
     const self=this
-    getMe(function(err, pilno) {
+    getMe((err, pilno)=> {
       if (!err) {
         self.setState({pilno: pilno.cmene})
       }
