@@ -346,9 +346,6 @@ class Create extends BaseComponent {
     const terbri_ = self.state.terbri.map((o) => {
       return {idx: o.idx, klesi: o.klesi, nirna: o.nirna, sluji: o.sluji}
     })
-    const tcita_ = self.state.tcita.map((o) => {
-      return {tcita: o.value}
-    })
     const valsi_id = path([
       'params', 'id'
     ], self.props)
@@ -358,7 +355,7 @@ class Create extends BaseComponent {
       forcedoverwrite: self.state.forcedoverwrite,
       selgerna_filovalsi: self.state.selgerna_filovalsi,
       selgerna_filovelski: self.state.selgerna_filovelski,
-      tcita: JSON.stringify(tcita_),
+      tcita: JSON.stringify(self.state.tcita),
       valsi: self.state.valsi,
       terbri: JSON.stringify(terbri_),
       valsi_id

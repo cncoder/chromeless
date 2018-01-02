@@ -197,7 +197,7 @@ const routes = (app, passport) => {
       }, [])
       let prs = []
 
-      for (const item of items) {
+      for (let item of items) {
         const promisified_item = new Promise((resolve, reject) => {
           resolve(item)
         })
@@ -311,6 +311,7 @@ const routes = (app, passport) => {
         prs.push(candidate)
       }
       //save tcita
+
       JSON.parse(req.body.tcita).map(o => {
         const tcita = o.tcita
         const candidate = new Promise((resolve, reject) => {
@@ -319,8 +320,6 @@ const routes = (app, passport) => {
           }, (err, item) => {
             if (err)
               res.send({err: `unknown database error when find/create Tcita "${tcita}"`})
-            if (!item)
-              item = {}
             const freq = (!item || !item.freq)
               ? 1
               : parseInt(item.freq + 1)
@@ -333,12 +332,14 @@ const routes = (app, passport) => {
             }, {
               new: true
             }, (err, doc) => {
+              const doc_copy = (({ tcita, _id, freq }) => ({ tcita, _id, freq }))(doc);
               if (err) {
-                doc.err = err.toString()
+                doc_copy.err = err.toString()
               } else {
-                doc.updated = true
+                doc_copy.updated = true
               }
-              resolve({type: 'tcita', item: doc})
+              doc_copy.pinka = o.pinka
+              resolve({type: 'tcita', item: doc_copy})
             })
           })
         }, (err) => {
@@ -365,7 +366,6 @@ const routes = (app, passport) => {
         const valsipromise = new Promise((resolve, reject) => {
         Valsi.findById(req.body.valsi_id, (err, newDef) => {
             // newDef = {_id:newDef._id}
-            p(newDef)
             newDef.valsi = req.body.valsi
             newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
             newDef.selgerna_filovelski = req.body.selgerna_filovelski
@@ -408,7 +408,7 @@ const routes = (app, passport) => {
 
         newDef.finti = req.user._id
         newDef.tcita = items.filter(({type}) => type === 'tcita').map(({item}) => {
-          return {tcita: item._id, finti: newDef.finti, undone: false};
+          return {tcita: item._id, pinka: item.pinka, finti: newDef.finti, undone: false};
         })
         const valsipromise = new Promise((resolve, reject) => {
           newDef.save((err, it, numberAffected) => {
