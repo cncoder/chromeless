@@ -351,6 +351,7 @@ class Create extends BaseComponent {
     ], self.props)
       ? self.props.params.id
       : null
+    p(self.state.tcita)
     request.post('/api/finti/').send({
       forcedoverwrite: self.state.forcedoverwrite,
       selgerna_filovalsi: self.state.selgerna_filovalsi,

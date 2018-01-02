@@ -114,9 +114,7 @@ const routes = (app, passport) => {
       return res.send(terbri)
 
       // 2. check cmaxes, check language=>promise
-    const langpromises = Promise.all(thetwo.map(({_id}) => Language.findOne({
-      '_id': req.body[_id]
-    }).exec())).then((items) => {
+    const langpromises = Promise.all(thetwo.map(({_id}) => Language.findOne({'_id': req.body[_id]}).exec())).then((items) => {
       let sum = []
       for (let i in items) {
         const item = items[i]
@@ -170,26 +168,23 @@ const routes = (app, passport) => {
       return sum
     })
     //same word from the user already in the db
-    const xahopromises = Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items) => {
-      if (!items)
-        return null
-      let sum = []
-
-      for (const item of items) {
-        let candidate = {
-          item: {
-            valsi: req.body["valsi"],
-            id: item._id,
-            finti: item.finti,
-            selgerna_filovalsi: item.selgerna_filovalsi
-          },
-          type: "xahovalsi"
-        }
-        sum.push(candidate)
-      }
-
-      return sum
-    })
+    const xahopromises = req.body.valsi_id
+      ? []
+      : Valsi.find({valsi: req.body["valsi"], finti: req.user._id}).exec().then((items) => {
+        if (!items)
+          return null
+        return items.map((item) => {
+          return {
+            item: {
+              valsi: req.body["valsi"],
+              id: item._id,
+              finti: item.finti,
+              selgerna_filovalsi: item.selgerna_filovalsi
+            },
+            type: "xahovalsi"
+          }
+        })
+      })
     // -2-3- resolve promises
     Promise.all([langpromises, klesipromises, xahopromises]).then((items) => {
       items = items.reduce((sum, value) => {
@@ -332,7 +327,7 @@ const routes = (app, passport) => {
             }, {
               new: true
             }, (err, doc) => {
-              const doc_copy = (({ tcita, _id, freq }) => ({ tcita, _id, freq }))(doc);
+              const doc_copy = (({tcita, _id, freq}) => ({tcita, _id, freq}))(doc);
               if (err) {
                 doc_copy.err = err.toString()
               } else {
@@ -364,8 +359,7 @@ const routes = (app, passport) => {
       if (req.body.valsi_id) {
         // update existing smuvelcki
         const valsipromise = new Promise((resolve, reject) => {
-        Valsi.findById(req.body.valsi_id, (err, newDef) => {
-            // newDef = {_id:newDef._id}
+          Valsi.findById(req.body.valsi_id, (err, newDef) => {
             newDef.valsi = req.body.valsi
             newDef.selgerna_filovalsi = req.body.selgerna_filovalsi
             newDef.selgerna_filovelski = req.body.selgerna_filovelski
@@ -380,7 +374,6 @@ const routes = (app, passport) => {
                 valsi.saved = true
                 valsi.numberAffected = numberAffected
               }
-              p(valsi)
               resolve(valsi)
             })
           })
@@ -429,7 +422,6 @@ const routes = (app, passport) => {
       }
       return Promise.all(prs)
     }).then((items) => {
-      p(items.length)
       if (items[0].err || items[0].kunti || items[0].xaho) {
         return res.send(items[0])
       }
@@ -440,7 +432,9 @@ const routes = (app, passport) => {
     }).catch((err) => res.send({err: err.toString()}))
   })
 
-  app.route('/api/sisku_satci').post(({body}, res) => {
+  app.route('/api/sisku_satci').post(({
+    body
+  }, res) => {
     //todo: validator
     let opt = body
     const model_name = body.morna
@@ -510,7 +504,9 @@ const routes = (app, passport) => {
     }
   })
 
-  app.route('/api/mi').post(isLoggedIn, ({user}, res) => {
+  app.route('/api/mi').post(isLoggedIn, ({
+    user
+  }, res) => {
     const pilno = {
       _id: user._id,
       cmene: user.cmene
@@ -596,7 +592,10 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/getalldefs/:id').get(isLoggedIn, ({params, user}, res) => {
+  app.route('/api/getalldefs/:id').get(isLoggedIn, ({
+    params,
+    user
+  }, res) => {
     const user_id = params.id || user._id
     Valsi.find({
       finti: user_id
@@ -679,7 +678,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/pilno/:id').get(({params}, res) => {
+  app.route('/api/pilno/:id').get(({
+    params
+  }, res) => {
     const id = params.id
     User.findById(id, (err, user) => {
       if (err)
@@ -691,7 +692,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/bangu/:id').get(({params}, res) => {
+  app.route('/api/bangu/:id').get(({
+    params
+  }, res) => {
     const id = params.id
     Language.findById(id, (err, bangu) => {
       if (err)
@@ -702,7 +705,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsibyname/:valsi').get(({params}, res) => {
+  app.route('/api/valsibyname/:valsi').get(({
+    params
+  }, res) => {
     const valsi = params.valsi
     Valsi.find({valsi}).populate('finti').populate({path: 'terbri.klesi'}).exec((err, valsi) => {
       if (err)
@@ -722,7 +727,9 @@ const routes = (app, passport) => {
     })
   })
 
-  app.route('/api/valsi/:id').get(({params}, res) => {
+  app.route('/api/valsi/:id').get(({
+    params
+  }, res) => {
     const id = params.id
     Valsi.findById(id).populate('finti').populate({path: 'tcita.tcita'}).populate({path: 'terbri.klesi'}).lean().exec((err, valsi) => {
       if (err)
@@ -836,7 +843,11 @@ const routes = (app, passport) => {
     });
   })
 
-  app.route('/api/jmina_letcita/:valsi').get(isLoggedIn, ({body, user, params}, res) => {
+  app.route('/api/jmina_letcita/:valsi').get(isLoggedIn, ({
+    body,
+    user,
+    params
+  }, res) => {
     // just add to :valsi a new tcita with req.user.id finti
     p(body)
     //body is like {new_tcitas: ["hi", "mi"]}
@@ -882,7 +893,9 @@ const routes = (app, passport) => {
       output.user.local.password = '********' //don't send password to client
     }
     res.send(output)
-  }).post(passport.authenticate('local-login'), ({user}, res) => {
+  }).post(passport.authenticate('local-login'), ({
+    user
+  }, res) => {
     //successfully signed up, if authentication failed client will get 401 error
     const output = {
       user: user.toObject()
@@ -946,7 +959,10 @@ const routes = (app, passport) => {
  *
  *
  */
-  app.use(({url, user}, res) => {
+  app.use(({
+    url,
+    user
+  }, res) => {
     match({
       routes: reactRoutes,
       location: url
@@ -965,10 +981,7 @@ const routes = (app, passport) => {
         let authenticated = false
         if (user)
           authenticated = true
-        res.render(path_.resolve('src/client/public/index.hbs'), {
-          ReactMarkup,
-          __AUTHENTICATED__: authenticated
-        })
+        res.render(path_.resolve('src/client/public/index.hbs'), {ReactMarkup, __AUTHENTICATED__: authenticated})
       } else {
         // no errors, no redirect, we just didn't match anything
         res.status(404).send('Not Found')
