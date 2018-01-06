@@ -1,6 +1,7 @@
 const FacebookStrategy = require('passport-facebook').Strategy
 const TwitterStrategy = require('passport-twitter').Strategy
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+const VKontakteStrategy = require('passport-vkontakte').Strategy;
 const LocalStrategy = require('passport-local').Strategy
 const User = require('../models/user')
 const passportSetup = function(passport) {
@@ -70,6 +71,30 @@ const passportSetup = function(passport) {
     })
   }))
 
+  passport.use(new VKontakteStrategy(
+    {
+      clientID:     process.env.VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
+      clientSecret: process.env.VKONTAKTE_APP_SECRET,
+      callbackURL:  process.env.VKONTAKTE_CALLBACK_URL
+    },
+    function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
+
+      console.log('in vkontakte callback')
+      const userSearch = {
+        "vkontakte.id": String(profile.id)
+      }
+      const userUpdate = {
+        "vkontakte.displayName": String(profile.displayName),
+        "cmene": String(profile.displayName),
+        "login_type": "Vkontakte"
+      }
+      User.findOrCreate(userSearch, userUpdate, function(err, user) {
+        if (err)
+          throw err
+        return done(null, user)
+      })
+    }
+  ));
   // Configure local-signup strategy
   passport.use('local-signup', new LocalStrategy({
     // by default, local strategy uses username and password, we will override with email

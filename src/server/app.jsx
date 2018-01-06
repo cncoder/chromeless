@@ -52,11 +52,14 @@ db.once('open', function() {
   app.use(require('body-parser').urlencoded({extended: true}))
   //save cookie sessions to the db
   const ditcu_lenupikta = 60 * 60 * 24 * 7
+  app.set('trust proxy', 1)
   app.use(require('express-session')({
     secret: '.i do la almavlaste ba pinfu',
     resave: false,
     saveUninitialized: false,
+    key: 'sid',
     cookie: {
+      secure: true,
       maxAge: 1000 * ditcu_lenupikta // 1 week
     },
     store: new (require('./utils/express-pikta.js'))({

@@ -951,6 +951,11 @@ const routes = (app, passport) => {
   app.route('/auth/google/callback').get(passport.authenticate('google', {failureRedirect: '/login'}), (req, res) => {
     res.redirect('/mi')
   })
+
+  // app.route('/auth/vkontakte').get(passport.authenticate('vkontakte'))
+  //
+  // app.route('/auth/vkontakte/callback').get(passport.authenticate('vkontakte', {successRedirect: '/mi',failureRedirect: '/login'}))
+
   /*
  *
  *

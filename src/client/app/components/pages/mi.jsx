@@ -34,12 +34,12 @@ class Mi extends BaseComponent {
     getMyDefs(function(err, vlamei) {
       if (!err) {
         self.setState({vlamei: vlamei.vlamei, user: vlamei.finti})
+        document.title = `${self.state.user.cmene} - la almavlaste`
       }
     })
   }
 
   componentDidMount() {
-    document.title = `${this.state.user.cmene} - la almavlaste`
   }
 
   render() {

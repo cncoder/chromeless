@@ -116,6 +116,9 @@ class Signup extends BaseComponent {
             <a href="/auth/google">
               <i style={iconStyle} className="fa fa-google-plus-square" aria-hidden="true"></i>
             </a>
+            <a href="/auth/vkontakte">
+              <i style={iconStyle} className="fa fa-vk" aria-hidden="true"></i>
+            </a>
             <hr/>
             <p style={{
               marginBottom: 30

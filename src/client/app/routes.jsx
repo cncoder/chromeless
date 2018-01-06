@@ -33,6 +33,7 @@ module.exports = (
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/finti" component={Finti} />
+        <Route path="/fihi" component={Fihi} />
         <Route path="/finti/:id" component={Finti} />
         <Route path="/jbangu" component={JBangu} />
         <Route path="/mi" component={Mi}/>

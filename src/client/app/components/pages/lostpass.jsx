@@ -52,7 +52,7 @@ class LostPass extends BaseComponent {
   handleSubmit(e) {
     e.preventDefault()
     const self = this
-    request.post('/api/pilno').send({pilno: this.state.pilno}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
+    request.post('/api/restorepass').send({pilno: this.state.pilno}).set('Content-Type', 'application/x-www-form-urlencoded').end(function(err, res) {
       if (err) {
         if (err.status === 401 || err.status === 400) {
           console.warn('incorrect username or email')
